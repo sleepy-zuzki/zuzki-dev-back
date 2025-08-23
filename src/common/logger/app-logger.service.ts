@@ -55,7 +55,12 @@ export class AppLogger implements LoggerService {
     return path.join(this.baseDir, `${this.appName}-${level}-${date}.log`);
   }
 
-  private formatLine(level: LogLevel, message: any, context?: string, trace?: string): string {
+  private formatLine(
+    level: LogLevel,
+    message: any,
+    context?: string,
+    trace?: string,
+  ): string {
     const ts = new Date().toISOString();
     const ctx = context ? `[${context}]` : '';
     const msg = typeof message === 'string' ? message : JSON.stringify(message);
@@ -63,7 +68,12 @@ export class AppLogger implements LoggerService {
     return `${ts} ${level.toUpperCase()} ${ctx} ${msg}${tr}`;
   }
 
-  private write(level: LogLevel, message: any, context?: string, trace?: string): void {
+  private write(
+    level: LogLevel,
+    message: any,
+    context?: string,
+    trace?: string,
+  ): void {
     try {
       const line = this.formatLine(level, message, context, trace) + '\n';
       fs.appendFileSync(this.logFilePath(level), line, { encoding: 'utf8' });

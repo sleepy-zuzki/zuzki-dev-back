@@ -12,7 +12,10 @@ export type SupabaseJwtPayload = {
 };
 
 @Injectable()
-export class SupabaseStrategy extends PassportStrategy(Strategy, 'supabase-jwt') {
+export class SupabaseStrategy extends PassportStrategy(
+  Strategy,
+  'supabase-jwt',
+) {
   constructor(private readonly config: ConfigurationService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

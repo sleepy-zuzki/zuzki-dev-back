@@ -20,7 +20,9 @@ export class ConfigurationService {
     }
     const parsed = Number(raw);
     if (Number.isNaN(parsed)) {
-      throw new Error(`Invalid number for environment variable ${name}: "${raw}"`);
+      throw new Error(
+        `Invalid number for environment variable ${name}: "${raw}"`,
+      );
     }
     return parsed;
   }
