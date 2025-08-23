@@ -5,12 +5,11 @@ import { AppModule } from './app.module';
 import { AppLogger } from './common/logger/app-logger.service';
 
 async function bootstrap() {
-  const logger = new AppLogger();
-
   const app = await NestFactory.create(AppModule, {
-    logger: false,
+    bufferLogs: true,
   });
 
+  const logger = app.get(AppLogger);
   app.useLogger(logger);
 
   // Versionamiento por URI: /v1/*
@@ -19,7 +18,8 @@ async function bootstrap() {
   });
 
   const port = parseInt(process.env.PORT || '3000', 10);
-  await app.listen(port);
+  const host = process.env.HOST || '0.0.0.0';
+  await app.listen(port, host);
 
   const url = await app.getUrl();
   logger.log(`Aplicación iniciada en ${url}`, 'Bootstrap');
