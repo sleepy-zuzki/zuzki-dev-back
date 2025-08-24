@@ -1,0 +1,36 @@
+get:
+  tags: [Portfolio, Files]
+  summary: Lista archivos (incluye proyecto asociado si existe)
+  operationId: listFiles
+  responses:
+    '200':
+      description: Lista de archivos
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/FileWithProject'
+post:
+  tags: [Portfolio, Files]
+  summary: Crea un archivo
+  operationId: createFile
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/CreateFileInput'
+  responses:
+    '201':
+      description: Archivo creado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FileWithProject'
+    '400':
+      description: Datos inválidos
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'

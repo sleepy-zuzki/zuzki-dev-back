@@ -1,10 +1,11 @@
 openapi: 3.1.0
 info:
-  title: API - Health Check
+  title: API v1
   version: 1.0.0
   description: >
-    Especificación del endpoint de verificación de salud del servicio, incluyendo
-    el estado de la conexión a la base de datos.
+    Especificación del API v1 que incluye endpoints de health y CRUD para
+    catálogo (stacks y technologies) y portafolio (projects y files).
+
 servers:
   - url: http://localhost:{port}
     description: Servidor local
@@ -13,100 +14,96 @@ servers:
         default: '3000'
   - url: https://api.ejemplo.com
     description: Servidor de producción
+
 tags:
   - name: Health
     description: Endpoints de verificación de estado
+  - name: Catalog
+    description: Recursos del catálogo
+  - name: Stacks
+    description: Gestión de stacks tecnológicos
+  - name: Technologies
+    description: Gestión de tecnologías
+  - name: Portfolio
+    description: Recursos del portafolio
+  - name: Projects
+    description: Gestión de proyectos
+  - name: Files
+    description: Gestión de archivos
 
 paths:
   /v1/health:
-    get:
-      tags:
-        - Health
-      summary: Verifica el estado del servicio
-      operationId: checkHealth
-      responses:
-        '200':
-          description: Estado actual del servicio y de la base de datos
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HealthResponse'
-              examples:
-                ok:
-                  summary: Servicio y base de datos operativos
-                  value:
-                    status: ok
-                    uptime: 12345.67
-                    timestamp: '2025-08-23T12:34:56.789Z'
-                    database:
-                      status: up
-                      initialized: true
-                      latencyMs: 8
-                degraded:
-                  summary: Servicio operativo pero base de datos no disponible
-                  value:
-                    status: degraded
-                    uptime: 22345.12
-                    timestamp: '2025-08-23T12:35:56.789Z'
-                    database:
-                      status: down
-                      initialized: false
-                      latencyMs: null
-        '500':
-          description: Error no controlado
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  timestamp:
-                    type: string
-                    format: date-time
+    $ref: './paths/health.yaml'
+
+  # Catalog - Stacks
+  /v1/catalog/stacks:
+    $ref: './paths/catalog/stacks/collection.yaml'
+  /v1/catalog/stacks/{slug}:
+    $ref: './paths/catalog/stacks/by-slug.yaml'
+  /v1/catalog/stacks/{id}:
+    $ref: './paths/catalog/stacks/by-id.yaml'
+
+  # Catalog - Technologies
+  /v1/catalog/technologies:
+    $ref: './paths/catalog/technologies/collection.yaml'
+  /v1/catalog/technologies/{slug}:
+    $ref: './paths/catalog/technologies/by-slug.yaml'
+  /v1/catalog/technologies/{id}:
+    $ref: './paths/catalog/technologies/by-id.yaml'
+
+  # Portfolio - Files
+  /v1/portfolio/files:
+    $ref: './paths/portfolio/files/collection.yaml'
+  /v1/portfolio/files/{id}:
+    $ref: './paths/portfolio/files/by-id.yaml'
+
+  # Portfolio - Projects
+  /v1/portfolio/projects:
+    $ref: './paths/portfolio/projects/collection.yaml'
+  /v1/portfolio/projects/{slug}:
+    $ref: './paths/portfolio/projects/by-slug.yaml'
+  /v1/portfolio/projects/{id}:
+    $ref: './paths/portfolio/projects/by-id.yaml'
 
 components:
+  parameters:
+    $ref: './components/parameters.yaml'
   schemas:
+    # Common
+    BasicError:
+      $ref: './components/common/basic.yaml#/BasicError'
+    # Health
     HealthResponse:
-      type: object
-      required:
-        - status
-        - uptime
-        - timestamp
-        - database
-      properties:
-        status:
-          type: string
-          description: Estado global del servicio
-          enum: [ok, degraded]
-        uptime:
-          type: number
-          format: float
-          description: Tiempo que el proceso ha estado activo en segundos
-          minimum: 0
-        timestamp:
-          type: string
-          format: date-time
-          description: Momento ISO 8601 de la verificación
-        database:
-          $ref: '#/components/schemas/DatabaseHealth'
-
+      $ref: './components/health.yaml#/HealthResponse'
     DatabaseHealth:
-      type: object
-      required:
-        - status
-        - initialized
-      properties:
-        status:
-          type: string
-          description: Estado de la conexión a la base de datos
-          enum: [up, down]
-        initialized:
-          type: boolean
-          description: Indica si el DataSource de ORM está inicializado
-        latencyMs:
-          type: integer
-          format: int64
-          minimum: 0
-          nullable: true
-          description: Latencia medida para una consulta simple (en milisegundos), o null si no aplica
+      $ref: './components/health.yaml#/DatabaseHealth'
+    # Catalog
+    Stack:
+      $ref: './components/catalog/stack.yaml#/Stack'
+    CreateStackInput:
+      $ref: './components/catalog/stack.yaml#/CreateStackInput'
+    UpdateStackInput:
+      $ref: './components/catalog/stack.yaml#/UpdateStackInput'
+    Technology:
+      $ref: './components/catalog/technology.yaml#/Technology'
+    CreateTechnologyInput:
+      $ref: './components/catalog/technology.yaml#/CreateTechnologyInput'
+    UpdateTechnologyInput:
+      $ref: './components/catalog/technology.yaml#/UpdateTechnologyInput'
+    # Portfolio
+    ProjectRef:
+      $ref: './components/portfolio/project.yaml#/ProjectRef'
+    File:
+      $ref: './components/portfolio/file.yaml#/File'
+    FileWithProject:
+      $ref: './components/portfolio/file.yaml#/FileWithProject'
+    CreateFileInput:
+      $ref: './components/portfolio/file.yaml#/CreateFileInput'
+    UpdateFileInput:
+      $ref: './components/portfolio/file.yaml#/UpdateFileInput'
+    Project:
+      $ref: './components/portfolio/project.yaml#/Project'
+    CreateProjectInput:
+      $ref: './components/portfolio/project.yaml#/CreateProjectInput'
+    UpdateProjectInput:
+      $ref: './components/portfolio/project.yaml#/UpdateProjectInput'

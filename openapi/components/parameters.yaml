@@ -1,0 +1,16 @@
+IdParam:
+  name: id
+  in: path
+  required: true
+  schema:
+    type: integer
+    format: int32
+    minimum: 1
+
+SlugParam:
+  name: slug
+  in: path
+  required: true
+  schema:
+    type: string
+    minLength: 1

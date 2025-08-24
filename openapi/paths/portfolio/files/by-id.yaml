@@ -1,0 +1,67 @@
+get:
+  tags: [Portfolio, Files]
+  summary: Obtiene un archivo por id (incluye proyecto asociado)
+  operationId: getFileById
+  parameters:
+    - $ref: '#/components/parameters/IdParam'
+  responses:
+    '200':
+      description: Archivo encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FileWithProject'
+    '404':
+      description: Archivo no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'
+patch:
+  tags: [Portfolio, Files]
+  summary: Actualiza un archivo por id
+  operationId: updateFile
+  parameters:
+    - $ref: '#/components/parameters/IdParam'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/UpdateFileInput'
+  responses:
+    '200':
+      description: Archivo actualizado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FileWithProject'
+    '404':
+      description: Archivo no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'
+delete:
+  tags: [Portfolio, Files]
+  summary: Elimina un archivo por id
+  operationId: deleteFile
+  parameters:
+    - $ref: '#/components/parameters/IdParam'
+  responses:
+    '200':
+      description: Eliminación exitosa
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+    '404':
+      description: Archivo no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'

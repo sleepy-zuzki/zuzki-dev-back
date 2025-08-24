@@ -1,0 +1,37 @@
+HealthResponse:
+  type: object
+  required: [status, uptime, timestamp, database]
+  properties:
+    status:
+      type: string
+      description: Estado global del servicio
+      enum: [ok, degraded]
+    uptime:
+      type: number
+      format: float
+      description: Tiempo que el proceso ha estado activo en segundos
+      minimum: 0
+    timestamp:
+      type: string
+      format: date-time
+      description: Momento ISO 8601 de la verificación
+    database:
+      $ref: '#/components/schemas/DatabaseHealth'
+
+DatabaseHealth:
+  type: object
+  required: [status, initialized]
+  properties:
+    status:
+      type: string
+      description: Estado de la conexión a la base de datos
+      enum: [up, down]
+    initialized:
+      type: boolean
+      description: Indica si el DataSource de ORM está inicializado
+    latencyMs:
+      type: integer
+      format: int64
+      minimum: 0
+      nullable: true
+      description: Latencia medida para una consulta simple (en milisegundos), o null si no aplica

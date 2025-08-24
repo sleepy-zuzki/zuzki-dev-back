@@ -1,0 +1,36 @@
+get:
+  tags: [Catalog, Stacks]
+  summary: Lista todos los stacks
+  operationId: listStacks
+  responses:
+    '200':
+      description: Lista de stacks
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Stack'
+post:
+  tags: [Catalog, Stacks]
+  summary: Crea un nuevo stack
+  operationId: createStack
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/CreateStackInput'
+  responses:
+    '201':
+      description: Stack creado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Stack'
+    '400':
+      description: Datos inválidos
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'

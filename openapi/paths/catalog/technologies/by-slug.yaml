@@ -1,0 +1,19 @@
+get:
+  tags: [Catalog, Technologies]
+  summary: Obtiene una tecnología por slug
+  operationId: getTechnologyBySlug
+  parameters:
+    - $ref: '#/components/parameters/SlugParam'
+  responses:
+    '200':
+      description: Tecnología encontrada
+      content:
+        application/json:
+          schema:
+          $ref: '#/components/schemas/Technology'
+    '404':
+      description: Tecnología no encontrada
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'

@@ -1,0 +1,48 @@
+patch:
+  tags: [Catalog, Technologies]
+  summary: Actualiza una tecnología por id
+  operationId: updateTechnology
+  parameters:
+    - $ref: '#/components/parameters/IdParam'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/UpdateTechnologyInput'
+  responses:
+    '200':
+      description: Tecnología actualizada
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Technology'
+    '404':
+      description: Tecnología no encontrada
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'
+delete:
+  tags: [Catalog, Technologies]
+  summary: Elimina una tecnología por id
+  operationId: deleteTechnology
+  parameters:
+    - $ref: '#/components/parameters/IdParam'
+  responses:
+    '200':
+      description: Eliminación exitosa
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+    '404':
+      description: Tecnología no encontrada
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'

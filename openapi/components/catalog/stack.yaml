@@ -1,0 +1,54 @@
+Stack:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int32
+    name:
+      type: string
+      maxLength: 100
+    slug:
+      type: string
+      maxLength: 120
+    area:
+      type: string
+      enum: [front, back, mobile, devops, design]
+    description:
+      type: string
+      nullable: true
+    createdAt:
+      type: string
+      format: date-time
+
+CreateStackInput:
+  type: object
+  required: [name, slug, area]
+  properties:
+    name:
+      type: string
+      maxLength: 100
+    slug:
+      type: string
+      maxLength: 120
+    area:
+      type: string
+      enum: [front, back, mobile, devops, design]
+    description:
+      type: string
+      nullable: true
+
+UpdateStackInput:
+  type: object
+  properties:
+    name:
+      type: string
+      maxLength: 100
+    slug:
+      type: string
+      maxLength: 120
+    area:
+      type: string
+      enum: [front, back, mobile, devops, design]
+    description:
+      type: string
+      nullable: true

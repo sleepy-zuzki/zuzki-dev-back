@@ -1,0 +1,36 @@
+get:
+  tags: [Catalog, Technologies]
+  summary: Lista todas las tecnologías
+  operationId: listTechnologies
+  responses:
+    '200':
+      description: Lista de tecnologías
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Technology'
+post:
+  tags: [Catalog, Technologies]
+  summary: Crea una tecnología
+  operationId: createTechnology
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/CreateTechnologyInput'
+  responses:
+    '201':
+      description: Tecnología creada
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Technology'
+    '400':
+      description: Datos inválidos
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'

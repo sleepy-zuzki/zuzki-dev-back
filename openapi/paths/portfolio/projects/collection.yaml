@@ -1,0 +1,36 @@
+get:
+  tags: [Portfolio, Projects]
+  summary: Lista proyectos (incluye tecnologías e imagen de preview)
+  operationId: listProjects
+  responses:
+    '200':
+      description: Lista de proyectos
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Project'
+post:
+  tags: [Portfolio, Projects]
+  summary: Crea un proyecto
+  operationId: createProject
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/CreateProjectInput'
+  responses:
+    '201':
+      description: Proyecto creado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Project'
+    '400':
+      description: Datos inválidos
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'

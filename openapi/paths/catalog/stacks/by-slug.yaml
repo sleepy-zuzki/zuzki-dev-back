@@ -1,0 +1,19 @@
+get:
+  tags: [Catalog, Stacks]
+  summary: Obtiene un stack por su slug
+  operationId: getStackBySlug
+  parameters:
+    - $ref: '#/components/parameters/SlugParam'
+  responses:
+    '200':
+      description: Stack encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Stack'
+    '404':
+      description: Stack no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'

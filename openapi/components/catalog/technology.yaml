@@ -1,0 +1,39 @@
+Technology:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int32
+    name:
+      type: string
+      maxLength: 100
+    slug:
+      type: string
+      maxLength: 120
+    website:
+      type: string
+      maxLength: 255
+      nullable: true
+
+CreateTechnologyInput:
+  type: object
+  required: [name, slug]
+  properties:
+    name:
+      type: string
+    slug:
+      type: string
+    website:
+      type: string
+      nullable: true
+
+UpdateTechnologyInput:
+  type: object
+  properties:
+    name:
+      type: string
+    slug:
+      type: string
+    website:
+      type: string
+      nullable: true

@@ -1,0 +1,48 @@
+patch:
+  tags: [Catalog, Stacks]
+  summary: Actualiza un stack por id
+  operationId: updateStack
+  parameters:
+    - $ref: '#/components/parameters/IdParam'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/UpdateStackInput'
+  responses:
+    '200':
+      description: Stack actualizado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Stack'
+    '404':
+      description: Stack no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'
+delete:
+  tags: [Catalog, Stacks]
+  summary: Elimina un stack por id
+  operationId: deleteStack
+  parameters:
+    - $ref: '#/components/parameters/IdParam'
+  responses:
+    '200':
+      description: Eliminación exitosa
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+    '404':
+      description: Stack no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'

@@ -1,0 +1,132 @@
+ProjectRef:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int32
+    slug:
+      type: string
+    name:
+      type: string
+
+Project:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int32
+    name:
+      type: string
+      maxLength: 150
+    slug:
+      type: string
+      maxLength: 160
+    description:
+      type: string
+      nullable: true
+    repoUrl:
+      type: string
+      nullable: true
+    liveUrl:
+      type: string
+      nullable: true
+    category:
+      type: string
+      nullable: true
+      enum: [front, back, mobile, devops, design]
+    year:
+      type: integer
+      format: int32
+      nullable: true
+    isFeatured:
+      type: boolean
+      default: false
+    technologies:
+      type: array
+      items:
+        $ref: '../catalog/technology.yaml#/Technology'
+    previewImage:
+      allOf:
+        - $ref: './file.yaml#/File'
+      nullable: true
+    createdAt:
+      type: string
+      format: date-time
+    updatedAt:
+      type: string
+      format: date-time
+
+CreateProjectInput:
+  type: object
+  required: [name, slug]
+  properties:
+    name:
+      type: string
+    slug:
+      type: string
+    description:
+      type: string
+      nullable: true
+    repoUrl:
+      type: string
+      nullable: true
+    liveUrl:
+      type: string
+      nullable: true
+    category:
+      type: string
+      nullable: true
+      enum: [front, back, mobile, devops, design]
+    year:
+      type: integer
+      format: int32
+      nullable: true
+    isFeatured:
+      type: boolean
+      default: false
+    technologyIds:
+      type: array
+      items:
+        type: integer
+        format: int32
+    previewImageId:
+      type: integer
+      format: int32
+      nullable: true
+
+UpdateProjectInput:
+  type: object
+  properties:
+    name:
+      type: string
+    slug:
+      type: string
+    description:
+      type: string
+      nullable: true
+    repoUrl:
+      type: string
+      nullable: true
+    liveUrl:
+      type: string
+      nullable: true
+    category:
+      type: string
+      nullable: true
+      enum: [front, back, mobile, devops, design]
+    year:
+      type: integer
+      format: int32
+      nullable: true
+    isFeatured:
+      type: boolean
+    technologyIds:
+      type: array
+      items:
+        type: integer
+        format: int32
+      nullable: true
+    previewImageId:
+      type: integer
+      format: int32
+      nullable: true

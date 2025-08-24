@@ -1,0 +1,38 @@
+get:
+  tags: [Health]
+  summary: Verifica el estado del servicio
+  operationId: checkHealth
+  responses:
+    '200':
+      description: Estado actual del servicio y de la base de datos
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HealthResponse'
+          examples:
+            ok:
+              summary: Servicio y base de datos operativos
+              value:
+                status: ok
+                uptime: 12345.67
+                timestamp: '2025-08-23T12:34:56.789Z'
+                database:
+                  status: up
+                  initialized: true
+                  latencyMs: 8
+            degraded:
+              summary: Servicio operativo pero base de datos no disponible
+              value:
+                status: degraded
+                uptime: 22345.12
+                timestamp: '2025-08-23T12:35:56.789Z'
+                database:
+                  status: down
+                  initialized: false
+                  latencyMs: null
+    '500':
+      description: Error no controlado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'

@@ -1,0 +1,48 @@
+patch:
+  tags: [Portfolio, Projects]
+  summary: Actualiza un proyecto por id
+  operationId: updateProject
+  parameters:
+    - $ref: '#/components/parameters/IdParam'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/UpdateProjectInput'
+  responses:
+    '200':
+      description: Proyecto actualizado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Project'
+    '404':
+      description: Proyecto no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'
+delete:
+  tags: [Portfolio, Projects]
+  summary: Elimina un proyecto por id
+  operationId: deleteProject
+  parameters:
+    - $ref: '#/components/parameters/IdParam'
+  responses:
+    '200':
+      description: Eliminación exitosa
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+    '404':
+      description: Proyecto no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'

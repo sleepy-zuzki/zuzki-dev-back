@@ -22,7 +22,9 @@
     "migration:create": "node ./tools/migration-create.js",
     "migration:generate": "node ./tools/migration-generate.js",
     "migration:run": "pnpm typeorm migration:run",
-    "migration:revert": "pnpm typeorm migration:revert"
+    "migration:revert": "pnpm typeorm migration:revert",
+    "openapi:bundle": "swagger-cli bundle openapi/openapi.yaml --outfile openapi/bundle.yaml --type yaml",
+    "openapi:bundle:json": "swagger-cli bundle openapi/openapi.yaml --outfile openapi/bundle.json --type json"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -40,6 +42,7 @@
     "typeorm": "^0.3.26"
   },
   "devDependencies": {
+    "@apidevtools/swagger-cli": "^4.0.4",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
     "@nestjs/cli": "^11.0.0",

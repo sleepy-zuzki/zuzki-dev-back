@@ -1,0 +1,19 @@
+get:
+  tags: [Portfolio, Projects]
+  summary: Obtiene un proyecto por slug (incluye relaciones)
+  operationId: getProjectBySlug
+  parameters:
+    - $ref: '#/components/parameters/SlugParam'
+  responses:
+    '200':
+      description: Proyecto encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Project'
+    '404':
+      description: Proyecto no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BasicError'
