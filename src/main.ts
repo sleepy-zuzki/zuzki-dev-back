@@ -2,15 +2,11 @@ import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { VersioningType, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-import { AppLogger } from './common/logger/app-logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
   });
-
-  const logger = app.get(AppLogger);
-  app.useLogger(logger);
 
   // Validación y transformación global de DTOs
   app.useGlobalPipes(
@@ -36,8 +32,8 @@ async function bootstrap() {
   const host = process.env.HOST || '0.0.0.0';
   await app.listen(port, host);
 
-  const url = await app.getUrl();
-  logger.log(`Aplicación iniciada en ${url}`, 'Bootstrap');
+  // eslint-disable-next-line no-console
+  console.log(`Aplicación iniciada en ${await app.getUrl()}`);
 }
 
 bootstrap().catch((err) => {
