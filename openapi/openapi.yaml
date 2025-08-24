@@ -5,6 +5,7 @@ info:
   description: >
     Especificación del API v1 que incluye endpoints de health y CRUD para
     catálogo (stacks y technologies) y portafolio (projects y files).
+    Autenticación: las operaciones de lectura (GET, HEAD, OPTIONS) son públicas; las de escritura (POST, PATCH, DELETE) requieren JWT Bearer emitido por Supabase y se documentan mediante el esquema BearerAuth.
 
 servers:
   - url: http://localhost:{port}
@@ -68,6 +69,12 @@ paths:
 components:
   parameters:
     $ref: './components/parameters.yaml'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Autenticación JWT de Supabase; enviar el encabezado "Authorization: Bearer <token>"
   schemas:
     # Common
     BasicError:
