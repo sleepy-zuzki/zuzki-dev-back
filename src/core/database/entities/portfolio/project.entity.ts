@@ -2,12 +2,13 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToMany,
+  ManyToMany,
   OneToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinTable,
 } from 'typeorm';
-import { TechnologyEntity } from './technology.entity';
+import { TechnologyEntity } from '../catalog/technology.entity';
 import { FileEntity } from './file.entity';
 import type { ProjectCategory } from '../../../models/portfolio/project.types';
 
@@ -43,8 +44,12 @@ export class ProjectEntity {
   @Column({ name: 'is_featured', type: 'boolean', default: false })
   isFeatured!: boolean;
 
-  @OneToMany(() => TechnologyEntity, (tech) => tech.project, {
-    cascade: ['insert', 'update'],
+  @ManyToMany(() => TechnologyEntity, { eager: false })
+  @JoinTable({
+    name: 'project_technologies',
+    schema: 'portfolio',
+    joinColumn: { name: 'project_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'technology_id', referencedColumnName: 'id' },
   })
   technologies?: TechnologyEntity[];
 
