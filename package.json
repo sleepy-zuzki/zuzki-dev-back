@@ -8,11 +8,15 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "lint:fix": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "lint:ci": "eslint --max-warnings=0 \"{src,apps,libs,test}/**/*.ts\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -25,17 +29,21 @@
     "migration:revert": "pnpm typeorm migration:revert",
     "openapi:bundle": "swagger-cli bundle openapi/openapi.yaml --outfile openapi/bundle.yaml --type yaml",
     "openapi:bundle:json": "swagger-cli bundle openapi/openapi.yaml --outfile openapi/bundle.json --type json",
-    "seed": "node --env-file=.env --require ts-node/register --require tsconfig-paths/register ./tools/seed.ts"
+    "seed": "node --env-file=.env --require ts-node/register --require tsconfig-paths/register ./tools/seed.ts",
+    "prepare": "husky"
   },
   "dependencies": {
+    "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
+    "cache-manager": "^7.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "compression": "^1.7.4",
     "nestjs-pino": "^4.0.0",
     "nestjs-supabase-auth": "^1.0.9",
     "passport": "^0.7.0",
@@ -55,6 +63,7 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@types/compression": "^1.7.5",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",
@@ -64,7 +73,9 @@
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^16.0.0",
+    "husky": "^9.1.6",
     "jest": "^30.0.0",
+    "lint-staged": "^15.2.10",
     "pino-pretty": "^11.2.2",
     "prettier": "^3.4.2",
     "source-map-support": "^0.5.21",
@@ -75,6 +86,12 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,json,md}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   },
   "jest": {
     "moduleFileExtensions": [

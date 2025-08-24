@@ -1,0 +1,6 @@
+#!/bin/sh
+# Resolve script directory to make sourcing husky.sh robust even if CWD is not repo root
+script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd -P)"
+. "$script_dir/_/husky.sh"
+
+pnpm lint-staged

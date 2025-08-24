@@ -1,5 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Header } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
+import { CacheTTL } from '@nestjs/cache-manager';
 
 @Controller({ path: 'health', version: '1' })
 export class HealthController {
@@ -8,6 +9,8 @@ export class HealthController {
   }
 
   @Get()
+  @Header('Cache-Control', 'no-store')
+  @CacheTTL(0)
   check() {
     const payload = {
       status: 'ok' as const,

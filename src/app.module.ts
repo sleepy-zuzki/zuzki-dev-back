@@ -5,6 +5,8 @@ import { AuthModule } from './auth/auth.module';
 import { LoggerModule } from 'nestjs-pino';
 import { randomUUID } from 'node:crypto';
 import { MetricsModule } from './metrics/metrics.module';
+import { CacheModule, CacheInterceptor } from '@nestjs/cache-manager';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -19,8 +21,8 @@ import { MetricsModule } from './metrics/metrics.module';
           res.setHeader('x-request-id', id);
           return id;
         },
-        customProps(req) {
-          return { requestId: (req as any).id };
+        customProps(req: { id?: string }) {
+          return { requestId: req.id };
         },
         transport:
           process.env.NODE_ENV !== 'production'
@@ -35,13 +37,23 @@ import { MetricsModule } from './metrics/metrics.module';
             : undefined,
       },
     }),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: Number(process.env.CACHE_TTL ?? 5), // segundos
+      max: Number(process.env.CACHE_MAX ?? 100),
+    }),
     DatabaseModule,
     AuthModule,
     MetricsModule,
     V1Module,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
+  ],
   exports: [],
 })
 export class AppModule {}
