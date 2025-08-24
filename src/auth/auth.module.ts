@@ -3,6 +3,8 @@ import { PassportModule } from '@nestjs/passport';
 import { SupabaseStrategy } from './strategies/supabase.strategy';
 import { SupabaseAuthGuard } from './guards/supabase-auth.guard';
 import { ConfigurationModule } from '../config/configuration.module';
+import { APP_GUARD } from '@nestjs/core';
+import { WriteMethodsAuthGuard } from './guards/write-methods-auth.guard';
 
 @Module({
   imports: [
@@ -11,7 +13,14 @@ import { ConfigurationModule } from '../config/configuration.module';
     // ConfigurationModule es global, pero lo importamos explícitamente para claridad
     ConfigurationModule,
   ],
-  providers: [SupabaseStrategy, SupabaseAuthGuard],
+  providers: [
+    SupabaseStrategy,
+    SupabaseAuthGuard,
+    {
+      provide: APP_GUARD,
+      useClass: WriteMethodsAuthGuard,
+    },
+  ],
   exports: [PassportModule, SupabaseAuthGuard],
 })
 export class AuthModule {}

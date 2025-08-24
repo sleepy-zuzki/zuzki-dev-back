@@ -8,7 +8,7 @@ export type SupabaseJwtPayload = {
   role?: string;
   email?: string;
   aud?: string;
-  [key: string]: unknown;
+  iss?: string;
 };
 
 @Injectable()
@@ -27,10 +27,14 @@ export class SupabaseStrategy extends PassportStrategy(
 
   validate(payload: SupabaseJwtPayload) {
     const expectedAud = process.env.SUPABASE_JWT_AUDIENCE;
+    const expectedIss = process.env.SUPABASE_JWT_ISSUER;
+
     if (expectedAud && payload?.aud && payload.aud !== expectedAud) {
       throw new UnauthorizedException('Invalid token audience');
     }
-    // Puedes aplicar más validaciones según tus necesidades (iss, roles, etc.)
+    if (expectedIss && payload?.iss && payload.iss !== expectedIss) {
+      throw new UnauthorizedException('Invalid token issuer');
+    }
     return payload;
   }
 }
