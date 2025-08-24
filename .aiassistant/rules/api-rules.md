@@ -1,6 +1,7 @@
 # Reglas del API (v1)
 
 Ámbito:
+
 - Estas reglas aplican exclusivamente al desarrollo y mantenimiento del API HTTP (controladores NestJS y servicios invocados por dichos controladores).
 - No aplican a scripts/CLI, jobs/cron, workers de colas, migraciones de base de datos ni a módulos internos que no expongan rutas HTTP directamente.
 
