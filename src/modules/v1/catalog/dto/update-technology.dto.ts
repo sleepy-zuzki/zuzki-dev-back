@@ -12,14 +12,16 @@ export class UpdateTechnologyDto {
   @IsOptional()
   @IsString()
   @Length(2, 100)
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @Transform(({ value }): string | undefined =>
+    typeof value === 'string' ? value.trim() : value,
+  )
   name?: string;
 
   @IsOptional()
   @IsString()
   @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
   @Length(2, 50)
-  @Transform(({ value }) =>
+  @Transform(({ value }): string | undefined =>
     typeof value === 'string' ? value.trim().toLowerCase() : value,
   )
   slug?: string;
@@ -27,6 +29,8 @@ export class UpdateTechnologyDto {
   @IsOptional()
   @ValidateIf((_o, v) => v !== null)
   @IsUrl({ require_protocol: true })
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @Transform(({ value }): string | null | undefined =>
+    typeof value === 'string' ? value.trim() : value,
+  )
   website?: string | null;
 }

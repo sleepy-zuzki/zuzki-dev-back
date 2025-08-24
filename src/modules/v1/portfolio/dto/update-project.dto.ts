@@ -23,14 +23,16 @@ export class UpdateProjectDto {
   @IsOptional()
   @IsString()
   @Length(2, 150)
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @Transform(({ value }): string | undefined =>
+    typeof value === 'string' ? value.trim() : value,
+  )
   name?: string;
 
   @IsOptional()
   @IsString()
   @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
   @Length(2, 160)
-  @Transform(({ value }) =>
+  @Transform(({ value }): string | undefined =>
     typeof value === 'string' ? value.trim().toLowerCase() : value,
   )
   slug?: string;
@@ -39,21 +41,27 @@ export class UpdateProjectDto {
   @ValidateIf((_o, v) => v !== null)
   @IsString()
   @MaxLength(1000)
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @Transform(({ value }): string | null | undefined =>
+    typeof value === 'string' ? value.trim() : value,
+  )
   description?: string | null;
 
   @IsOptional()
   @ValidateIf((_o, v) => v !== null)
   @IsUrl({ require_protocol: true })
   @MaxLength(255)
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @Transform(({ value }): string | null | undefined =>
+    typeof value === 'string' ? value.trim() : value,
+  )
   repoUrl?: string | null;
 
   @IsOptional()
   @ValidateIf((_o, v) => v !== null)
   @IsUrl({ require_protocol: true })
   @MaxLength(255)
-  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
+  @Transform(({ value }): string | null | undefined =>
+    typeof value === 'string' ? value.trim() : value,
+  )
   liveUrl?: string | null;
 
   @IsOptional()
@@ -69,10 +77,10 @@ export class UpdateProjectDto {
   year?: number | null;
 
   @IsOptional()
-  @Transform(({ value }) => {
+  @Transform(({ value }): boolean | undefined | null => {
     if (typeof value === 'boolean') return value;
     if (typeof value === 'string') return value === 'true';
-    return value;
+    return value as boolean | undefined | null;
   })
   @IsBoolean()
   isFeatured?: boolean;
