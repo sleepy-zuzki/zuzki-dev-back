@@ -22,6 +22,7 @@ import { ConfigModule } from '@nestjs/config';
           username: config.getString('POSTGRES_USER', 'postgres'),
           password: config.getString('POSTGRES_PASSWORD', 'postgres'),
           database: config.getString('POSTGRES_DB', 'postgres'),
+          schema: 'portfolio',
           autoLoadEntities: true,
           synchronize: config.getBoolean('TYPEORM_SYNC', false),
           logging: config.getBoolean('TYPEORM_LOGGING', false),

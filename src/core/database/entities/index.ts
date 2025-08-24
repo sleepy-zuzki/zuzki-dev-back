@@ -1,3 +1,7 @@
 // Re-exporta aquí tus entidades, p. ej.:
 // export * from './user/user.entity';
 // export * from './billing/invoice.entity';
+
+export * from './portfolio/project.entity';
+export * from './portfolio/technology.entity';
+export * from './portfolio/file.entity';
