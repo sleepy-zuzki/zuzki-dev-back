@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { FileEntity, ProjectEntity, TechnologyEntity } from '../../../../core/database/entities';
+import {
+  FileEntity,
+  ProjectEntity,
+  TechnologyEntity,
+} from '../../../../core/database/entities';
 import { CreateProjectDto } from '../dto/create-project.dto';
 import { UpdateProjectDto } from '../dto/update-project.dto';
 
@@ -43,14 +47,18 @@ export class ProjectsService {
     });
 
     if (dto.technologyIds && dto.technologyIds.length > 0) {
-      const techs = await this.techRepo.find({ where: { id: In(dto.technologyIds) } });
+      const techs = await this.techRepo.find({
+        where: { id: In(dto.technologyIds) },
+      });
       project.technologies = techs;
     }
 
     const saved = await this.repo.save(project);
 
     if (dto.previewImageId) {
-      const file = await this.fileRepo.findOne({ where: { id: dto.previewImageId } });
+      const file = await this.fileRepo.findOne({
+        where: { id: dto.previewImageId },
+      });
       if (file) {
         file.project = saved;
         await this.fileRepo.save(file);
@@ -63,7 +71,10 @@ export class ProjectsService {
     }) as Promise<ProjectEntity>;
   }
 
-  async update(id: number, dto: UpdateProjectDto): Promise<ProjectEntity | null> {
+  async update(
+    id: number,
+    dto: UpdateProjectDto,
+  ): Promise<ProjectEntity | null> {
     const project = await this.repo.findOne({
       where: { id },
       relations: ['technologies', 'previewImage'],
@@ -83,7 +94,9 @@ export class ProjectsService {
       if (dto.technologyIds === null || dto.technologyIds.length === 0) {
         project.technologies = [];
       } else {
-        const techs = await this.techRepo.find({ where: { id: In(dto.technologyIds) } });
+        const techs = await this.techRepo.find({
+          where: { id: In(dto.technologyIds) },
+        });
         project.technologies = techs;
       }
     }
@@ -94,14 +107,18 @@ export class ProjectsService {
       if (dto.previewImageId === null) {
         // Desasociar cualquier archivo previo
         if (saved.previewImage?.id) {
-          const file = await this.fileRepo.findOne({ where: { id: saved.previewImage.id } });
+          const file = await this.fileRepo.findOne({
+            where: { id: saved.previewImage.id },
+          });
           if (file) {
             file.project = null;
             await this.fileRepo.save(file);
           }
         }
       } else {
-        const file = await this.fileRepo.findOne({ where: { id: dto.previewImageId } });
+        const file = await this.fileRepo.findOne({
+          where: { id: dto.previewImageId },
+        });
         if (file) {
           file.project = saved;
           await this.fileRepo.save(file);

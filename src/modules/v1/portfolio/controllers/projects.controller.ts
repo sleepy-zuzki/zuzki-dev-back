@@ -46,7 +46,9 @@ export class ProjectsController {
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<{ success: true }> {
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ success: true }> {
     const ok = await this.projectsService.remove(id);
     if (!ok) throw new NotFoundException('Proyecto no encontrado');
     return { success: true };

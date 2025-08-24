@@ -37,7 +37,9 @@ export class FilesService {
     });
 
     if (dto.projectId) {
-      const project = await this.projectRepo.findOne({ where: { id: dto.projectId } });
+      const project = await this.projectRepo.findOne({
+        where: { id: dto.projectId },
+      });
       entity.project = project ?? null;
     }
 
@@ -46,7 +48,10 @@ export class FilesService {
   }
 
   async update(id: number, dto: UpdateFileDto): Promise<FileEntity | null> {
-    const found = await this.repo.findOne({ where: { id }, relations: ['project'] });
+    const found = await this.repo.findOne({
+      where: { id },
+      relations: ['project'],
+    });
     if (!found) return null;
 
     if (dto.url !== undefined) found.url = dto.url;
@@ -58,7 +63,9 @@ export class FilesService {
       if (dto.projectId === null) {
         found.project = null;
       } else {
-        const project = await this.projectRepo.findOne({ where: { id: dto.projectId } });
+        const project = await this.projectRepo.findOne({
+          where: { id: dto.projectId },
+        });
         found.project = project ?? null;
       }
     }

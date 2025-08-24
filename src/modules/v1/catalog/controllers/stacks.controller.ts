@@ -46,7 +46,9 @@ export class StacksController {
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<{ success: true }> {
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ success: true }> {
     const ok = await this.stacksService.remove(id);
     if (!ok) throw new NotFoundException('Stack no encontrado');
     return { success: true };

@@ -25,7 +25,10 @@ export class TechnologiesService {
     return this.repo.save(entity);
   }
 
-  async update(id: number, dto: UpdateTechnologyDto): Promise<TechnologyEntity | null> {
+  async update(
+    id: number,
+    dto: UpdateTechnologyDto,
+  ): Promise<TechnologyEntity | null> {
     const found = await this.repo.findOne({ where: { id } });
     if (!found) return null;
     Object.assign(found, dto);
