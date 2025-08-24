@@ -18,7 +18,13 @@ async function seedCatalog() {
   const stackRepo = dataSource.getRepository(StackEntity);
   const techRepo = dataSource.getRepository(TechnologyEntity);
 
-  const stacks = [
+  type StackArea = 'front' | 'back' | 'mobile' | 'devops' | 'design';
+  const stacks: Array<{
+    name: string;
+    slug: string;
+    area: StackArea;
+    description: null;
+  }> = [
     { name: 'Frontend', slug: 'frontend', area: 'front', description: null },
     { name: 'Backend', slug: 'backend', area: 'back', description: null },
     { name: 'Mobile', slug: 'mobile', area: 'mobile', description: null },

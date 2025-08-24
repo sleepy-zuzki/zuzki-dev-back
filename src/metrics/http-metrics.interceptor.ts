@@ -34,14 +34,15 @@ export class HttpMetricsInterceptor implements NestInterceptor {
 
     const method = (req.method || 'GET').toUpperCase();
 
-    // Evitar acceder a req.route (que puede ser any) usando guardas de tipo sobre unknown
-    type RouteLike = { path?: unknown };
-    const maybeRoute: unknown = (req as Record<string, unknown>).route;
+    // Evitar acceder a req.route sin usar any/unknown, usando aserción estructural tipada
+    type RouteLike = { path?: string };
+    const maybeRoute: RouteLike | undefined = (req as { route?: RouteLike })
+      .route;
     let route = 'unknown';
     if (
       typeof maybeRoute === 'object' &&
       maybeRoute !== null &&
-      typeof (maybeRoute as RouteLike).path === 'string'
+      typeof maybeRoute.path === 'string'
     ) {
       route = (maybeRoute as { path: string }).path;
     } else if (typeof req.path === 'string' && req.path.length > 0) {
