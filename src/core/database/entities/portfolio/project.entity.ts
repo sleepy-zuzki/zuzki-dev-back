@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { TechnologyEntity } from './technology.entity';
 import { FileEntity } from './file.entity';
+import type { ProjectCategory } from '../../../models/portfolio/project.types';
 
 @Entity({ name: 'projects', schema: 'portfolio' })
 export class ProjectEntity {
@@ -29,6 +30,10 @@ export class ProjectEntity {
 
   @Column({ name: 'live_url', type: 'varchar', length: 255, nullable: true })
   liveUrl?: string | null;
+
+  // Categoría del proyecto (front, back, mobile, devops, design)
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  category?: ProjectCategory | null;
 
   // Año en el que se realizó el proyecto
   @Column({ type: 'int', nullable: true })

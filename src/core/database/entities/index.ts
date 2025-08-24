@@ -5,3 +5,4 @@
 export * from './portfolio/project.entity';
 export * from './portfolio/technology.entity';
 export * from './portfolio/file.entity';
+export * from './catalog/stack.entity';
