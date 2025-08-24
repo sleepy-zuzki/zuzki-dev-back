@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
-import { VersioningType } from '@nestjs/common';
+import { VersioningType, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { AppLogger } from './common/logger/app-logger.service';
 
@@ -11,6 +11,18 @@ async function bootstrap() {
 
   const logger = app.get(AppLogger);
   app.useLogger(logger);
+
+  // Validación y transformación global de DTOs
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // elimina propiedades no declaradas en el DTO
+      forbidNonWhitelisted: true, // lanza error si llegan propiedades extra
+      transform: true, // transforma payloads a instancias de DTO
+      transformOptions: {
+        enableImplicitConversion: true, // convierte tipos primitivos cuando sea posible
+      },
+    }),
+  );
 
   // Prefijo global de la API: /api/*
   app.setGlobalPrefix('api');
