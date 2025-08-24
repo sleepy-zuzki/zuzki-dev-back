@@ -12,7 +12,10 @@ async function bootstrap() {
   const logger = app.get(AppLogger);
   app.useLogger(logger);
 
-  // Versionamiento por URI: /v1/*
+  // Prefijo global de la API: /api/*
+  app.setGlobalPrefix('api');
+
+  // Versionamiento por URI: /api/v1/*
   app.enableVersioning({
     type: VersioningType.URI,
   });
