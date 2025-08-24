@@ -1,3 +1,7 @@
+---
+apply: always
+---
+
 # Reglas para agentes de IA en este proyecto NestJS
 
 Objetivo: asegurar que las contribuciones generadas por IA sean seguras, mantenibles y compatibles con el flujo de trabajo del equipo.
@@ -76,11 +80,11 @@ Qué sí puede hacer el agente:
 ### 10) Estilo de commits y PRs
 - Mantener commits pequeños y descriptivos.
 - Incluir en el PR:
-  - Resumen del cambio
-  - Contexto/justificación
-  - Impacto (endpoints afectados, entidades afectadas)
-  - “Se requiere migración”: Sí/No. Si Sí, detallar entidades/campos.
-  - Checklist (lint, build, tests en local)
+    - Resumen del cambio
+    - Contexto/justificación
+    - Impacto (endpoints afectados, entidades afectadas)
+    - “Se requiere migración”: Sí/No. Si Sí, detallar entidades/campos.
+    - Checklist (lint, build, tests en local)
 
 ## Proceso recomendado para agentes de IA
 
