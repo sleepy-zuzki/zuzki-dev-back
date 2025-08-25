@@ -94,4 +94,11 @@ Para reglas específicas por tecnología (p. ej., TypeORM o API/DTOs), consulta:
 - [ ] No se agregaron dependencias sin aprobación.
 - [ ] No se exponen secretos ni valores sensibles.
 
+## Tipos y reutilización
+
+- Todos los tipos y contratos compartidos deben residir en carpetas dedicadas "types" dentro de cada dominio/módulo (por ejemplo: src/users/types, src/auth/types).
+- No definir tipos en línea si ya existen en la carpeta de tipos; siempre importarlos desde su fuente canónica.
+- Si un tipo será usado por múltiples módulos, evaluar moverlo a un paquete/ubicación común (por ejemplo, src/shared/types) y re-exportarlo para evitar duplicaciones.
+- Cualquier PR que introduzca tipos nuevos debe revisar y referenciar tipos existentes para prevenir definiciones duplicadas o ligeramente distintas.
+
 Cumplir estas reglas agiliza la revisión y reduce errores en producción. Gracias por colaborar responsablemente.
