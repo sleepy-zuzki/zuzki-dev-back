@@ -30,6 +30,7 @@
     "openapi:bundle": "swagger-cli bundle openapi/openapi.yaml --outfile openapi/bundle.yaml --type yaml",
     "openapi:bundle:json": "swagger-cli bundle openapi/openapi.yaml --outfile openapi/bundle.json --type json",
     "seed": "node --env-file=.env --require ts-node/register --require tsconfig-paths/register ./tools/seed.ts",
+    "seed:user": "node --env-file=.env --require ts-node/register --require tsconfig-paths/register ./tools/seed-user.ts",
     "prepare": "husky"
   },
   "dependencies": {
@@ -37,9 +38,11 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.0",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
+    "argon2": "^0.44.0",
     "cache-manager": "^7.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",

@@ -5,6 +5,7 @@ import { SupabaseAuthGuard } from './guards/supabase-auth.guard';
 import { ConfigurationModule } from '../config/configuration.module';
 import { APP_GUARD } from '@nestjs/core';
 import { WriteMethodsAuthGuard } from './guards/write-methods-auth.guard';
+import { PasswordService } from './password.service';
 
 @Module({
   imports: [
@@ -16,11 +17,12 @@ import { WriteMethodsAuthGuard } from './guards/write-methods-auth.guard';
   providers: [
     SupabaseStrategy,
     SupabaseAuthGuard,
+    PasswordService,
     {
       provide: APP_GUARD,
       useClass: WriteMethodsAuthGuard,
     },
   ],
-  exports: [PassportModule, SupabaseAuthGuard],
+  exports: [PassportModule, SupabaseAuthGuard, PasswordService],
 })
 export class AuthModule {}
