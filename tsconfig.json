@@ -14,6 +14,17 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "paths": {
+      "@app/*": ["src/*"],
+      "@interfaces/*": ["src/interfaces/*"],
+      "@application/*": ["src/application/*"],
+      "@domain/*": ["src/domain/*"],
+      "@infra/*": ["src/infrastructure/*"],
+      "@shared/*": ["src/shared/*"],
+      "@config/*": ["src/config/*"],
+      "@metrics/*": ["src/metrics/*"],
+      "@health/*": ["src/health/*"]
+    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,

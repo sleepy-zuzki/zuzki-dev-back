@@ -1,7 +1,7 @@
 #!/usr/bin/env ts-node
 import 'reflect-metadata';
-import dataSource from '../data-source';
-import { UserEntity } from '../src/core/database/entities';
+import dataSource from '@infra/database/data-source';
+import { UserEntity } from '@infra/database/typeorm/entities/user/user.entity';
 import argon2 from 'argon2';
 
 type SeedArgs = {

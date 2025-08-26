@@ -1,0 +1,72 @@
+{
+  "notes": [
+    "Este archivo describe los movimientos planeados. Se aplicarán en iteraciones para mantener cambios atómicos.",
+    "Después de mover, actualizar imports, tsconfig paths y scripts (migraciones)."
+  ],
+  "moves": [
+    {
+      "from": "src/health.controller.ts",
+      "to": "src/health/health.controller.ts"
+    },
+    {
+      "from": "src/core/database/entities/auth",
+      "to": "src/infrastructure/database/typeorm/entities/auth"
+    },
+    {
+      "from": "src/core/database/entities/user",
+      "to": "src/infrastructure/database/typeorm/entities/user"
+    },
+    {
+      "from": "src/core/database/entities/catalog",
+      "to": "src/infrastructure/database/typeorm/entities/catalog"
+    },
+    {
+      "from": "src/core/database/entities/portfolio",
+      "to": "src/infrastructure/database/typeorm/entities/portfolio"
+    },
+    {
+      "from": "src/core/database/migrations",
+      "to": "src/infrastructure/database/typeorm/migrations"
+    },
+    {
+      "from": "data-source.ts",
+      "to": "src/infrastructure/database/data-source.ts"
+    },
+    {
+      "from": "src/core/models/catalog/stack.types.ts",
+      "to": "src/domain/catalog/types/stack.types.ts"
+    },
+    {
+      "from": "src/core/models/portfolio/project.types.ts",
+      "to": "src/domain/portfolio/types/project.types.ts"
+    },
+    {
+      "from": "src/core/models/log-level.type.ts",
+      "to": "src/shared/types/log-level.type.ts"
+    },
+    {
+      "from": "src/core/schemas",
+      "to": "src/domain/schemas"
+    },
+    {
+      "from": "src/modules/v1",
+      "to": "src/interfaces/http/v1"
+    },
+    {
+      "from": "src/modules/auth",
+      "to": "src/interfaces/http/v1/auth"
+    },
+    {
+      "from": "src/auth",
+      "to": "src/interfaces/http/v1/auth"
+    },
+    {
+      "from": "src/users",
+      "to": "src/interfaces/http/v1/users"
+    },
+    {
+      "from": "src/database",
+      "to": "src/infrastructure/database"
+    }
+  ]
+}

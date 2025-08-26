@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThan } from 'typeorm';
-import { RefreshTokenEntity } from '../core/database/entities';
+import { RefreshTokenEntity } from '../infrastructure/database/typeorm/entities/auth/refresh-token.entity';
 import { ConfigurationService } from '../config/configuration.service';
 import { AccessTokenPayload, RefreshTokenResult } from './types/token.types';
 import { randomBytes } from 'node:crypto';
