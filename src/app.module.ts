@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { V1Module } from '@interfaces/http/v1/v1.module';
-import { DatabaseModule } from './database/database.module';
+import { DatabaseModule } from '@infra/database/database.module';
 import { AuthModule } from '@interfaces/http/v1/auth/auth.module';
 import { LoggerModule } from 'nestjs-pino';
 import { randomUUID } from 'node:crypto';
