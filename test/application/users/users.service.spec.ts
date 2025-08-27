@@ -1,9 +1,11 @@
 import { UsersService } from '@application/users/services/users.service';
 import { UsersRepositoryPort } from '@application/users/ports/users-repository.port';
 import { CreateUserInput, User } from '@domain/users/types/user.types';
+import { HashingPort } from '@application/security/ports/hashing.port';
 
 describe('UsersService (application)', () => {
   let repo: jest.Mocked<UsersRepositoryPort>;
+  let hashing: jest.Mocked<HashingPort>;
   let service: UsersService;
 
   beforeEach(() => {
@@ -12,7 +14,10 @@ describe('UsersService (application)', () => {
       findById: jest.fn(),
       create: jest.fn(),
     };
-    service = new UsersService(repo);
+    hashing = {
+      hash: jest.fn(),
+    };
+    service = new UsersService(repo, hashing);
   });
 
   it('create aplica defaults (roles=["user"], isActive=true) cuando no se proveen', async () => {
@@ -106,5 +111,61 @@ describe('UsersService (application)', () => {
 
   it('validateActive no lanza si el usuario está activo', () => {
     expect(() => service.validateActive({ isActive: true })).not.toThrow();
+  });
+
+  it('createWithPassword hashea y delega en repo.create aplicando defaults', async () => {
+    hashing.hash.mockResolvedValue('HASHED');
+    const created: User = {
+      id: 'u5',
+      email: 'z@z.z',
+      roles: ['user'],
+      isActive: true,
+      passwordHash: 'HASHED',
+    };
+    repo.create.mockResolvedValue(created);
+
+    const result = await service.createWithPassword({
+      email: 'z@z.z',
+      password: 'plain',
+    });
+
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(hashing.hash).toHaveBeenCalledWith('plain');
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(repo.create).toHaveBeenCalledWith({
+      email: 'z@z.z',
+      passwordHash: 'HASHED',
+      roles: ['user'],
+      isActive: true,
+    });
+    expect(result).toEqual(created);
+  });
+
+  it('createWithPassword hashea la contraseña y delega en repo.create aplicando defaults', async () => {
+    hashing.hash.mockResolvedValue('HASHED');
+    const created: User = {
+      id: 'u5',
+      email: 'z@z.z',
+      roles: ['user'],
+      isActive: true,
+      passwordHash: 'HASHED',
+    };
+    repo.create.mockResolvedValue(created);
+
+    const result = await service.createWithPassword({
+      email: 'z@z.z',
+      password: 'plain',
+    });
+
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(hashing.hash).toHaveBeenCalledWith('plain');
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(repo.create).toHaveBeenCalledWith({
+      email: 'z@z.z',
+      passwordHash: 'HASHED',
+      roles: ['user'],
+      isActive: true,
+    });
+    expect(result).toEqual(created);
   });
 });

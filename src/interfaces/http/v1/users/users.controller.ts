@@ -5,22 +5,15 @@ import {
   Post,
   Body,
   NotFoundException,
-  Inject,
 } from '@nestjs/common';
 import { UsersService } from '../../../../application/users/services/users.service';
 import { toUserView } from '../../../../application/users/mappers/user.mappers';
-import { CreateUserInput } from '../../../../domain/users/types/user.types';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserResponseDto } from './dto/user.response.dto';
-import { HASHING_SERVICE } from '../../../../application/security/ports/security.tokens';
-import { HashingPort } from '../../../../application/security/ports/hashing.port';
 
 @Controller({ path: 'users', version: '1' })
 export class UsersController {
-  constructor(
-    private readonly usersService: UsersService,
-    @Inject(HASHING_SERVICE) private readonly hashing: HashingPort,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Get(':id')
   async getById(@Param('id') id: string): Promise<UserResponseDto> {
@@ -31,14 +24,12 @@ export class UsersController {
 
   @Post()
   async create(@Body() dto: CreateUserDto): Promise<UserResponseDto> {
-    const passwordHash = await this.hashing.hash(dto.password);
-    const input: CreateUserInput = {
+    const created = await this.usersService.createWithPassword({
       email: dto.email,
-      passwordHash,
+      password: dto.password,
       roles: dto.roles,
       isActive: dto.isActive,
-    };
-    const created = await this.usersService.create(input);
+    });
     return toUserView(created);
   }
 }

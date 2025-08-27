@@ -16,3 +16,10 @@ export interface CreateUserInput {
   roles?: string[];
   isActive?: boolean;
 }
+
+export interface CreateUserWithPasswordInput {
+  email: string;
+  password: string;
+  roles?: string[];
+  isActive?: boolean;
+}
