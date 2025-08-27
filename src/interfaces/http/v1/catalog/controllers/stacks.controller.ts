@@ -9,10 +9,11 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { StacksService } from '@interfaces/http/v1/catalog/services/stacks.service';
-import { StackEntity } from '@infra/database/typeorm/entities/catalog/stack.entity';
+import { StacksService } from '@application/catalog/services/stacks.service';
 import { CreateStackDto } from '@interfaces/http/v1/catalog/dto/create-stack.dto';
 import { UpdateStackDto } from '@interfaces/http/v1/catalog/dto/update-stack.dto';
+import { StackResponseDto } from '@interfaces/http/v1/catalog/dto/stack.response.dto';
+import { toStackView } from '@application/catalog/mappers/stack.mappers';
 import { PinoLogger } from 'nestjs-pino';
 
 @Controller({ path: 'catalog/stacks', version: '1' })
@@ -25,14 +26,14 @@ export class StacksController {
   }
 
   @Get()
-  async list(): Promise<StackEntity[]> {
+  async list(): Promise<StackResponseDto[]> {
     const items = await this.stacksService.findAll();
     this.logger.debug({ count: items.length }, 'Listado de stacks');
-    return items;
+    return items.map(toStackView);
   }
 
   @Get(':slug')
-  async getBySlug(@Param('slug') slug: string): Promise<StackEntity> {
+  async getBySlug(@Param('slug') slug: string): Promise<StackResponseDto> {
     this.logger.info({ slug }, 'Buscando stack por slug');
     const stack = await this.stacksService.findBySlug(slug);
     if (!stack) {
@@ -40,30 +41,36 @@ export class StacksController {
       throw new NotFoundException('Stack no encontrado');
     }
     this.logger.debug({ id: stack.id, slug }, 'Stack encontrado');
-    return stack;
+    return toStackView(stack);
   }
 
   @Post()
-  async create(@Body() dto: CreateStackDto): Promise<StackEntity> {
+  async create(@Body() dto: CreateStackDto): Promise<StackResponseDto> {
     this.logger.info({ slug: dto.slug }, 'Creando stack');
-    const created = await this.stacksService.create(dto);
+    const created = await this.stacksService.create({
+      name: dto.name,
+      slug: dto.slug,
+    });
     this.logger.info({ id: created.id, slug: created.slug }, 'Stack creado');
-    return created;
+    return toStackView(created);
   }
 
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateStackDto,
-  ): Promise<StackEntity> {
+  ): Promise<StackResponseDto> {
     this.logger.info({ id }, 'Actualizando stack');
-    const updated = await this.stacksService.update(id, dto);
+    const updated = await this.stacksService.update(id, {
+      name: dto.name,
+      slug: dto.slug,
+    });
     if (!updated) {
       this.logger.warn({ id }, 'Stack no encontrado para actualizar');
       throw new NotFoundException('Stack no encontrado');
     }
     this.logger.info({ id: updated.id }, 'Stack actualizado');
-    return updated;
+    return toStackView(updated);
   }
 
   @Delete(':id')
