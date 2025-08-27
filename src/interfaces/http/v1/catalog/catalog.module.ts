@@ -1,16 +1,33 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { StackEntity } from '@infra/database/typeorm/entities/catalog/stack.entity';
-import { TechnologyEntity } from '@infra/database/typeorm/entities/catalog/technology.entity';
-import { StacksService } from '@interfaces/http/v1/catalog/services/stacks.service';
-import { TechnologiesService } from '@interfaces/http/v1/catalog/services/technologies.service';
 import { StacksController } from './controllers/stacks.controller';
 import { TechnologiesController } from './controllers/technologies.controller';
+import { StacksService } from '@application/catalog/services/stacks.service';
+import { TechnologiesService } from '@application/catalog/services/technologies.service';
+import {
+  STACKS_REPOSITORY,
+  TECHNOLOGIES_REPOSITORY,
+} from '@application/catalog/ports/catalog.tokens';
+import { StacksInfrastructureModule } from '@infra/database/typeorm/adapters/stacks.infrastructure.module';
+import { TechnologiesInfrastructureModule } from '@infra/database/typeorm/adapters/technologies.infrastructure.module';
+import { StackRepositoryPort } from '@application/catalog/ports/stack-repository.port';
+import { TechnologyRepositoryPort } from '@application/catalog/ports/technology-repository.port';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([StackEntity, TechnologyEntity])],
+  imports: [StacksInfrastructureModule, TechnologiesInfrastructureModule],
   controllers: [StacksController, TechnologiesController],
-  providers: [StacksService, TechnologiesService],
+  providers: [
+    {
+      provide: StacksService,
+      useFactory: (repo: StackRepositoryPort) => new StacksService(repo),
+      inject: [STACKS_REPOSITORY],
+    },
+    {
+      provide: TechnologiesService,
+      useFactory: (repo: TechnologyRepositoryPort) =>
+        new TechnologiesService(repo),
+      inject: [TECHNOLOGIES_REPOSITORY],
+    },
+  ],
   exports: [],
 })
 export class CatalogModule {}

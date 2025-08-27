@@ -9,10 +9,11 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { TechnologiesService } from '@interfaces/http/v1/catalog/services/technologies.service';
-import { TechnologyEntity } from '@infra/database/typeorm/entities/catalog/technology.entity';
+import { TechnologiesService } from '@application/catalog/services/technologies.service';
 import { CreateTechnologyDto } from '@interfaces/http/v1/catalog/dto/create-technology.dto';
 import { UpdateTechnologyDto } from '@interfaces/http/v1/catalog/dto/update-technology.dto';
+import { TechnologyResponseDto } from '@interfaces/http/v1/catalog/dto/technology.response.dto';
+import { toTechnologyView } from '@application/catalog/mappers/technology.mappers';
 import { PinoLogger } from 'nestjs-pino';
 
 @Controller({ path: 'catalog/technologies', version: '1' })
@@ -25,14 +26,14 @@ export class TechnologiesController {
   }
 
   @Get()
-  async list(): Promise<TechnologyEntity[]> {
+  async list(): Promise<TechnologyResponseDto[]> {
     const items = await this.technologiesService.findAll();
     this.logger.debug({ count: items.length }, 'Listado de technologies');
-    return items;
+    return items.map(toTechnologyView);
   }
 
   @Get(':slug')
-  async getBySlug(@Param('slug') slug: string): Promise<TechnologyEntity> {
+  async getBySlug(@Param('slug') slug: string): Promise<TechnologyResponseDto> {
     this.logger.info({ slug }, 'Buscando technology por slug');
     const tech = await this.technologiesService.findBySlug(slug);
     if (!tech) {
@@ -40,33 +41,41 @@ export class TechnologiesController {
       throw new NotFoundException('Technology no encontrada');
     }
     this.logger.debug({ id: tech.id, slug }, 'Technology encontrada');
-    return tech;
+    return toTechnologyView(tech);
   }
 
   @Post()
-  async create(@Body() dto: CreateTechnologyDto): Promise<TechnologyEntity> {
+  async create(
+    @Body() dto: CreateTechnologyDto,
+  ): Promise<TechnologyResponseDto> {
     this.logger.info({ slug: dto.slug }, 'Creando technology');
-    const created = await this.technologiesService.create(dto);
+    const created = await this.technologiesService.create({
+      name: dto.name,
+      slug: dto.slug,
+    });
     this.logger.info(
       { id: created.id, slug: created.slug },
       'Technology creada',
     );
-    return created;
+    return toTechnologyView(created);
   }
 
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateTechnologyDto,
-  ): Promise<TechnologyEntity> {
+  ): Promise<TechnologyResponseDto> {
     this.logger.info({ id }, 'Actualizando technology');
-    const updated = await this.technologiesService.update(id, dto);
+    const updated = await this.technologiesService.update(id, {
+      name: dto.name,
+      slug: dto.slug,
+    });
     if (!updated) {
       this.logger.warn({ id }, 'Technology no encontrada para actualizar');
       throw new NotFoundException('Technology no encontrada');
     }
     this.logger.info({ id: updated.id }, 'Technology actualizada');
-    return updated;
+    return toTechnologyView(updated);
   }
 
   @Delete(':id')
