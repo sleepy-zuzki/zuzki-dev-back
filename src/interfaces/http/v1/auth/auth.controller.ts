@@ -5,22 +5,24 @@ import {
   HttpCode,
   Post,
   UnauthorizedException,
+  Inject,
 } from '@nestjs/common';
 import { UsersService } from '@application/users/services/users.service';
-import { PasswordService } from '@app/auth/password.service';
-import { AuthService } from '@app/auth/auth.service';
 import { ConfigurationService } from '@config/configuration.service';
 import { LoginDto } from '@app/auth/dto/login.dto';
 import { RefreshDto } from '@app/auth/dto/refresh.dto';
 import { LoginResponse } from '@app/auth/types/auth.types';
+import { HASHING_SERVICE } from '@application/security/ports/security.tokens';
+import { HashingPort } from '@application/security/ports/hashing.port';
+import { AuthService } from '@application/auth/services/auth.service';
 
 @Controller({ path: 'auth', version: '1' })
 export class AuthController {
   constructor(
     private readonly users: UsersService,
-    private readonly passwords: PasswordService,
-    private readonly auth: AuthService,
     private readonly config: ConfigurationService,
+    private readonly auth: AuthService,
+    @Inject(HASHING_SERVICE) private readonly hashing: HashingPort,
   ) {}
 
   @Post('login')
@@ -30,7 +32,7 @@ export class AuthController {
     if (!user) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
-    const ok = await this.passwords.verify(user.passwordHash, dto.password);
+    const ok = await this.hashing.verify(user.passwordHash, dto.password);
     if (!ok) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
