@@ -9,10 +9,11 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { FilesService } from '@interfaces/http/v1/portfolio/services/files.service';
-import { FileEntity } from '@infra/database/typeorm/entities/portfolio/file.entity';
+import { FilesService } from '@application/portfolio/services/files.service';
 import { CreateFileDto } from '@interfaces/http/v1/portfolio/dto/create-file.dto';
 import { UpdateFileDto } from '@interfaces/http/v1/portfolio/dto/update-file.dto';
+import { FileResponseDto } from '@interfaces/http/v1/portfolio/dto/file.response.dto';
+import { toFileView } from '@application/portfolio/mappers/file.mappers';
 import { PinoLogger } from 'nestjs-pino';
 
 @Controller({ path: 'portfolio/files', version: '1' })
@@ -25,14 +26,16 @@ export class FilesController {
   }
 
   @Get()
-  async list(): Promise<FileEntity[]> {
+  async list(): Promise<FileResponseDto[]> {
     const items = await this.filesService.findAll();
     this.logger.debug({ count: items.length }, 'Listado de archivos');
-    return items;
+    return items.map(toFileView);
   }
 
   @Get(':id')
-  async getById(@Param('id', ParseIntPipe) id: number): Promise<FileEntity> {
+  async getById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<FileResponseDto> {
     this.logger.info({ id }, 'Buscando archivo por id');
     const file = await this.filesService.findOne(id);
     if (!file) {
@@ -40,33 +43,45 @@ export class FilesController {
       throw new NotFoundException('Archivo no encontrado');
     }
     this.logger.debug({ id: file.id }, 'Archivo encontrado');
-    return file;
+    return toFileView(file);
   }
 
   @Post()
-  async create(@Body() dto: CreateFileDto): Promise<FileEntity> {
+  async create(@Body() dto: CreateFileDto): Promise<FileResponseDto> {
     this.logger.info(
       { url: dto.url, projectId: dto.projectId },
       'Creando archivo',
     );
-    const created = await this.filesService.create(dto);
+    const created = await this.filesService.create({
+      url: dto.url,
+      provider: dto.provider ?? null,
+      mimeType: dto.mimeType ?? null,
+      sizeBytes: dto.sizeBytes ?? null,
+      projectId: dto.projectId ?? null,
+    });
     this.logger.info({ id: created.id }, 'Archivo creado');
-    return created;
+    return toFileView(created);
   }
 
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateFileDto,
-  ): Promise<FileEntity> {
+  ): Promise<FileResponseDto> {
     this.logger.info({ id }, 'Actualizando archivo');
-    const updated = await this.filesService.update(id, dto);
+    const updated = await this.filesService.update(id, {
+      url: dto.url,
+      provider: dto.provider,
+      mimeType: dto.mimeType,
+      sizeBytes: dto.sizeBytes,
+      projectId: dto.projectId,
+    });
     if (!updated) {
       this.logger.warn({ id }, 'Archivo no encontrado para actualizar');
       throw new NotFoundException('Archivo no encontrado');
     }
     this.logger.info({ id: updated.id }, 'Archivo actualizado');
-    return updated;
+    return toFileView(updated);
   }
 
   @Delete(':id')

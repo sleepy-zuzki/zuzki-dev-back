@@ -4,29 +4,29 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 
-import { SupabaseStrategy } from '../../../../auth/strategies/supabase.strategy';
-import { SupabaseAuthGuard } from '../../../../auth/guards/supabase-auth.guard';
-import { WriteMethodsAuthGuard } from '../../../../auth/guards/write-methods-auth.guard';
-import { ConfigurationModule } from '../../../../config/configuration.module';
-import { ConfigurationService } from '../../../../config/configuration.service';
-import { JwtStrategy } from '../../../../auth/strategies/jwt.strategy';
-import { JwtAuthGuard } from '../../../../auth/guards/jwt-auth.guard';
+import { SupabaseStrategy } from '@app/auth/strategies/supabase.strategy';
+import { SupabaseAuthGuard } from '@app/auth/guards/supabase-auth.guard';
+import { WriteMethodsAuthGuard } from '@app/auth/guards/write-methods-auth.guard';
+import { ConfigurationModule } from '@config/configuration.module';
+import { ConfigurationService } from '@config/configuration.service';
+import { JwtStrategy } from '@app/auth/strategies/jwt.strategy';
+import { JwtAuthGuard } from '@app/auth/guards/jwt-auth.guard';
 import { RefreshTokenEntity } from '../../../../infrastructure/database/typeorm/entities/auth/refresh-token.entity';
 import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
-import { HashingInfrastructureModule } from '../../../../infrastructure/security/argon2/hashing.infrastructure.module';
+import { HashingInfrastructureModule } from '@infra/security/argon2/hashing.infrastructure.module';
 import { AuthService as ApplicationAuthService } from '../../../../application/auth/services/auth.service';
 import {
   ACCESS_TOKEN_SERVICE,
   REFRESH_TOKEN_SERVICE,
-} from '../../../../application/auth/ports/auth.tokens';
-import { JwtAccessTokenAdapter } from '../../../../infrastructure/security/jwt/jwt-access-token.adapter';
+} from '@application/auth/ports/auth.tokens';
+import { JwtAccessTokenAdapter } from '@infra/security/jwt/jwt-access-token.adapter';
 import { RefreshTokenTypeormAdapter } from '../../../../infrastructure/database/typeorm/adapters/refresh-token.repository.adapter';
-import { HASHING_SERVICE } from '../../../../application/security/ports/security.tokens';
+import { HASHING_SERVICE } from '@application/security/ports/security.tokens';
 import { Repository } from 'typeorm';
-import { HashingPort } from '../../../../application/security/ports/hashing.port';
-import { AccessTokenPort } from '../../../../application/auth/ports/access-token.port';
-import { RefreshTokenPort } from '../../../../application/auth/ports/refresh-token.port';
+import { HashingPort } from '@application/security/ports/hashing.port';
+import { AccessTokenPort } from '@application/auth/ports/access-token.port';
+import { RefreshTokenPort } from '@application/auth/ports/refresh-token.port';
 
 @Module({
   imports: [
