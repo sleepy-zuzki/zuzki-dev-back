@@ -6,13 +6,13 @@ import {
   Post,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UsersService } from '../../../../users/users.service';
-import { PasswordService } from '../../../../auth/password.service';
-import { AuthService } from '../../../../auth/auth.service';
-import { ConfigurationService } from '../../../../config/configuration.service';
-import { LoginDto } from '../../../../auth/dto/login.dto';
-import { RefreshDto } from '../../../../auth/dto/refresh.dto';
-import { LoginResponse } from '../../../../auth/types/auth.types';
+import { UsersService } from '@application/users/services/users.service';
+import { PasswordService } from '@app/auth/password.service';
+import { AuthService } from '@app/auth/auth.service';
+import { ConfigurationService } from '@config/configuration.service';
+import { LoginDto } from '@app/auth/dto/login.dto';
+import { RefreshDto } from '@app/auth/dto/refresh.dto';
+import { LoginResponse } from '@app/auth/types/auth.types';
 
 @Controller({ path: 'auth', version: '1' })
 export class AuthController {
