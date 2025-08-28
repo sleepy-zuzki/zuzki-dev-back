@@ -11,7 +11,7 @@ import { ConfigurationModule } from '@config/configuration.module';
 import { ConfigurationService } from '@config/configuration.service';
 import { JwtStrategy } from '@app/auth/strategies/jwt.strategy';
 import { JwtAuthGuard } from '@app/auth/guards/jwt-auth.guard';
-import { RefreshTokenEntity } from '../../../../infrastructure/database/typeorm/entities/auth/refresh-token.entity';
+import { RefreshTokenEntity } from '@infra/database/typeorm/entities/auth/refresh-token.entity';
 import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
 import { HashingInfrastructureModule } from '@infra/security/argon2/hashing.infrastructure.module';
@@ -21,7 +21,7 @@ import {
   REFRESH_TOKEN_SERVICE,
 } from '@application/auth/ports/auth.tokens';
 import { JwtAccessTokenAdapter } from '@infra/security/jwt/jwt-access-token.adapter';
-import { RefreshTokenTypeormAdapter } from '../../../../infrastructure/database/typeorm/adapters/refresh-token.repository.adapter';
+import { RefreshTokenTypeormAdapter } from '@infra/database/typeorm/adapters/refresh-token.repository.adapter';
 import { HASHING_SERVICE } from '@application/security/ports/security.tokens';
 import { Repository } from 'typeorm';
 import { HashingPort } from '@application/security/ports/hashing.port';

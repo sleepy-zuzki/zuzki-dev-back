@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { ConfigurationModule } from '../../../config/configuration.module';
-import { ConfigurationService } from '../../../config/configuration.service';
-import { ACCESS_TOKEN_SERVICE } from '../../../application/auth/ports/auth.tokens';
+import { ConfigurationModule } from '@config/configuration.module';
+import { ConfigurationService } from '@config/configuration.service';
+import { ACCESS_TOKEN_SERVICE } from '@application/auth/ports/auth.tokens';
 import { JwtAccessTokenAdapter } from './jwt-access-token.adapter';
 
 @Module({
