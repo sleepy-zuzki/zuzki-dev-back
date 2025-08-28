@@ -1,6 +1,5 @@
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { RefreshTokenEntity } from '../entities/auth/refresh-token.entity';
+import { RefreshTokenEntity } from '@infra/database/typeorm/entities/auth/refresh-token.entity';
 import { RefreshTokenPort } from '@application/auth/ports/refresh-token.port';
 import { type HashingPort } from '@application/security/ports/hashing.port';
 import { ConfigurationService } from '@config/configuration.service';
@@ -8,7 +7,6 @@ import * as crypto from 'crypto';
 
 export class RefreshTokenTypeormAdapter implements RefreshTokenPort {
   constructor(
-    @InjectRepository(RefreshTokenEntity)
     private readonly repo: Repository<RefreshTokenEntity>,
     private readonly hashing: HashingPort,
     private readonly config: ConfigurationService,

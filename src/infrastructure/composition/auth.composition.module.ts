@@ -7,7 +7,7 @@ import {
 import { AccessTokenPort } from '@application/auth/ports/access-token.port';
 import { RefreshTokenPort } from '@application/auth/ports/refresh-token.port';
 import { JwtAccessTokenInfrastructureModule } from '@infra/security/jwt/jwt-access-token.module';
-import { RefreshTokenInfrastructureModule } from '@infra/database/typeorm/adapters/refresh-token.infrastructure.module';
+import { RefreshTokenInfrastructureModule } from '@infra/database/typeorm/adapters/auth/refresh-token.infrastructure.module';
 
 @Module({
   imports: [

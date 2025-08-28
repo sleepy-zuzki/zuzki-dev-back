@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { HealthService } from '@application/health/services/health.service';
 import { HEALTH_DATABASE_PING } from '@application/health/ports/health.tokens';
 import { DatabasePingPort } from '@application/health/ports/database-ping.port';
-import { HealthInfrastructureModule } from '@infra/database/typeorm/adapters/health.infrastructure.module';
+import { HealthInfrastructureModule } from '@infra/database/typeorm/adapters/health/health.infrastructure.module';
 
 @Module({
   imports: [HealthInfrastructureModule],

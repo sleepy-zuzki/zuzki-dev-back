@@ -7,8 +7,8 @@ import {
 } from '@application/catalog/ports/catalog.tokens';
 import { StackRepositoryPort } from '@application/catalog/ports/stack-repository.port';
 import { TechnologyRepositoryPort } from '@application/catalog/ports/technology-repository.port';
-import { StacksInfrastructureModule } from '@infra/database/typeorm/adapters/stacks.infrastructure.module';
-import { TechnologiesInfrastructureModule } from '@infra/database/typeorm/adapters/technologies.infrastructure.module';
+import { StacksInfrastructureModule } from '@infra/database/typeorm/adapters/catalog/stacks.infrastructure.module';
+import { TechnologiesInfrastructureModule } from '@infra/database/typeorm/adapters/catalog/technologies.infrastructure.module';
 
 @Module({
   imports: [StacksInfrastructureModule, TechnologiesInfrastructureModule],
