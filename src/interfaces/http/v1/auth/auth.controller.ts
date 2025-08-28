@@ -13,7 +13,7 @@ import { LoginDto } from '@app/auth/dto/login.dto';
 import { RefreshDto } from '@app/auth/dto/refresh.dto';
 import { LoginResponse } from '@app/auth/types/auth.types';
 import { HASHING_SERVICE } from '@application/security/ports/security.tokens';
-import { HashingPort } from '@application/security/ports/hashing.port';
+import { type HashingPort } from '@application/security/ports/hashing.port';
 import { AuthService } from '@application/auth/services/auth.service';
 
 @Controller({ path: 'auth', version: '1' })
