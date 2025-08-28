@@ -1,0 +1,18 @@
+import { Module } from '@nestjs/common';
+import { HealthService } from '@application/health/services/health.service';
+import { HEALTH_DATABASE_PING } from '@application/health/ports/health.tokens';
+import { DatabasePingPort } from '@application/health/ports/database-ping.port';
+import { HealthInfrastructureModule } from '@infra/database/typeorm/adapters/health.infrastructure.module';
+
+@Module({
+  imports: [HealthInfrastructureModule],
+  providers: [
+    {
+      provide: HealthService,
+      useFactory: (dbPing: DatabasePingPort) => new HealthService(dbPing),
+      inject: [HEALTH_DATABASE_PING],
+    },
+  ],
+  exports: [HealthService],
+})
+export class HealthCompositionModule {}

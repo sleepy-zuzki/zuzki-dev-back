@@ -36,7 +36,10 @@ export class AuthController {
     if (!ok) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
-    this.users.validateActive(user);
+    if (!user.isActive) {
+      // Mapeamos a una excepción HTTP explícita
+      throw new UnauthorizedException('Usuario inactivo');
+    }
 
     const accessToken = await this.auth.signAccessToken({
       id: user.id,

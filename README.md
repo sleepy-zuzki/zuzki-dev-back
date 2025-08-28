@@ -23,7 +23,11 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Backend basado en NestJS con arquitectura hexagonal (ports & adapters) y módulos de composición por feature.
+
+- Arquitectura: ver docs/ARCHITECTURE.md
+- Guía del desarrollador (cómo implementar cambios sin romper la convención): ver docs/DEVELOPER_GUIDE.md
+- Checklist de PR: ver docs/PR_CHECKLIST.md
 
 ## Project setup
 

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
-import { VersioningType, ValidationPipe } from '@nestjs/common';
+import { VersioningType, ValidationPipe, Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import compression from 'compression';
 
@@ -40,12 +40,14 @@ async function bootstrap() {
   const host = process.env.HOST || '0.0.0.0';
   await app.listen(port, host);
 
-  console.log(`Aplicación iniciada en ${await app.getUrl()}`);
+  const url = await app.getUrl();
+  const logger = new Logger('Bootstrap');
+  logger.log(`Aplicación iniciada en ${url}`);
 }
 
-bootstrap().catch((err) => {
+bootstrap().catch((err: Error) => {
   // Fallback si hay error temprano
-
-  console.error(err);
+  const logger = new Logger('Bootstrap');
+  logger.error('Error al iniciar la aplicación', err?.stack ?? String(err));
   process.exit(1);
 });

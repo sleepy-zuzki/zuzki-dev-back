@@ -8,6 +8,10 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 import { MetricsModule } from '@metrics/metrics.module';
 import { CacheModule, CacheInterceptor } from '@nestjs/cache-manager';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { UsersCompositionModule } from '@infra/composition/users.composition.module';
+import { CatalogCompositionModule } from '@infra/composition/catalog.composition.module';
+import { PortfolioCompositionModule } from '@infra/composition/portfolio.composition.module';
+import { HealthCompositionModule } from '@infra/composition/health.composition.module';
 
 @Module({
   imports: [
@@ -52,6 +56,11 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
       max: Number(process.env.CACHE_MAX ?? 100),
     }),
     DatabaseModule,
+    // Composition root: conecta infraestructura y application
+    UsersCompositionModule,
+    CatalogCompositionModule,
+    PortfolioCompositionModule,
+    HealthCompositionModule,
     AuthModule,
     MetricsModule,
     V1Module,
