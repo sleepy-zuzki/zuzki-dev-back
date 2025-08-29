@@ -1,4 +1,4 @@
-import { RefreshTokenTypeormAdapter } from '@infra/database/typeorm/adapters/refresh-token.repository.adapter';
+import { RefreshTokenTypeormAdapter } from '@infra/database/typeorm/adapters/auth/refresh-token.repository.adapter';
 import { HashingPort } from '@application/security/ports/hashing.port';
 import { Repository } from 'typeorm';
 import { RefreshTokenEntity } from '@infra/database/typeorm/entities/auth/refresh-token.entity';

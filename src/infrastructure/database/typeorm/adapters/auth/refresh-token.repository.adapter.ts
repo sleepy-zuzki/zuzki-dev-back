@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { RefreshTokenEntity } from '@infra/database/typeorm/entities/auth/refresh-token.entity';
 import { RefreshTokenPort } from '@application/auth/ports/refresh-token.port';
 import { type HashingPort } from '@application/security/ports/hashing.port';
@@ -49,7 +49,7 @@ export class RefreshTokenTypeormAdapter implements RefreshTokenPort {
 
   async verify(userId: string, token: string): Promise<{ id: string } | null> {
     const candidates = await this.repo.find({
-      where: { userId, revokedAt: null },
+      where: { userId, revokedAt: IsNull() },
     });
 
     for (const candidate of candidates) {

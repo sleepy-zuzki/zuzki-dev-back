@@ -28,10 +28,10 @@ async function bootstrap() {
     }),
   );
 
-  // Prefijo global de la API: /api/*
+  // Prefijo global de la API: /api
   app.setGlobalPrefix('api');
 
-  // Versionamiento por URI: /api/v1/*
+  // Versionamiento por URI: /api/v1
   app.enableVersioning({
     type: VersioningType.URI,
   });

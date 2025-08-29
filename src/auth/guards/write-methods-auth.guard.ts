@@ -1,8 +1,8 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
-import { SupabaseAuthGuard } from './supabase-auth.guard';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Injectable()
-export class WriteMethodsAuthGuard extends SupabaseAuthGuard {
+export class WriteMethodsAuthGuard extends JwtAuthGuard {
   canActivate(context: ExecutionContext) {
     const req = context
       .switchToHttp()

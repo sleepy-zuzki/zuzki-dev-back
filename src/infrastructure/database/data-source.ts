@@ -17,7 +17,7 @@ export default new DataSource({
   username: process.env.POSTGRES_USER || 'postgres',
   password: process.env.POSTGRES_PASSWORD || 'postgres',
   database: process.env.POSTGRES_DB || 'postgres',
-  schema: 'portfolio',
+  schema: process.env.POSTGRES_SCHEMA || 'portfolio',
   entities: ['src/infrastructure/database/typeorm/entities/**/*.entity.ts'],
   migrations: ['src/infrastructure/database/typeorm/migrations/**/*.ts'],
   synchronize: false,

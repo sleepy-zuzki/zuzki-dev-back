@@ -13,7 +13,7 @@ if (!name) {
 
 // Ruta destino incluyendo el nombre solicitado.
 // TypeORM agregará el prefijo de timestamp automáticamente.
-const targetPath = `./src/core/database/migrations/${name}`;
+const targetPath = `./src/infrastructure/database/typeorm/migrations/${name}`;
 
 const args = [
   '--env-file=.env',
@@ -23,7 +23,7 @@ const args = [
   'tsconfig-paths/register',
   './node_modules/typeorm/cli.js',
   '-d',
-  './data-source.ts',
+  './src/infrastructure/database/data-source.ts',
   'migration:generate',
   targetPath,
   // Reenviar argumentos adicionales al CLI (p. ej. --pretty, --dr, etc.)
