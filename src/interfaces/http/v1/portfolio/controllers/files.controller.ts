@@ -9,12 +9,14 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { FilesService } from '@application/portfolio/services/files.service';
-import { CreateFileDto } from '@interfaces/http/v1/portfolio/dto/create-file.dto';
-import { UpdateFileDto } from '@interfaces/http/v1/portfolio/dto/update-file.dto';
-import { FileResponseDto } from '@interfaces/http/v1/portfolio/dto/file.response.dto';
-import { toFileView } from '@application/portfolio/mappers/file.mappers';
 import { PinoLogger } from 'nestjs-pino';
+
+import { toFileView } from '@application/portfolio/mappers/file.mappers';
+import { FilesService } from '@application/portfolio/services/files.service';
+
+import { CreateFileDto } from '../dto/create-file.dto';
+import { FileResponseDto } from '../dto/file.response.dto';
+import { UpdateFileDto } from '../dto/update-file.dto';
 
 @Controller({ path: 'portfolio/files', version: '1' })
 export class FilesController {

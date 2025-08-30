@@ -1,8 +1,9 @@
-import { DataSource } from 'typeorm';
-import {
+import type {
   DatabasePingPort,
   DatabasePingResult,
 } from '@application/health/ports/database-ping.port';
+
+import type { DataSource } from 'typeorm';
 
 export class TypeormDatabasePingAdapter implements DatabasePingPort {
   constructor(private readonly dataSource: DataSource) {}

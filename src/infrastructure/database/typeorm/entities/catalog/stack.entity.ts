@@ -5,6 +5,7 @@ import {
   Index,
   CreateDateColumn,
 } from 'typeorm';
+
 import type { StackArea } from '../../../../../domain/catalog/types/stack.types';
 
 @Entity({ name: 'tech_stacks', schema: 'catalog' })

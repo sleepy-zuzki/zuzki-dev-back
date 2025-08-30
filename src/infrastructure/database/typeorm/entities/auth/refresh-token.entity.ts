@@ -6,6 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
 import { UserEntity } from '../user/user.entity';
 
 @Entity({ name: 'refresh_tokens', schema: 'portfolio' })

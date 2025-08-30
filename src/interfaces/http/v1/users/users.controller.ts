@@ -6,8 +6,10 @@ import {
   Body,
   NotFoundException,
 } from '@nestjs/common';
-import { UsersService } from '@application/users/services/users.service';
+
 import { toUserView } from '@application/users/mappers/user.mappers';
+import { UsersService } from '@application/users/services/users.service';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserResponseDto } from './dto/user.response.dto';
 

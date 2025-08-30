@@ -8,6 +8,7 @@ import {
   MaxLength,
   ValidateIf,
 } from 'class-validator';
+
 import { STACK_AREAS, type StackArea } from '@domain/catalog/types/stack.types';
 
 export class UpdateStackDto {

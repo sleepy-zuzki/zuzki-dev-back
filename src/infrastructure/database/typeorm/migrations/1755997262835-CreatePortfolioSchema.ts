@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import type { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreatePortfolioSchema1755997262835 implements MigrationInterface {
   name = 'CreatePortfolioSchema1755997262835';

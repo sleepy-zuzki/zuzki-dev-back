@@ -14,6 +14,7 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
+
 import {
   PROJECT_CATEGORIES,
   type ProjectCategory,

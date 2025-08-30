@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ProjectsController } from './controllers/projects.controller';
+
+import { PortfolioApplicationModule } from '@application/portfolio/portfolio.application.module';
+
 import { FilesController } from './controllers/files.controller';
-import { PortfolioCompositionModule } from '@infra/composition/portfolio.composition.module';
+import { ProjectsController } from './controllers/projects.controller';
 
 @Module({
-  imports: [PortfolioCompositionModule],
+  imports: [PortfolioApplicationModule],
   controllers: [ProjectsController, FilesController],
   providers: [],
   exports: [],

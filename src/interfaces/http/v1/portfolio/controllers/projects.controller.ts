@@ -9,12 +9,14 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ProjectsService } from '@application/portfolio/services/projects.service';
-import { CreateProjectDto } from '@interfaces/http/v1/portfolio/dto/create-project.dto';
-import { UpdateProjectDto } from '@interfaces/http/v1/portfolio/dto/update-project.dto';
-import { ProjectResponseDto } from '@interfaces/http/v1/portfolio/dto/project.response.dto';
-import { toProjectView } from '@application/portfolio/mappers/project.mappers';
 import { PinoLogger } from 'nestjs-pino';
+
+import { toProjectView } from '@application/portfolio/mappers/project.mappers';
+import { ProjectsService } from '@application/portfolio/services/projects.service';
+
+import { CreateProjectDto } from '../dto/create-project.dto';
+import { ProjectResponseDto } from '../dto/project.response.dto';
+import { UpdateProjectDto } from '../dto/update-project.dto';
 
 @Controller({ path: 'portfolio/projects', version: '1' })
 export class ProjectsController {

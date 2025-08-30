@@ -1,12 +1,13 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TechnologyEntity } from '@infra/database/typeorm/entities/catalog/technology.entity';
+
+import { TechnologyRepositoryPort } from '@application/catalog/ports/technology-repository.port';
 import {
   Technology,
   CreateTechnologyInput,
   UpdateTechnologyInput,
 } from '@domain/catalog/types/technology.types';
-import { TechnologyRepositoryPort } from '@application/catalog/ports/technology-repository.port';
+import { TechnologyEntity } from '@infra/database/typeorm/entities/catalog/technology.entity';
 
 export class TechnologiesRepositoryTypeormAdapter
   implements TechnologyRepositoryPort

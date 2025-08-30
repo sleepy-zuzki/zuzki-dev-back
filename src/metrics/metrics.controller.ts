@@ -1,7 +1,9 @@
-import { Controller, Get, Res, Header } from '@nestjs/common';
-import type { Response } from 'express';
-import { MetricsService } from './metrics.service';
 import { CacheTTL } from '@nestjs/cache-manager';
+import { Controller, Get, Res, Header } from '@nestjs/common';
+
+import { MetricsService } from './metrics.service';
+
+import type { Response } from 'express';
 
 @Controller({ path: 'metrics' })
 export class MetricsController {

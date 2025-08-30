@@ -1,11 +1,12 @@
-import type { UsersRepositoryPort } from '../ports/users-repository.port';
+import type { HashingPort } from '@application/security/ports/hashing.port';
 import type {
   User,
   UserId,
   CreateUserInput,
   CreateUserWithPasswordInput,
 } from '@domain/users/types/user.types';
-import type { HashingPort } from '@application/security/ports/hashing.port';
+
+import type { UsersRepositoryPort } from '../ports/users-repository.port';
 
 export class UsersService {
   constructor(

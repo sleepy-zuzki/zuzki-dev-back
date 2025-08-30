@@ -9,12 +9,14 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { TechnologiesService } from '@application/catalog/services/technologies.service';
-import { CreateTechnologyDto } from '@interfaces/http/v1/catalog/dto/create-technology.dto';
-import { UpdateTechnologyDto } from '@interfaces/http/v1/catalog/dto/update-technology.dto';
-import { TechnologyResponseDto } from '@interfaces/http/v1/catalog/dto/technology.response.dto';
-import { toTechnologyView } from '@application/catalog/mappers/technology.mappers';
 import { PinoLogger } from 'nestjs-pino';
+
+import { toTechnologyView } from '@application/catalog/mappers/technology.mappers';
+import { TechnologiesService } from '@application/catalog/services/technologies.service';
+
+import { CreateTechnologyDto } from '../dto/create-technology.dto';
+import { TechnologyResponseDto } from '../dto/technology.response.dto';
+import { UpdateTechnologyDto } from '../dto/update-technology.dto';
 
 @Controller({ path: 'catalog/technologies', version: '1' })
 export class TechnologiesController {

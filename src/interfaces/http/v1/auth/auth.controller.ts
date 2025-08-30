@@ -7,21 +7,22 @@ import {
   UnauthorizedException,
   Inject,
 } from '@nestjs/common';
-import { UsersService } from '@application/users/services/users.service';
-import { ConfigurationService } from '@config/configuration.service';
+
 import { LoginDto } from '@app/auth/dto/login.dto';
 import { RefreshDto } from '@app/auth/dto/refresh.dto';
 import { LoginResponse } from '@app/auth/types/auth.types';
-import { HASHING_SERVICE } from '@application/security/ports/security.tokens';
-import { type HashingPort } from '@application/security/ports/hashing.port';
+import { AuthConfigService } from '@application/auth/services/auth-config.service';
 import { AuthService } from '@application/auth/services/auth.service';
+import { type HashingPort } from '@application/security/ports/hashing.port';
+import { HASHING_SERVICE } from '@application/security/ports/security.tokens';
+import { UsersService } from '@application/users/services/users.service';
 
 @Controller({ path: 'auth', version: '1' })
 export class AuthController {
   constructor(
     private readonly users: UsersService,
-    private readonly config: ConfigurationService,
     private readonly auth: AuthService,
+    private readonly authConfig: AuthConfigService,
     @Inject(HASHING_SERVICE) private readonly hashing: HashingPort,
   ) {}
 
@@ -46,7 +47,7 @@ export class AuthController {
       email: user.email,
       roles: user.roles,
     });
-    const expiresIn = this.config.getNumber('ACCESS_TOKEN_TTL', 900);
+    const expiresIn = this.authConfig.getAccessTokenTtl();
 
     const { refreshToken, expiresAt } = await this.auth.generateRefreshToken(
       user.id,
@@ -83,7 +84,7 @@ export class AuthController {
       email: user.email,
       roles: user.roles,
     });
-    const expiresIn = this.config.getNumber('ACCESS_TOKEN_TTL', 900);
+    const expiresIn = this.authConfig.getAccessTokenTtl();
 
     return {
       accessToken,

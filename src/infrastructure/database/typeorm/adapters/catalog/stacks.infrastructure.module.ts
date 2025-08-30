@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { StackEntity } from '@infra/database/typeorm/entities/catalog/stack.entity';
+
 import { STACKS_REPOSITORY } from '@application/catalog/ports/catalog.tokens';
+import { StackEntity } from '@infra/database/typeorm/entities/catalog/stack.entity';
+
 import { StacksRepositoryTypeormAdapter } from './stacks.repository.adapter';
 
 @Module({

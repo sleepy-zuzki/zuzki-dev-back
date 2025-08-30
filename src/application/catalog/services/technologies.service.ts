@@ -3,6 +3,7 @@ import type {
   CreateTechnologyInput,
   UpdateTechnologyInput,
 } from '@domain/catalog/types/technology.types';
+
 import type { TechnologyRepositoryPort } from '../ports/technology-repository.port';
 
 export class TechnologiesService {

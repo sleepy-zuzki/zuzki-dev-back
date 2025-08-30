@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProjectEntity } from '@infra/database/typeorm/entities/portfolio/project.entity';
+
 import { PROJECTS_REPOSITORY } from '@application/portfolio/ports/portfolio.tokens';
+import { ProjectEntity } from '@infra/database/typeorm/entities/portfolio/project.entity';
+
 import { ProjectsRepositoryTypeormAdapter } from './projects.repository.adapter';
 
 @Module({

@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AuthService as ApplicationAuthService } from '@application/auth/services/auth.service';
+
+import { AccessTokenPort } from '@application/auth/ports/access-token.port';
 import {
   ACCESS_TOKEN_SERVICE,
   REFRESH_TOKEN_SERVICE,
 } from '@application/auth/ports/auth.tokens';
-import { AccessTokenPort } from '@application/auth/ports/access-token.port';
 import { RefreshTokenPort } from '@application/auth/ports/refresh-token.port';
-import { JwtAccessTokenInfrastructureModule } from '@infra/security/jwt/jwt-access-token.module';
+import { AuthService as ApplicationAuthService } from '@application/auth/services/auth.service';
 import { RefreshTokenInfrastructureModule } from '@infra/database/typeorm/adapters/auth/refresh-token.infrastructure.module';
+import { JwtAccessTokenInfrastructureModule } from '@infra/security/jwt/jwt-access-token.module';
 
 @Module({
   imports: [

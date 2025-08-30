@@ -1,5 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { ProjectsRepositoryPort } from '@application/portfolio/ports/projects-repository.port';
 import {
   CreateProjectInput,
@@ -8,8 +9,8 @@ import {
   FileRef,
   UpdateProjectInput,
 } from '@domain/portfolio/types/project.types';
-import { ProjectEntity } from '@infra/database/typeorm/entities/portfolio/project.entity';
 import { FileEntity } from '@infra/database/typeorm/entities/portfolio/file.entity';
+import { ProjectEntity } from '@infra/database/typeorm/entities/portfolio/project.entity';
 
 type HasProjectRels = {
   technologies?: Array<{ id: number; name: string; slug: string }>;

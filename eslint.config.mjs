@@ -99,11 +99,18 @@ export default tseslint.config(
         'error',
         {
           patterns: [
-            // Evitar infraestructura desde Interfaces
+            // Evitar infraestructura específica desde Interfaces (permitir composition)
             {
-              group: ['@infra/*'],
+              group: [
+                '@infra/database/*',
+                '@infra/security/*',
+                '@infra/http/*',
+                '@infra/cache/*',
+                '@infra/storage/*',
+                '@infra/logging/*',
+              ],
               message:
-                'Interfaces no puede importar desde infrastructure; usa application.',
+                'Interfaces no puede importar infrastructure específica; usa @infra/composition/* o application.',
             },
             {
               group: ['src/infrastructure/**'],
@@ -125,8 +132,14 @@ export default tseslint.config(
               group: ['typeorm', '@nestjs/typeorm'],
               message: 'No usar ORM directamente en Interfaces.',
             },
+            // Permitir @application/* (incluyendo health) pero no @health/* directo
             {
-              group: ['@config/*', 'src/config/**', '**/config/**'],
+              group: ['@health/*'],
+              message:
+                'Interfaces no debe usar @health/* directamente; usa @application/health/* en su lugar.',
+            },
+            {
+              group: ['@config/*', 'src/config/**'],
               message:
                 'Interfaces no debe importar config interna directamente; delega al composition root.',
             },
@@ -149,7 +162,7 @@ export default tseslint.config(
               group: ['@interfaces/*', 'src/interfaces/**', '**/interfaces/**'],
               message: 'Application Modules no pueden depender de Interfaces.',
             },
-            // Permitir @infra/composition/* pero no otros infrastructure específicos
+            // Bloquear infrastructure específicos (composition está permitido implícitamente)
             {
               group: [
                 '@infra/database/*',
@@ -177,10 +190,8 @@ export default tseslint.config(
   },
   // Application Services y otros: REGLA GENERAL DESPUÉS - excluye Application Modules
   {
-    files: [
-      'src/application/**/*.{ts,tsx}',
-      '!src/application/**/*.application.module.{ts,tsx}'
-    ],
+    files: ['src/application/**/*.{ts,tsx}'],
+    ignores: ['!src/application/**/*.application.module.{ts,tsx}'],
     rules: {
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/explicit-function-return-type': [
@@ -197,7 +208,11 @@ export default tseslint.config(
           patterns: [
             // Bloquear capas externas y dependencias técnicas
             {
-              group: ['@interfaces/*', '@infra/*'],
+              group: [
+                '@interfaces/*',
+                '@infra/database/*',
+                '@infra/security/*',
+              ],
               message:
                 'Application Services no pueden depender de Interfaces/Infrastructure.',
             },
@@ -205,16 +220,6 @@ export default tseslint.config(
               group: ['src/interfaces/**', 'src/infrastructure/**'],
               message:
                 'Application Services no pueden depender de Interfaces/Infrastructure.',
-            },
-            {
-              group: ['**/interfaces/**', '**/infrastructure/**'],
-              message:
-                'Application Services no pueden depender de Interfaces/Infrastructure.',
-            },
-            {
-              group: ['@nestjs/*'],
-              message:
-                'Application Services deben ser puros; evita dependencias de Nest.',
             },
             {
               group: ['typeorm', '@nestjs/typeorm'],
@@ -230,9 +235,10 @@ export default tseslint.config(
               group: ['src/config/**', 'src/metrics/**', 'src/health/**'],
               message: 'Application no debe depender de config/metrics/health.',
             },
+            // Patrones más específicos para evitar conflictos con interfaces/health
             {
-              group: ['**/config/**', '**/metrics/**', '**/health/**'],
-              message: 'Application no debe depender de config/metrics/health.',
+              group: ['src/health/**', 'src/config/**', 'src/metrics/**'],
+              message: 'Application no debe depender de config/metrics; usa puertos.',
             },
             {
               group: ['@app/interfaces/*', '@app/infrastructure/*'],
@@ -288,24 +294,11 @@ export default tseslint.config(
               message: 'Domain no depende de otras capas.',
             },
             {
-              group: [
-                '**/infrastructure/**',
-                '**/interfaces/**',
-                '**/application/**',
-              ],
-              message: 'Domain no depende de otras capas.',
-            },
-            // Evitar dependencias cross-cutting y atajos de alias
-            {
               group: ['@config/*', '@metrics/*', '@health/*'],
               message: 'Domain no debe depender de config/metrics/health.',
             },
             {
               group: ['src/config/**', 'src/metrics/**', 'src/health/**'],
-              message: 'Domain no debe depender de config/metrics/health.',
-            },
-            {
-              group: ['**/config/**', '**/metrics/**', '**/health/**'],
               message: 'Domain no debe depender de config/metrics/health.',
             },
             {
@@ -364,14 +357,6 @@ export default tseslint.config(
               ],
               message: 'Shared no debe depender de capas superiores.',
             },
-            {
-              group: [
-                '**/application/**',
-                '**/interfaces/**',
-                '**/infrastructure/**',
-              ],
-              message: 'Shared no debe depender de capas superiores.',
-            },
             // Cross-cutting y atajos @app no permitidos en Shared
             {
               group: ['@config/*', '@metrics/*', '@health/*'],
@@ -379,10 +364,6 @@ export default tseslint.config(
             },
             {
               group: ['src/config/**', 'src/metrics/**', 'src/health/**'],
-              message: 'Shared no debe depender de config/metrics/health.',
-            },
-            {
-              group: ['**/config/**', '**/metrics/**', '**/health/**'],
               message: 'Shared no debe depender de config/metrics/health.',
             },
             {

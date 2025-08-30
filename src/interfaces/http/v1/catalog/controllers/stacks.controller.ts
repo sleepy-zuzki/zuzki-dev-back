@@ -9,12 +9,14 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { StacksService } from '@application/catalog/services/stacks.service';
-import { CreateStackDto } from '@interfaces/http/v1/catalog/dto/create-stack.dto';
-import { UpdateStackDto } from '@interfaces/http/v1/catalog/dto/update-stack.dto';
-import { StackResponseDto } from '@interfaces/http/v1/catalog/dto/stack.response.dto';
-import { toStackView } from '@application/catalog/mappers/stack.mappers';
 import { PinoLogger } from 'nestjs-pino';
+
+import { toStackView } from '@application/catalog/mappers/stack.mappers';
+import { StacksService } from '@application/catalog/services/stacks.service';
+
+import { CreateStackDto } from '../dto/create-stack.dto';
+import { StackResponseDto } from '../dto/stack.response.dto';
+import { UpdateStackDto } from '../dto/update-stack.dto';
 
 @Controller({ path: 'catalog/stacks', version: '1' })
 export class StacksController {

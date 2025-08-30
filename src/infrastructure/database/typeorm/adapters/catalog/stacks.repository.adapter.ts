@@ -1,12 +1,13 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { StackEntity } from '@infra/database/typeorm/entities/catalog/stack.entity';
+
+import { StackRepositoryPort } from '@application/catalog/ports/stack-repository.port';
 import {
   Stack,
   CreateStackInput,
   UpdateStackInput,
 } from '@domain/catalog/types/stack.types';
-import { StackRepositoryPort } from '@application/catalog/ports/stack-repository.port';
+import { StackEntity } from '@infra/database/typeorm/entities/catalog/stack.entity';
 
 export class StacksRepositoryTypeormAdapter implements StackRepositoryPort {
   constructor(

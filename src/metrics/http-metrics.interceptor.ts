@@ -4,10 +4,12 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import type { Request, Response } from 'express';
 import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
+
 import { MetricsService } from './metrics.service';
+
+import type { Request, Response } from 'express';
 
 function hrtimeToSeconds(hr: [number, number]): number {
   return hr[0] + hr[1] / 1e9;

@@ -1,4 +1,4 @@
-import { User } from '../../../domain/users/types/user.types';
+import type { User } from '@domain/users/types/user.types';
 
 export interface UserView {
   id: string;

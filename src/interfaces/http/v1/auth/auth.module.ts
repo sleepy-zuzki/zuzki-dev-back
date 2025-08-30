@@ -1,22 +1,19 @@
 import { Module } from '@nestjs/common';
-import { PassportModule } from '@nestjs/passport';
 import { APP_GUARD } from '@nestjs/core';
+import { PassportModule } from '@nestjs/passport';
 
-import { WriteMethodsAuthGuard } from '@app/auth/guards/write-methods-auth.guard';
-import { ConfigurationModule } from '@config/configuration.module';
-import { JwtStrategy } from '@app/auth/strategies/jwt.strategy';
 import { JwtAuthGuard } from '@app/auth/guards/jwt-auth.guard';
-import { AuthController } from './auth.controller';
+import { WriteMethodsAuthGuard } from '@app/auth/guards/write-methods-auth.guard';
+import { JwtStrategy } from '@app/auth/strategies/jwt.strategy';
 import { AuthCompositionModule } from '@infra/composition/auth.composition.module';
 import { UsersCompositionModule } from '@infra/composition/users.composition.module';
-import { HashingInfrastructureModule } from '@infra/security/argon2/hashing.infrastructure.module';
+
+import { AuthController } from './auth.controller';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    ConfigurationModule,
-    HashingInfrastructureModule,
-    // Composition: provee ApplicationAuthService y re-exporta JwtModule para estrategias
+    // Application Modules: proveen servicios y re-exportan módulos necesarios
     UsersCompositionModule,
     AuthCompositionModule,
   ],
@@ -29,7 +26,7 @@ import { HashingInfrastructureModule } from '@infra/security/argon2/hashing.infr
       useClass: WriteMethodsAuthGuard,
     },
   ],
-  // Exportamos lo necesario para otros módulos; re-exportamos el composition module
+  // Exportamos lo necesario para otros módulos; re-exportamos el application module
   // para propagar JwtModule y el ApplicationAuthService
   exports: [PassportModule, JwtAuthGuard, AuthCompositionModule],
 })

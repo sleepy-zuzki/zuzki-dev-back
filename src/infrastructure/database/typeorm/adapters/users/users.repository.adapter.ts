@@ -1,7 +1,9 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { UsersRepositoryPort } from '@application/users/ports/users-repository.port';
 import { User, CreateUserInput } from '@domain/users/types/user.types';
+
 import { UserEntity } from '../../entities/user/user.entity';
 
 export class UsersRepositoryTypeormAdapter implements UsersRepositoryPort {

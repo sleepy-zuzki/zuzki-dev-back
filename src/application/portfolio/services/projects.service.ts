@@ -1,9 +1,10 @@
-import { ProjectsRepositoryPort } from '../ports/projects-repository.port';
-import {
+import type {
   Project,
   CreateProjectInput,
   UpdateProjectInput,
 } from '@domain/portfolio/types/project.types';
+
+import type { ProjectsRepositoryPort } from '../ports/projects-repository.port';
 
 export class ProjectsService {
   constructor(private readonly repo: ProjectsRepositoryPort) {}

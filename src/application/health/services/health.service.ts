@@ -1,9 +1,17 @@
-import { DatabasePingPort } from '../ports/database-ping.port';
+import type {
+  DatabasePingPort,
+  DatabasePingResult,
+} from '../ports/database-ping.port';
 
 export class HealthService {
   constructor(private readonly dbPing: DatabasePingPort) {}
 
-  async check() {
+  async check(): Promise<{
+    status: string;
+    uptime: number;
+    timestamp: string;
+    database: DatabasePingResult;
+  }> {
     const db = await this.dbPing.ping();
 
     return {

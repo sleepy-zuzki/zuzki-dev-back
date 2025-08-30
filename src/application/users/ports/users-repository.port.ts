@@ -1,8 +1,8 @@
-import {
+import type {
   User,
   UserId,
   CreateUserInput,
-} from '../../../domain/users/types/user.types';
+} from '@domain/users/types/user.types';
 
 export interface UsersRepositoryPort {
   findByEmail(email: string): Promise<User | null>;

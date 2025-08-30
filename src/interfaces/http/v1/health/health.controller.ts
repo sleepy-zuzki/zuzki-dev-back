@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+
 import { HealthService } from '@application/health/services/health.service';
 
 @Controller({ path: 'health', version: '1' })

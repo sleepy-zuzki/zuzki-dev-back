@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
+
+import { CatalogApplicationModule } from '@application/catalog/catalog.application.module';
+
 import { StacksController } from './controllers/stacks.controller';
 import { TechnologiesController } from './controllers/technologies.controller';
-import { CatalogCompositionModule } from '@infra/composition/catalog.composition.module';
 
 @Module({
-  imports: [CatalogCompositionModule],
+  imports: [CatalogApplicationModule],
   controllers: [StacksController, TechnologiesController],
   providers: [],
   exports: [],

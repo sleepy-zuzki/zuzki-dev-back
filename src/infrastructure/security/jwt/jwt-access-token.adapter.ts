@@ -1,5 +1,5 @@
-import { JwtService } from '@nestjs/jwt';
-import { AccessTokenPort } from '../../../application/auth/ports/access-token.port';
+import type { AccessTokenPort } from '../../../application/auth/ports/access-token.port';
+import type { JwtService } from '@nestjs/jwt';
 
 export class JwtAccessTokenAdapter implements AccessTokenPort {
   constructor(private readonly jwt: JwtService) {}

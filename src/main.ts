@@ -1,8 +1,9 @@
 import 'reflect-metadata';
-import { NestFactory } from '@nestjs/core';
 import { VersioningType, ValidationPipe, Logger } from '@nestjs/common';
-import { AppModule } from './app.module';
+import { NestFactory } from '@nestjs/core';
 import compression from 'compression';
+
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

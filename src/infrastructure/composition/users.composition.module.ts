@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { UsersService } from '@application/users/services/users.service';
-import { UsersRepositoryPort } from '@application/users/ports/users-repository.port';
-import { USERS_REPOSITORY } from '@application/users/ports/users.tokens';
+
 import { HashingPort } from '@application/security/ports/hashing.port';
 import { HASHING_SERVICE } from '@application/security/ports/security.tokens';
+import { UsersRepositoryPort } from '@application/users/ports/users-repository.port';
+import { USERS_REPOSITORY } from '@application/users/ports/users.tokens';
+import { UsersService } from '@application/users/services/users.service';
 import { UsersInfrastructureModule } from '@infra/database/typeorm/adapters/users/users.infrastructure.module';
 import { HashingInfrastructureModule } from '@infra/security/argon2/hashing.infrastructure.module';
 

@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { StacksService } from '@application/catalog/services/stacks.service';
-import { TechnologiesService } from '@application/catalog/services/technologies.service';
+
 import {
   STACKS_REPOSITORY,
   TECHNOLOGIES_REPOSITORY,
 } from '@application/catalog/ports/catalog.tokens';
 import { StackRepositoryPort } from '@application/catalog/ports/stack-repository.port';
 import { TechnologyRepositoryPort } from '@application/catalog/ports/technology-repository.port';
+import { StacksService } from '@application/catalog/services/stacks.service';
+import { TechnologiesService } from '@application/catalog/services/technologies.service';
 import { StacksInfrastructureModule } from '@infra/database/typeorm/adapters/catalog/stacks.infrastructure.module';
 import { TechnologiesInfrastructureModule } from '@infra/database/typeorm/adapters/catalog/technologies.infrastructure.module';
 

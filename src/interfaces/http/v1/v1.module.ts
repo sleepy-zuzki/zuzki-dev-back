@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { CatalogModule } from './catalog/catalog.module';
-import { PortfolioModule } from './portfolio/portfolio.module';
-import { HealthModule } from './health/health.module';
-import { UsersModule } from '@interfaces/http/v1/users/users.module';
+
 import { AuthModule } from './auth/auth.module';
+import { CatalogModule } from './catalog/catalog.module';
+import { HealthModule } from './health/health.module';
+import { PortfolioModule } from './portfolio/portfolio.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [

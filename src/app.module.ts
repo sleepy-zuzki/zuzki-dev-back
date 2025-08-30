@@ -1,17 +1,20 @@
+import { randomUUID } from 'node:crypto';
+
+import { CacheModule, CacheInterceptor } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
-import { V1Module } from '@interfaces/http/v1/v1.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggerModule } from 'nestjs-pino';
+
+import { CatalogCompositionModule } from '@infra/composition/catalog.composition.module';
+import { HealthCompositionModule } from '@infra/composition/health.composition.module';
+import { PortfolioCompositionModule } from '@infra/composition/portfolio.composition.module';
+import { UsersCompositionModule } from '@infra/composition/users.composition.module';
 import { DatabaseModule } from '@infra/database/database.module';
 import { AuthModule } from '@interfaces/http/v1/auth/auth.module';
-import { LoggerModule } from 'nestjs-pino';
-import { randomUUID } from 'node:crypto';
-import type { IncomingMessage, ServerResponse } from 'node:http';
+import { V1Module } from '@interfaces/http/v1/v1.module';
 import { MetricsModule } from '@metrics/metrics.module';
-import { CacheModule, CacheInterceptor } from '@nestjs/cache-manager';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { UsersCompositionModule } from '@infra/composition/users.composition.module';
-import { CatalogCompositionModule } from '@infra/composition/catalog.composition.module';
-import { PortfolioCompositionModule } from '@infra/composition/portfolio.composition.module';
-import { HealthCompositionModule } from '@infra/composition/health.composition.module';
+
+import type { IncomingMessage, ServerResponse } from 'node:http';
 
 @Module({
   imports: [

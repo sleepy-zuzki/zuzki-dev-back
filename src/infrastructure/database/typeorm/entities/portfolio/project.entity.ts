@@ -8,8 +8,11 @@ import {
   UpdateDateColumn,
   JoinTable,
 } from 'typeorm';
+
 import { TechnologyEntity } from '../catalog/technology.entity';
+
 import { FileEntity } from './file.entity';
+
 import type { ProjectCategory } from '../../../../../domain/portfolio/types/project.types';
 
 @Entity({ name: 'projects', schema: 'portfolio' })

@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   Index,
 } from 'typeorm';
+
 import { RefreshTokenEntity } from '../auth/refresh-token.entity';
 
 @Entity({ name: 'users', schema: 'portfolio' })

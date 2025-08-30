@@ -1,9 +1,10 @@
-import { FilesRepositoryPort } from '../ports/files-repository.port';
-import {
+import type {
   File,
   CreateFileInput,
   UpdateFileInput,
 } from '@domain/portfolio/types/file.types';
+
+import type { FilesRepositoryPort } from '../ports/files-repository.port';
 
 export class FilesService {
   constructor(private readonly repo: FilesRepositoryPort) {}
