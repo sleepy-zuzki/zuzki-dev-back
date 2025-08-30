@@ -3,9 +3,16 @@ import { CatalogModule } from './catalog/catalog.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { HealthModule } from './health/health.module';
 import { UsersModule } from '@interfaces/http/v1/users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [CatalogModule, PortfolioModule, HealthModule, UsersModule],
+  imports: [
+    CatalogModule,
+    PortfolioModule,
+    HealthModule,
+    UsersModule,
+    AuthModule,
+  ],
   controllers: [],
   providers: [],
   exports: [],

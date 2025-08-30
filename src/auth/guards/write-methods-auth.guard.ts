@@ -8,9 +8,10 @@ export class WriteMethodsAuthGuard extends JwtAuthGuard {
       .switchToHttp()
       .getRequest<Request & { method?: string }>();
     const method = (req?.method || '').toUpperCase();
+    const noAuthMethods = ['GET', 'HEAD', 'OPTIONS'];
 
     // Permitimos libremente métodos de lectura y preflight
-    if (method === 'GET' || method === 'HEAD' || method === 'OPTIONS') {
+    if (noAuthMethods.includes(method)) {
       return true;
     }
 
