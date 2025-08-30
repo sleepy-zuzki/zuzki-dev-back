@@ -135,9 +135,52 @@ export default tseslint.config(
       ],
     },
   },
-  // Application: no debe importar Interfaces/Infrastructure; evitar Nest/ORM directo
+  // Application Modules: REGLA ESPECÍFICA PRIMERO - pueden importar composition modules y usar @nestjs/common
   {
-    files: ['src/application/**/*.{ts,tsx}'],
+    files: ['src/application/**/*.application.module.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-floating-promises': 'error',
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            // Solo bloquear interfaces
+            {
+              group: ['@interfaces/*', 'src/interfaces/**', '**/interfaces/**'],
+              message: 'Application Modules no pueden depender de Interfaces.',
+            },
+            // Permitir @infra/composition/* pero no otros infrastructure específicos
+            {
+              group: [
+                '@infra/database/*',
+                '@infra/security/*',
+                '@infra/http/*',
+                '@infra/cache/*',
+                '@infra/storage/*',
+                '@infra/logging/*',
+              ],
+              message:
+                'Application Modules solo pueden importar desde @infra/composition/*.',
+            },
+            {
+              group: ['typeorm', '@nestjs/typeorm'],
+              message: 'No usar ORM directamente en Application Modules.',
+            },
+            {
+              group: ['@app/interfaces/*', '@app/infrastructure/*'],
+              message: 'No usar alias @app en Application Modules.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  // Application Services y otros: REGLA GENERAL DESPUÉS - excluye Application Modules
+  {
+    files: [
+      'src/application/**/*.{ts,tsx}',
+      '!src/application/**/*.application.module.{ts,tsx}'
+    ],
     rules: {
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/explicit-function-return-type': [
@@ -152,41 +195,36 @@ export default tseslint.config(
         'error',
         {
           patterns: [
-            // Bloquear capas externas
+            // Bloquear capas externas y dependencias técnicas
             {
-              group: ['@interfaces/*'],
-              message: 'Application no puede depender de Interfaces.',
-            },
-            {
-              group: ['@infra/*'],
+              group: ['@interfaces/*', '@infra/*'],
               message:
-                'Application no puede depender de Infrastructure; usa Ports/Tokens.',
+                'Application Services no pueden depender de Interfaces/Infrastructure.',
             },
             {
               group: ['src/interfaces/**', 'src/infrastructure/**'],
               message:
-                'Application no puede depender de Interfaces/Infrastructure.',
+                'Application Services no pueden depender de Interfaces/Infrastructure.',
             },
             {
               group: ['**/interfaces/**', '**/infrastructure/**'],
               message:
-                'Application no puede depender de Interfaces/Infrastructure.',
+                'Application Services no pueden depender de Interfaces/Infrastructure.',
             },
-            // Evitar dependencias técnicas directas
             {
               group: ['@nestjs/*'],
               message:
-                'Evita dependencias de Nest en Application; usa puertos/abstracciones.',
+                'Application Services deben ser puros; evita dependencias de Nest.',
             },
             {
               group: ['typeorm', '@nestjs/typeorm'],
-              message: 'No usar ORM en Application; usa puertos.',
+              message: 'No usar ORM en Application Services; usa puertos.',
             },
             // Evitar dependencias cross-cutting y atajos de alias
             {
               group: ['@config/*', '@metrics/*', '@health/*'],
               message:
-                'Application no debe depender de config/metrics/health; usa puertos o inyección desde el composition root.',
+                'Application no debe depender de config/metrics/health; usa puertos.',
             },
             {
               group: ['src/config/**', 'src/metrics/**', 'src/health/**'],
@@ -199,7 +237,7 @@ export default tseslint.config(
             {
               group: ['@app/interfaces/*', '@app/infrastructure/*'],
               message:
-                'No usar alias @app para importar Interfaces/Infrastructure en Application.',
+                'No usar alias @app para importar otras capas en Application.',
             },
           ],
         },
