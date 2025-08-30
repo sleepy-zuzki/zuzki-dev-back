@@ -9,13 +9,16 @@
 ## Calidad de código
 
 - [ ] Compila sin errores (`pnpm build`).
+- [ ] Typecheck sin errores (`pnpm typecheck`).
 - [ ] Lint y formato aplicados (`pnpm lint`).
+- [ ] Imports ordenados y sin duplicados (eslint-plugin-import).
 - [ ] Sin `any` innecesarios y tipado estricto respetado.
 - [ ] Sin `console.log` en producción (usar Logger).
 
 ## Arquitectura
 
 - [ ] Cumple reglas de arquitectura hexagonal (.aiassistant/rules/hexagonal_architecture_rules.md).
+- [ ] Sin violaciones de `no-restricted-imports` (composition root es la única excepción).
 - [ ] Interfaces NO importan infraestructura directamente.
 - [ ] Services de Application no dependen de frameworks/librerías técnicas.
 - [ ] Wiring de infraestructura ↔ application centralizado en módulos de Composition.

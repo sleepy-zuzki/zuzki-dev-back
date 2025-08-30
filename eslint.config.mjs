@@ -3,10 +3,18 @@ import eslint from '@eslint/js';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import importPlugin from 'eslint-plugin-import';
 
 export default tseslint.config(
   {
-    ignores: ['eslint.config.mjs', 'tools/migration-*.js', 'package.json'],
+    ignores: [
+      'eslint.config.mjs',
+      'tools/migration-*.js',
+      'package.json',
+      'dist/**',
+      'coverage/**',
+      'reports/**',
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
@@ -17,7 +25,7 @@ export default tseslint.config(
         ...globals.node,
         ...globals.jest,
       },
-      sourceType: 'commonjs',
+      sourceType: 'module',
       parserOptions: {
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
@@ -26,13 +34,59 @@ export default tseslint.config(
   },
   // Reglas globales
   {
+    plugins: {
+      import: importPlugin,
+    },
+    settings: {
+      'import/resolver': {
+        typescript: {
+          // Respeta tsconfig paths y proyectos monorepo si aplica
+          project: true,
+          alwaysTryTypes: true,
+        },
+        node: {
+          extensions: ['.js', '.ts', '.tsx'],
+        },
+      },
+    },
     rules: {
       // Calidad y consistencia
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
       '@typescript-eslint/consistent-type-imports': 'warn',
-      'no-duplicate-imports': 'error',
+
+      // Import ergonomics
+      'import/no-duplicates': 'error',
+      'import/newline-after-import': ['warn', { count: 1 }],
+      'import/no-useless-path-segments': ['warn', { noUselessIndex: true }],
+      'import/order': [
+        'warn',
+        {
+          groups: [
+            'builtin',
+            'external',
+            'internal',
+            'parent',
+            'sibling',
+            'index',
+            'object',
+            'type',
+          ],
+          pathGroups: [
+            {
+              pattern:
+                '@{app,application,domain,infra,interfaces,shared,config,metrics,health}/**',
+              group: 'internal',
+              position: 'after',
+            },
+          ],
+          pathGroupsExcludedImportTypes: ['builtin'],
+          'newlines-between': 'always',
+          alphabetize: { order: 'asc', caseInsensitive: true },
+        },
+      ],
+
       'no-console': ['error', { allow: ['warn', 'error'] }],
     },
   },
@@ -61,10 +115,20 @@ export default tseslint.config(
               message:
                 'Interfaces no puede importar desde infrastructure; usa application.',
             },
-            // Evitar entidades/ORM directos
+            {
+              group: ['@app/infrastructure/*'],
+              message:
+                'No usar alias @app para importar infrastructure desde Interfaces.',
+            },
+            // Evitar entidades/ORM directos y config interna
             {
               group: ['typeorm', '@nestjs/typeorm'],
               message: 'No usar ORM directamente en Interfaces.',
+            },
+            {
+              group: ['@config/*', 'src/config/**', '**/config/**'],
+              message:
+                'Interfaces no debe importar config interna directamente; delega al composition root.',
             },
           ],
         },
@@ -75,7 +139,15 @@ export default tseslint.config(
   {
     files: ['src/application/**/*.{ts,tsx}'],
     rules: {
-      '@typescript-eslint/explicit-function-return-type': 'warn',
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/explicit-function-return-type': [
+        'error',
+        {
+          allowExpressions: true,
+          allowTypedFunctionExpressions: true,
+          allowHigherOrderFunctions: true,
+        },
+      ],
       'no-restricted-imports': [
         'error',
         {
@@ -110,6 +182,25 @@ export default tseslint.config(
               group: ['typeorm', '@nestjs/typeorm'],
               message: 'No usar ORM en Application; usa puertos.',
             },
+            // Evitar dependencias cross-cutting y atajos de alias
+            {
+              group: ['@config/*', '@metrics/*', '@health/*'],
+              message:
+                'Application no debe depender de config/metrics/health; usa puertos o inyección desde el composition root.',
+            },
+            {
+              group: ['src/config/**', 'src/metrics/**', 'src/health/**'],
+              message: 'Application no debe depender de config/metrics/health.',
+            },
+            {
+              group: ['**/config/**', '**/metrics/**', '**/health/**'],
+              message: 'Application no debe depender de config/metrics/health.',
+            },
+            {
+              group: ['@app/interfaces/*', '@app/infrastructure/*'],
+              message:
+                'No usar alias @app para importar Interfaces/Infrastructure en Application.',
+            },
           ],
         },
       ],
@@ -119,7 +210,21 @@ export default tseslint.config(
   {
     files: ['src/domain/**/*.{ts,tsx}'],
     rules: {
-      '@typescript-eslint/explicit-function-return-type': 'warn',
+      '@typescript-eslint/explicit-function-return-type': [
+        'error',
+        {
+          allowExpressions: true,
+          allowTypedFunctionExpressions: true,
+          allowHigherOrderFunctions: true,
+        },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'Decorator',
+          message: 'Domain no debe usar decoradores.',
+        },
+      ],
       'no-restricted-imports': [
         'error',
         {
@@ -152,6 +257,28 @@ export default tseslint.config(
               ],
               message: 'Domain no depende de otras capas.',
             },
+            // Evitar dependencias cross-cutting y atajos de alias
+            {
+              group: ['@config/*', '@metrics/*', '@health/*'],
+              message: 'Domain no debe depender de config/metrics/health.',
+            },
+            {
+              group: ['src/config/**', 'src/metrics/**', 'src/health/**'],
+              message: 'Domain no debe depender de config/metrics/health.',
+            },
+            {
+              group: ['**/config/**', '**/metrics/**', '**/health/**'],
+              message: 'Domain no debe depender de config/metrics/health.',
+            },
+            {
+              group: [
+                '@app/application/*',
+                '@app/infrastructure/*',
+                '@app/interfaces/*',
+              ],
+              message:
+                'No usar alias @app para acceder a otras capas desde Domain.',
+            },
           ],
         },
       ],
@@ -168,6 +295,11 @@ export default tseslint.config(
             {
               group: ['@interfaces/*', 'src/interfaces/**', '**/interfaces/**'],
               message: 'Infrastructure no puede depender de Interfaces.',
+            },
+            {
+              group: ['@app/interfaces/*'],
+              message:
+                'No usar alias @app para importar Interfaces desde Infrastructure.',
             },
           ],
         },
@@ -202,9 +334,60 @@ export default tseslint.config(
               ],
               message: 'Shared no debe depender de capas superiores.',
             },
+            // Cross-cutting y atajos @app no permitidos en Shared
+            {
+              group: ['@config/*', '@metrics/*', '@health/*'],
+              message: 'Shared no debe depender de config/metrics/health.',
+            },
+            {
+              group: ['src/config/**', 'src/metrics/**', 'src/health/**'],
+              message: 'Shared no debe depender de config/metrics/health.',
+            },
+            {
+              group: ['**/config/**', '**/metrics/**', '**/health/**'],
+              message: 'Shared no debe depender de config/metrics/health.',
+            },
+            {
+              group: [
+                '@app/application/*',
+                '@app/interfaces/*',
+                '@app/infrastructure/*',
+              ],
+              message:
+                'No usar alias @app para acceder a capas superiores desde Shared.',
+            },
           ],
         },
       ],
+    },
+  },
+  // Tests (unit y e2e): DX mejorada y dependencias de dev permitidas
+  {
+    files: [
+      '**/*.spec.ts',
+      '**/*.test.ts',
+      'test/**/*.ts',
+      'src/**/*.spec.ts',
+      'src/**/*.test.ts',
+    ],
+    rules: {
+      'no-console': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/no-floating-promises': 'off',
+      'import/no-extraneous-dependencies': [
+        'error',
+        {
+          devDependencies: true,
+        },
+      ],
+    },
+  },
+  // Composition root / Entrypoints: permitir orquestación de capas
+  {
+    files: ['src/main.ts', 'src/app.module.ts'],
+    rules: {
+      'no-restricted-imports': 'off',
+      '@typescript-eslint/no-floating-promises': 'off',
     },
   },
 );

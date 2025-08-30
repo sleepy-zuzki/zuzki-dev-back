@@ -27,13 +27,15 @@ Estas reglas complementan las normas generales de agentes y las convenciones del
   - Orquesta casos de uso.
   - Define puertos (interfaces) hacia infraestructura y otros servicios externos.
   - Evita dependencias de framework; si se requieren, inyecta interfaces/tokens.
+  - **Application Modules**: Módulos intermediarios que encapsulan la composición de servicios e importan desde Infrastructure. Estos módulos actúan como fachadas que ocultan los detalles de infraestructura a la capa de Interfaces.
 - Infrastructure (src/infrastructure/…)
   - Implementa adaptadores de puertos: persistencia (ORM), HTTP clients, cache, storage, logging, etc.
   - No expone APIs directamente; cumple contratos de Application.
+  - **Composition Modules**: Módulos en `src/infrastructure/composition/` que manejan la composición compleja de dependencias de infraestructura.
 - Interfaces (src/interfaces/http/v{n}/<feature>/)
   - Controladores HTTP y módulos expuestos.
   - Valida entrada (DTOs), mapea hacia Application y retorna respuestas.
-  - Nunca accede a Infrastructure directamente; usa servicios/puertos de Application.
+  - **NUNCA** accede a Infrastructure directamente; **SOLO** usa Application Modules (src/application/<feature>/\*.application.module.ts).
 - Shared (src/shared/…)
   - Preocupaciones transversales: tipos comunes, utilidades puras, interceptores, guards, pipes, filtros, decoradores, constantes.
   - No contiene lógica de negocio.
@@ -43,13 +45,10 @@ Estas reglas complementan las normas generales de agentes y las convenciones del
 - Domain: no depende de nadie fuera de Domain o Shared puramente funcional.
 - Application: puede depender de Domain y Shared. Define puertos (interfaces) hacia infraestructura.
 - Infrastructure: puede depender de Application (para implementar puertos) y Shared. Nunca de Interfaces.
-- Interfaces: puede depender de Application y Shared. Nunca de Infrastructure.
+- Interfaces: puede depender **ÚNICAMENTE** de Application Modules (\*.application.module.ts) y Shared. **NUNCA** de Infrastructure.
 - Shared: no depende de capas superiores (no debe conocer Application/Interfaces/Infrastructure).
 
-Visualización de dependencias:
-Interfaces -> Application -> Domain
-Infrastructure -> Application (implementa puertos)
-Shared -> consumido por todas; no depende de ninguna.
+Visualización de dependencias con Application Modules:
 
 ## Puertos, tokens e inyección de dependencias
 
@@ -57,6 +56,18 @@ Shared -> consumido por todas; no depende de ninguna.
 - Expón tokens de inyección (constantes) para cada puerto, p. ej. FEATURE_PORT_TOKEN.
 - Implementaciones de puertos viven en Infrastructure y se registran como providers que usan dichos tokens.
 - No inyectes clases concretas de Infrastructure en Interfaces; inyecta tokens/puertos definidos en Application.
+
+## Application Modules (Patrón Obligatorio)
+
+**Propósito**: Actuar como capa intermedia que encapsula la composición de dependencias de Infrastructure, manteniendo a Interfaces libre de conocimiento sobre Infrastructure.
+
+**Estructura obligatoria:**
+
+- Ubicación: `src/application/<feature>/<feature>.application.module.ts`
+- Naming: `{Feature}ApplicationModule`
+- Responsabilidad: Importar y re-exportar módulos de composición de Infrastructure
+
+**Ejemplo de implementación:**
 
 ## DTOs, mapeo y modelos
 
@@ -115,16 +126,19 @@ Permitido:
 
 - Añadir/ajustar casos de uso en Application con sus puertos.
 - Crear adaptadores en Infrastructure que implementen puertos existentes.
-- Agregar controladores/DTOs/módulos en Interfaces que usen Application.
+- Agregar controladores/DTOs/módulos en Interfaces que usen **únicamente** Application Modules.
+- **Crear Application Modules** cuando se añade nueva funcionalidad que requiera Infrastructure.
 - Añadir tipos/utilidades transversales en Shared.
 - Pequeñas mejoras de seguridad, validación y manejo de errores coherentes con este diseño.
 
 Prohibido:
 
-- Importar Infrastructure desde Interfaces o Domain.
+- **NUNCA** importar directamente desde Infrastructure en Interfaces (usar Application Modules).
+- **NUNCA** importar desde `@infra/*` en Interfaces; usar `@application/*` únicamente.
 - Usar entidades/artefactos de ORM fuera de Infrastructure.
 - Añadir lógica de negocio en controladores, guards o interceptores.
 - Saltarse puertos e inyectar implementaciones concretas en Application/Interfaces.
+- Crear módulos en Interfaces que importen composition modules directamente.
 - Añadir dependencias sin justificación y aprobación.
 
 ## Anti‑patrones a evitar
@@ -139,6 +153,10 @@ Prohibido:
 ## Checklist previo al PR (IA)
 
 - [ ] La clase/archivo añadido respeta la carpeta y capa correctas.
+- [ ] **CRÍTICO**: Interfaces NO importa directamente de Infrastructure (`@infra/*`).
+- [ ] **CRÍTICO**: Interfaces solo importa de Application Modules (`@application/*`).
+- [ ] Si se crea funcionalidad nueva, existe su correspondiente Application Module.
+- [ ] Application Modules solo importan/exportan, sin lógica adicional.
 - [ ] No hay importaciones hacia capas internas desde capas externas prohibidas.
 - [ ] Los puertos nuevos están definidos en Application y tienen token de inyección.
 - [ ] Las implementaciones de puertos están en Infrastructure y registradas por token.

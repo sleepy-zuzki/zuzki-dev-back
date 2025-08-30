@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Fallar el push si hay errores de lint o types
+pnpm lint:ci
+pnpm typecheck
