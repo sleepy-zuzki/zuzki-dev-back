@@ -1,9 +1,9 @@
-import {
+import type {
   Technology,
   CreateTechnologyInput,
   UpdateTechnologyInput,
 } from '@domain/catalog/types/technology.types';
-import { TechnologyRepositoryPort } from '../ports/technology-repository.port';
+import type { TechnologyRepositoryPort } from '../ports/technology-repository.port';
 
 export class TechnologiesService {
   constructor(private readonly repo: TechnologyRepositoryPort) {}

@@ -1,5 +1,5 @@
-import { AccessTokenPort } from '../ports/access-token.port';
-import { RefreshTokenPort } from '../ports/refresh-token.port';
+import type { AccessTokenPort } from '../ports/access-token.port';
+import type { RefreshTokenPort } from '../ports/refresh-token.port';
 
 export class AuthService {
   constructor(
@@ -15,19 +15,27 @@ export class AuthService {
     return this.accessTokens.signAccessToken(payload);
   }
 
-  generateRefreshToken(userId: string) {
+  generateRefreshToken(
+    userId: string,
+  ): Promise<{ refreshToken: string; expiresAt: Date }> {
     return this.refreshTokens.generate(userId);
   }
 
-  rotateRefreshToken(userId: string, currentToken: string) {
+  rotateRefreshToken(
+    userId: string,
+    currentToken: string,
+  ): Promise<{ refreshToken: string; expiresAt: Date }> {
     return this.refreshTokens.rotate(userId, currentToken);
   }
 
-  verifyRefreshToken(userId: string, token: string) {
+  verifyRefreshToken(
+    userId: string,
+    token: string,
+  ): Promise<{ id: string } | null> {
     return this.refreshTokens.verify(userId, token);
   }
 
-  revokeRefreshToken(id: string) {
+  revokeRefreshToken(id: string): Promise<void> {
     return this.refreshTokens.revoke(id);
   }
 }

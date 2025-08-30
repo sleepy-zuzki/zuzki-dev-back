@@ -1,4 +1,4 @@
-import { Technology } from '@domain/catalog/types/technology.types';
+import type { Technology } from '@domain/catalog/types/technology.types';
 
 export interface TechnologyView {
   id: number;

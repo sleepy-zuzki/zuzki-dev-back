@@ -1,9 +1,9 @@
-import {
+import type {
   Stack,
   CreateStackInput,
   UpdateStackInput,
 } from '@domain/catalog/types/stack.types';
-import { StackRepositoryPort } from '../ports/stack-repository.port';
+import type { StackRepositoryPort } from '../ports/stack-repository.port';
 
 export class StacksService {
   constructor(private readonly repo: StackRepositoryPort) {}

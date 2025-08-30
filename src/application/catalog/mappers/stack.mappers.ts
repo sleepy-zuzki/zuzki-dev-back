@@ -1,4 +1,4 @@
-import { Stack } from '@domain/catalog/types/stack.types';
+import type { Stack } from '@domain/catalog/types/stack.types';
 
 export interface StackView {
   id: number;

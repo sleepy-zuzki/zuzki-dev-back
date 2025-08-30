@@ -1,4 +1,4 @@
-import { Project } from '@domain/portfolio/types/project.types';
+import type { Project } from '@domain/portfolio/types/project.types';
 
 export interface ProjectView {
   id: number;

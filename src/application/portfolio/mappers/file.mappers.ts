@@ -1,4 +1,4 @@
-import { File } from '@domain/portfolio/types/file.types';
+import type { File } from '@domain/portfolio/types/file.types';
 
 export interface FileView {
   id: number;
