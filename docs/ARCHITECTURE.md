@@ -1,21 +1,29 @@
 # Arquitectura y convenciones
 
-Este proyecto sigue una arquitectura por capas con orientación a puertos y adaptadores (hexagonal):
+Este proyecto implementa arquitectura hexagonal (puertos y adaptadores) con separación estricta de capas:
 
 - Interfaces (HTTP): Controladores, DTOs, validación y mapeo de errores a HTTP.
 - Application: Casos de uso (services), puertos/contratos (ports) y mappers. No conoce infraestructura concreta.
 - Domain: Tipos y reglas puras, sin dependencias de frameworks.
-- Infrastructure: Adaptadores concretos (ORM, hashing, JWT, storage, cache, etc.) y módulos que proveen tokens/ports.
+- Infrastructure: Adaptadores concretos (ORM, hashing, JWT, storage, cache, etc.) que implementan puertos y exponen providers por tokens.
 - Composition: Módulos por feature que cablean infraestructura ↔ application y exportan services listos para usar.
-- Shared: Utilidades y tipos transversales.
+- Shared: Utilidades y tipos transversales (guards, interceptores, pipes, filtros, decoradores, constantes, utils).
+
+Consulta también: .aiassistant/rules/hexagonal_architecture_rules.md
 
 ## Principios
 
-- Interfaces no importan directamente infraestructura; solo consumen services provistos por Composition/Application.
-- Application se mantiene agnóstico a tecnologías. Depende solo de Ports y Tokens.
-- Infrastructure implementa ports y expone providers por tokens.
-- Composition conecta los tokens de infraestructura con los services de application y los exporta.
-- Domain no depende de ningún framework.
+- Dependencias hacia adentro: las capas externas dependen de las internas; nunca al revés.
+- Interfaces no importan infraestructura; dependen de Application/Shared.
+- Application es agnóstica a tecnologías y depende de puertos/tokens.
+- Infrastructure implementa puertos definidos por Application y los provee vía tokens.
+- Composition centraliza el wiring de cada feature.
+- Domain es puro, sin framework ni detalles técnicos.
+
+## Versionado y autenticación
+
+- La API HTTP está versionada (v1) y todos los controladores deben declarar su versión.
+- La autenticación por JWT se aplica globalmente por defecto; utiliza el decorador de endpoint público para rutas abiertas.
 
 ## Flujo de wiring por feature
 
@@ -26,7 +34,7 @@ Este proyecto sigue una arquitectura por capas con orientación a puertos y adap
 
 2. Infrastructure
 
-- Implementa los Ports y expone Módulos de infraestructura por feature que hacen `provide: TOKEN`.
+- Implementa los Ports y expone módulos de infraestructura por feature que hacen `provide: TOKEN`.
 
 3. Composition
 
@@ -39,27 +47,27 @@ Este proyecto sigue una arquitectura por capas con orientación a puertos y adap
 - Importa el módulo de Composition del feature.
 - Inyecta el Service en controladores; valida DTOs; mapea errores a HTTP.
 
-## Beneficios
-
-- Bajo acoplamiento y alta testabilidad (mocks de Ports).
-- Reemplazo de tecnología (p. ej., ORM) sin tocar Application ni Interfaces.
-- Composition como “Single Point of Truth” para el wiring por feature.
-
 ## Reglas clave
 
 - No importar infraestructura desde Interfaces.
 - No filtrar modelos específicos de ORM a Application/Domain.
 - Mapear errores de Application/Domain a excepciones HTTP en Interfaces.
-- Usar Logger de NestJS (o nestjs-pino) en lugar de `console.log` en producción.
+- Usar el logger del proyecto (no `console.log` en producción).
 - DTOs validados con class-validator en Interfaces.
+
+## Beneficios
+
+- Bajo acoplamiento y alta testabilidad (mocks de Ports).
+- Reemplazo de tecnología sin tocar Application ni Interfaces.
+- Composition como punto único de wiring por feature.
 
 ## Cambiar de ORM (ejemplo mental)
 
 - Mantén estable `UsersRepositoryPort`.
-- Implementa un nuevo adaptador (p. ej., PrismaUsersRepositoryAdapter) que cumpla el Port.
-- Crea un nuevo módulo de infraestructura para proveer el TOKEN con ese adaptador.
-- Ajusta el módulo de Composition (o crea uno alternativo) para importar ese módulo.
-- Interfaces ni Application requieren cambios.
+- Implementa un nuevo adaptador que cumpla el Port.
+- Crea un módulo de infraestructura que provea el TOKEN con ese adaptador.
+- Ajusta el módulo de Composition para usar ese módulo.
+- Application e Interfaces permanecen estables.
 
 ## Testing recomendado
 

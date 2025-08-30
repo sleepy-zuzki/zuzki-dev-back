@@ -15,15 +15,18 @@
 
 ## Arquitectura
 
+- [ ] Cumple reglas de arquitectura hexagonal (.aiassistant/rules/hexagonal_architecture_rules.md).
 - [ ] Interfaces NO importan infraestructura directamente.
 - [ ] Services de Application no dependen de frameworks/librerías técnicas.
 - [ ] Wiring de infraestructura ↔ application centralizado en módulos de Composition.
 
-## Seguridad
+## Seguridad y versionado
 
 - [ ] No se exponen secretos/credenciales en el código.
 - [ ] Validaciones de DTO en Interfaces con class-validator.
 - [ ] Errores mapeados a excepciones HTTP coherentes.
+- [ ] Controladores declaran versión correcta y siguen el prefijo de API vigente.
+- [ ] Endpoints protegidos por autenticación global, con uso del decorador público cuando corresponda.
 
 ## Pruebas
 
@@ -33,7 +36,7 @@
 
 ## Documentación
 
-- [ ] Documentación/README actualizados cuando hay cambios arquitectónicos.
+- [ ] Documentación/README actualizados cuando hay cambios arquitectónicos o de contratos.
 - [ ] Ejemplos y notas de uso si es necesario.
 
 ## Otros

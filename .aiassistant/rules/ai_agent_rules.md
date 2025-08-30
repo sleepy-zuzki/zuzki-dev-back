@@ -9,6 +9,7 @@ Objetivo: asegurar que las contribuciones generadas por IA sean seguras, manteni
 Estas reglas generales aplican a cualquier cambio propuesto o implementado por agentes de IA en este repositorio.
 Para reglas específicas por tecnología (p. ej., TypeORM o API/DTOs), consulta:
 
+- .aiassistant/rules/hexagonal_architecture_rules.md
 - .aiassistant/rules/typeorm_rules.md
 - .aiassistant/rules/api_rules.md
 
