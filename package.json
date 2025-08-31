@@ -31,10 +31,11 @@
     "openapi:bundle:json": "swagger-cli bundle openapi/openapi.yaml --outfile openapi/bundle.json --type json",
     "seed": "node --env-file=.env --require ts-node/register --require tsconfig-paths/register ./tools/seed.ts",
     "seed:user": "node --env-file=.env --require ts-node/register --require tsconfig-paths/register ./tools/seed-user.ts",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "dependencies": {
     "@nestjs/cache-manager": "^3.0.1",
+    "@nestjs/cli": "^11.0.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
@@ -63,7 +64,6 @@
     "@apidevtools/swagger-cli": "^4.0.4",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
-    "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
     "@types/compression": "^1.7.5",
