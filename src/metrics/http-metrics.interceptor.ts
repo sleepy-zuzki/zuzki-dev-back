@@ -9,7 +9,17 @@ import { tap, catchError } from 'rxjs/operators';
 
 import { MetricsService } from './metrics.service';
 
-import type { Request, Response } from 'express';
+// Definir interfaces mínimas necesarias para evitar dependencia directa de Express
+interface HttpRequest {
+  method?: string;
+  path?: string;
+  url?: string;
+  route?: { path?: string };
+}
+
+interface HttpResponse {
+  statusCode?: number;
+}
 
 function hrtimeToSeconds(hr: [number, number]): number {
   return hr[0] + hr[1] / 1e9;
@@ -31,8 +41,8 @@ export class HttpMetricsInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const start = process.hrtime();
     const http = context.switchToHttp();
-    const req = http.getRequest<Request>();
-    const res = http.getResponse<Response>();
+    const req = http.getRequest<HttpRequest>();
+    const res = http.getResponse<HttpResponse>();
 
     const method = (req.method || 'GET').toUpperCase();
 
