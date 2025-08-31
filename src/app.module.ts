@@ -5,10 +5,10 @@ import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
 
-import { CatalogCompositionModule } from '@infra/composition/catalog.composition.module';
-import { HealthCompositionModule } from '@infra/composition/health.composition.module';
-import { PortfolioCompositionModule } from '@infra/composition/portfolio.composition.module';
-import { UsersCompositionModule } from '@infra/composition/users.composition.module';
+import { CatalogApplicationModule } from '@application/catalog/catalog.application.module';
+import { HealthApplicationModule } from '@application/health/health.application.module';
+import { PortfolioApplicationModule } from '@application/portfolio/portfolio.application.module';
+import { UsersApplicationModule } from '@application/users/users.application.module';
 import { DatabaseModule } from '@infra/database/database.module';
 import { AuthModule } from '@interfaces/http/v1/auth/auth.module';
 import { V1Module } from '@interfaces/http/v1/v1.module';
@@ -59,11 +59,11 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
       max: Number(process.env.CACHE_MAX ?? 100),
     }),
     DatabaseModule,
-    // Composition root: conecta infraestructura y application
-    UsersCompositionModule,
-    CatalogCompositionModule,
-    PortfolioCompositionModule,
-    HealthCompositionModule,
+    // Application root: usa Application Modules que encapsulan la composición
+    UsersApplicationModule,
+    CatalogApplicationModule,
+    PortfolioApplicationModule,
+    HealthApplicationModule,
     AuthModule,
     MetricsModule,
     V1Module,

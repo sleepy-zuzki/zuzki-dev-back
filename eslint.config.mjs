@@ -238,7 +238,8 @@ export default tseslint.config(
             // Patrones más específicos para evitar conflictos con interfaces/health
             {
               group: ['src/health/**', 'src/config/**', 'src/metrics/**'],
-              message: 'Application no debe depender de config/metrics; usa puertos.',
+              message:
+                'Application no debe depender de config/metrics; usa puertos.',
             },
             {
               group: ['@app/interfaces/*', '@app/infrastructure/*'],
