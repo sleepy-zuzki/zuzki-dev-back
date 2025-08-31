@@ -8,6 +8,7 @@ import {
   Inject,
 } from '@nestjs/common';
 
+import { Public } from '@app/auth/decorators/public.decorator';
 import { LoginDto } from '@app/auth/dto/login.dto';
 import { RefreshDto } from '@app/auth/dto/refresh.dto';
 import { LoginResponse } from '@app/auth/types/auth.types';
@@ -26,6 +27,7 @@ export class AuthController {
     @Inject(HASHING_SERVICE) private readonly hashing: HashingPort,
   ) {}
 
+  @Public()
   @Post('login')
   @HttpCode(200)
   async login(@Body() dto: LoginDto): Promise<LoginResponse> {
@@ -62,6 +64,7 @@ export class AuthController {
     };
   }
 
+  @Public()
   @Post('refresh')
   @HttpCode(200)
   async refresh(@Body() dto: RefreshDto): Promise<LoginResponse> {
