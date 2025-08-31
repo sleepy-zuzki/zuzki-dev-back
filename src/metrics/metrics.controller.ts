@@ -3,7 +3,7 @@ import { Controller, Get, Res, Header } from '@nestjs/common';
 
 import { MetricsService } from './metrics.service';
 
-import type { Response } from 'express';
+import type { HttpResponse } from './types';
 
 @Controller({ path: 'metrics' })
 export class MetricsController {
@@ -12,7 +12,7 @@ export class MetricsController {
   @Get()
   @Header('Cache-Control', 'no-store')
   @CacheTTL(0)
-  async getMetrics(@Res() res: Response) {
+  async getMetrics(@Res() res: HttpResponse) {
     res.setHeader('Content-Type', this.metrics.contentType);
     res.send(await this.metrics.getMetricsText());
   }
