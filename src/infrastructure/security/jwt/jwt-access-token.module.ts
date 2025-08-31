@@ -15,6 +15,9 @@ import { JwtAccessTokenAdapter } from './jwt-access-token.adapter';
         secret: config.getString('APP_JWT_SECRET'),
         signOptions: {
           algorithm: 'HS256',
+          expiresIn: `${config.getNumber('ACCESS_TOKEN_TTL', 900)}s`,
+          issuer: process.env.APP_JWT_ISSUER || 'zuzki-api',
+          audience: process.env.APP_JWT_AUDIENCE || 'https://api.zuzki.dev',
         },
       }),
     }),

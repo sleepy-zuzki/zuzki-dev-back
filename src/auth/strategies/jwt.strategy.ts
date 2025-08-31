@@ -13,12 +13,16 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     private readonly config: ConfigurationService,
     private readonly users: UsersService,
   ) {
+    const jwtSecret = config.getString('APP_JWT_SECRET');
+    const jwtIssuer = process.env.APP_JWT_ISSUER || undefined;
+    const jwtAudience = process.env.APP_JWT_AUDIENCE || undefined;
+
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: config.getString('APP_JWT_SECRET'),
-      issuer: process.env.APP_JWT_ISSUER || undefined,
-      audience: process.env.APP_JWT_AUDIENCE || undefined,
+      secretOrKey: jwtSecret,
+      issuer: jwtIssuer,
+      audience: jwtAudience,
       algorithms: ['HS256'],
     });
   }

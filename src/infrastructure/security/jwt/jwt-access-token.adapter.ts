@@ -10,6 +10,11 @@ export class JwtAccessTokenAdapter implements AccessTokenPort {
     email: string;
     roles: string[];
   }): Promise<string> {
-    return this.jwt.signAsync(payload);
+    // Mapear "id" a "sub" (subject) que es el estándar JWT
+    return this.jwt.signAsync({
+      sub: payload.id,
+      email: payload.email,
+      roles: payload.roles,
+    });
   }
 }
