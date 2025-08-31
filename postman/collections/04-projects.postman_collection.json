@@ -1,0 +1,128 @@
+{
+  "info": {
+    "name": "Zuzki Dev - Projects",
+    "description": "Endpoints para la gestión de proyectos del portfolio",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "List Projects",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/portfolio/projects",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "portfolio", "projects"]
+        },
+        "description": "Obtener lista de todos los proyectos"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Project by Slug",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/portfolio/projects/:slug",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "portfolio", "projects", ":slug"],
+          "variable": [
+            {
+              "key": "slug",
+              "value": "mi-proyecto",
+              "description": "Slug del proyecto"
+            }
+          ]
+        },
+        "description": "Obtener un proyecto específico por su slug"
+      },
+      "response": []
+    },
+    {
+      "name": "Create Project",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Mi Nuevo Proyecto\",\n  \"slug\": \"mi-nuevo-proyecto\",\n  \"description\": \"Descripción del proyecto\",\n  \"repoUrl\": \"https://github.com/usuario/proyecto\",\n  \"liveUrl\": \"https://mi-proyecto.com\",\n  \"category\": \"web\",\n  \"year\": 2024,\n  \"isFeatured\": true,\n  \"technologyIds\": [1, 2, 3],\n  \"previewImageId\": 1\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/portfolio/projects",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "portfolio", "projects"]
+        },
+        "description": "Crear un nuevo proyecto"
+      },
+      "response": []
+    },
+    {
+      "name": "Update Project",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Proyecto Actualizado\",\n  \"description\": \"Nueva descripción\",\n  \"isFeatured\": false\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/portfolio/projects/:id",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "portfolio", "projects", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1",
+              "description": "ID del proyecto"
+            }
+          ]
+        },
+        "description": "Actualizar un proyecto existente"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Project",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/portfolio/projects/:id",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "portfolio", "projects", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1",
+              "description": "ID del proyecto"
+            }
+          ]
+        },
+        "description": "Eliminar un proyecto"
+      },
+      "response": []
+    }
+  ]
+}

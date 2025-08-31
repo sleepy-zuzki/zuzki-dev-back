@@ -1,0 +1,150 @@
+{
+  "info": {
+    "name": "Zuzki Dev - Auth",
+    "description": "Endpoints de autenticación para la API de Zuzki Dev",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [""],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "variable": [],
+  "item": [
+    {
+      "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const response = pm.response.json();",
+              "    pm.environment.set('accessToken', response.accessToken);",
+              "    pm.environment.set('refreshToken', response.refreshToken);",
+              "    pm.environment.set('userId', response.user.id);",
+              "    console.log('Token guardado exitosamente');",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "auth", "login"]
+        },
+        "description": "Iniciar sesión en el sistema"
+      },
+      "response": []
+    },
+    {
+      "name": "Refresh Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const response = pm.response.json();",
+              "    pm.environment.set('accessToken', response.accessToken);",
+              "    pm.environment.set('refreshToken', response.refreshToken);",
+              "    console.log('Token actualizado exitosamente');",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/auth/refresh",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "auth", "refresh"]
+        },
+        "description": "Renovar el token de acceso"
+      },
+      "response": []
+    },
+    {
+      "name": "Logout",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    pm.environment.unset('accessToken');",
+              "    pm.environment.unset('refreshToken');",
+              "    pm.environment.unset('userId');",
+              "    console.log('Sesión cerrada exitosamente');",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{accessToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/auth/logout",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "auth", "logout"]
+        },
+        "description": "Cerrar sesión y revocar el refresh token"
+      },
+      "response": []
+    }
+  ]
+}

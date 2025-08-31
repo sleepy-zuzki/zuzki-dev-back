@@ -1,0 +1,26 @@
+{
+  "info": {
+    "name": "Zuzki Dev - Health",
+    "description": "Health check endpoint para verificar el estado de la API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "health"]
+        },
+        "description": "Verificar el estado de salud de la aplicación"
+      },
+      "response": []
+    }
+  ]
+}

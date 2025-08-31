@@ -1,0 +1,738 @@
+{
+  "info": {
+    "name": "Zuzki Dev API - Complete Collection",
+    "description": "Colección completa con todos los endpoints de la API de Zuzki Dev",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          "// Script global para verificar token",
+          "if (pm.request.url.path.includes('auth') || pm.request.url.path.includes('health') || pm.request.url.path.includes('metrics')) {",
+          "    // No hacer nada para endpoints públicos",
+          "} else {",
+          "    if (!pm.environment.get('accessToken')) {",
+          "        console.log('⚠️ Token no encontrado. Por favor, inicia sesión primero.');",
+          "    }",
+          "}"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "timestamp",
+      "value": "{{$timestamp}}",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('accessToken', response.accessToken);",
+                  "    pm.environment.set('refreshToken', response.refreshToken);",
+                  "    pm.environment.set('userId', response.user.id);",
+                  "    console.log('✅ Token guardado exitosamente');",
+                  "    console.log('🆔 User ID:', response.user.id);",
+                  "    console.log('📧 Email:', response.user.email);",
+                  "} else {",
+                  "    console.log('❌ Error en login');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "auth", "login"]
+            },
+            "description": "Iniciar sesión en el sistema"
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.environment.set('accessToken', response.accessToken);",
+                  "    pm.environment.set('refreshToken', response.refreshToken);",
+                  "    console.log('✅ Token actualizado exitosamente');",
+                  "} else {",
+                  "    console.log('❌ Error al renovar token');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "auth", "refresh"]
+            },
+            "description": "Renovar el token de acceso"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    pm.environment.unset('accessToken');",
+                  "    pm.environment.unset('refreshToken');",
+                  "    pm.environment.unset('userId');",
+                  "    console.log('✅ Sesión cerrada exitosamente');",
+                  "} else {",
+                  "    console.log('❌ Error al cerrar sesión');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "auth", "logout"]
+            },
+            "description": "Cerrar sesión y revocar el refresh token"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints de autenticación (públicos)"
+    },
+    {
+      "name": "❤️ Health Check",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "health"]
+            },
+            "description": "Verificar el estado de salud de la aplicación"
+          },
+          "response": []
+        }
+      ],
+      "description": "Health check endpoint (público)"
+    },
+    {
+      "name": "👥 Users",
+      "item": [
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{userId}}",
+                  "description": "ID del usuario"
+                }
+              ]
+            },
+            "description": "Obtener información de un usuario por su ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nuevo@example.com\",\n  \"password\": \"password123\",\n  \"roles\": [\"user\"],\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "users"]
+            },
+            "description": "Crear un nuevo usuario"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gestión de usuarios (requiere autenticación)"
+    },
+    {
+      "name": "🚀 Portfolio - Projects",
+      "item": [
+        {
+          "name": "List Projects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/portfolio/projects",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "portfolio", "projects"]
+            },
+            "description": "Obtener lista de todos los proyectos"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Project by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/portfolio/projects/:slug",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "portfolio", "projects", ":slug"],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "mi-proyecto",
+                  "description": "Slug del proyecto"
+                }
+              ]
+            },
+            "description": "Obtener un proyecto específico por su slug"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mi Nuevo Proyecto\",\n  \"slug\": \"mi-nuevo-proyecto\",\n  \"description\": \"Descripción del proyecto\",\n  \"repoUrl\": \"https://github.com/usuario/proyecto\",\n  \"liveUrl\": \"https://mi-proyecto.com\",\n  \"category\": \"web\",\n  \"year\": 2024,\n  \"isFeatured\": true,\n  \"technologyIds\": [1, 2, 3],\n  \"previewImageId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/portfolio/projects",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "portfolio", "projects"]
+            },
+            "description": "Crear un nuevo proyecto"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Project",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Proyecto Actualizado\",\n  \"description\": \"Nueva descripción\",\n  \"isFeatured\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/portfolio/projects/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "portfolio", "projects", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID del proyecto"
+                }
+              ]
+            },
+            "description": "Actualizar un proyecto existente"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/portfolio/projects/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "portfolio", "projects", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID del proyecto"
+                }
+              ]
+            },
+            "description": "Eliminar un proyecto"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gestión de proyectos del portfolio (requiere autenticación)"
+    },
+    {
+      "name": "📁 Portfolio - Files",
+      "item": [
+        {
+          "name": "List Files",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/portfolio/files",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "portfolio", "files"]
+            },
+            "description": "Obtener lista de todos los archivos"
+          },
+          "response": []
+        },
+        {
+          "name": "Get File by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/portfolio/files/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "portfolio", "files", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID del archivo"
+                }
+              ]
+            },
+            "description": "Obtener un archivo específico por su ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create File",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com/image.jpg\",\n  \"provider\": \"cloudinary\",\n  \"mimeType\": \"image/jpeg\",\n  \"sizeBytes\": 102400,\n  \"projectId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/portfolio/files",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "portfolio", "files"]
+            },
+            "description": "Crear un nuevo archivo"
+          },
+          "response": []
+        },
+        {
+          "name": "Update File",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com/updated-image.jpg\",\n  \"mimeType\": \"image/png\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/portfolio/files/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "portfolio", "files", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID del archivo"
+                }
+              ]
+            },
+            "description": "Actualizar un archivo existente"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete File",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/portfolio/files/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "portfolio", "files", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID del archivo"
+                }
+              ]
+            },
+            "description": "Eliminar un archivo"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gestión de archivos (requiere autenticación)"
+    },
+    {
+      "name": "🛠️ Catalog - Technologies",
+      "item": [
+        {
+          "name": "List Technologies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/catalog/technologies",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "catalog", "technologies"]
+            },
+            "description": "Obtener lista de todas las tecnologías"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Technology by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/catalog/technologies/:slug",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "catalog", "technologies", ":slug"],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "typescript",
+                  "description": "Slug de la tecnología"
+                }
+              ]
+            },
+            "description": "Obtener una tecnología específica por su slug"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Technology",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TypeScript\",\n  \"slug\": \"typescript\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/catalog/technologies",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "catalog", "technologies"]
+            },
+            "description": "Crear una nueva tecnología"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Technology",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TypeScript Updated\",\n  \"slug\": \"typescript-updated\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/portfolio/catalog/technologies/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "catalog", "technologies", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de la tecnología"
+                }
+              ]
+            },
+            "description": "Actualizar una tecnología existente"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Technology",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/catalog/technologies/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "catalog", "technologies", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID de la tecnología"
+                }
+              ]
+            },
+            "description": "Eliminar una tecnología"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gestión de tecnologías (requiere autenticación)"
+    },
+    {
+      "name": "📚 Catalog - Stacks",
+      "item": [
+        {
+          "name": "List Stacks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/catalog/stacks",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "catalog", "stacks"]
+            },
+            "description": "Obtener lista de todos los stacks"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Stack by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/catalog/stacks/:slug",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "catalog", "stacks", ":slug"],
+              "variable": [
+                {
+                  "key": "slug",
+                  "value": "full-stack-javascript",
+                  "description": "Slug del stack"
+                }
+              ]
+            },
+            "description": "Obtener un stack específico por su slug"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Stack",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Full Stack JavaScript\",\n  \"slug\": \"full-stack-javascript\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/catalog/stacks",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "catalog", "stacks"]
+            },
+            "description": "Crear un nuevo stack"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Stack",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Full Stack JavaScript Updated\",\n  \"slug\": \"full-stack-js-updated\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/catalog/stacks/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "catalog", "stacks", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID del stack"
+                }
+              ]
+            },
+            "description": "Actualizar un stack existente"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Stack",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/catalog/stacks/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "catalog", "stacks", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "ID del stack"
+                }
+              ]
+            },
+            "description": "Eliminar un stack"
+          },
+          "response": []
+        }
+      ],
+      "description": "Gestión de stacks tecnológicos (requiere autenticación)"
+    },
+    {
+      "name": "📊 Metrics",
+      "item": [
+        {
+          "name": "Get Metrics",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/metrics",
+              "host": ["{{baseUrl}}"],
+              "path": ["metrics"]
+            },
+            "description": "Obtener métricas de Prometheus para monitoreo"
+          },
+          "response": []
+        }
+      ],
+      "description": "Métricas de monitoreo (público)"
+    }
+  ]
+}

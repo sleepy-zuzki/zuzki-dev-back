@@ -1,0 +1,63 @@
+{
+  "info": {
+    "name": "Zuzki Dev - Users",
+    "description": "Endpoints para la gestión de usuarios",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Get User by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/users/:id",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "users", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{userId}}",
+              "description": "ID del usuario"
+            }
+          ]
+        },
+        "description": "Obtener información de un usuario por su ID"
+      },
+      "response": []
+    },
+    {
+      "name": "Create User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"nuevo@example.com\",\n  \"password\": \"password123\",\n  \"roles\": [\"user\"],\n  \"isActive\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/users",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "users"]
+        },
+        "description": "Crear un nuevo usuario"
+      },
+      "response": []
+    }
+  ]
+}

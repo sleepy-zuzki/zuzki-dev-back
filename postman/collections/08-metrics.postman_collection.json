@@ -1,0 +1,26 @@
+{
+  "info": {
+    "name": "Zuzki Dev - Metrics",
+    "description": "Endpoint de métricas para monitoreo",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "item": [
+    {
+      "name": "Get Metrics",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/metrics",
+          "host": ["{{baseUrl}}"],
+          "path": ["metrics"]
+        },
+        "description": "Obtener métricas de Prometheus para monitoreo"
+      },
+      "response": []
+    }
+  ]
+}
