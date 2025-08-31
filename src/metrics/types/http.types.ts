@@ -13,5 +13,5 @@ export interface HttpRequest {
 export interface HttpResponse {
   statusCode?: number;
   setHeader(name: string, value: string | number | string[]): this;
-  send(body?: never): this;
+  send(body?: string): this;
 }
