@@ -1,0 +1,15 @@
+/**
+ * Interfaces mínimas para HTTP request/response
+ * Evitan dependencia directa de Express manteniendo tipado estricto
+ */
+
+export interface HttpRequest {
+  method?: string;
+  path?: string;
+  url?: string;
+  route?: { path?: string };
+}
+
+export interface HttpResponse {
+  statusCode?: number;
+}

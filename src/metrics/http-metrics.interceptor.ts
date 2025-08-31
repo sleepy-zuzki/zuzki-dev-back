@@ -9,17 +9,7 @@ import { tap, catchError } from 'rxjs/operators';
 
 import { MetricsService } from './metrics.service';
 
-// Definir interfaces mínimas necesarias para evitar dependencia directa de Express
-interface HttpRequest {
-  method?: string;
-  path?: string;
-  url?: string;
-  route?: { path?: string };
-}
-
-interface HttpResponse {
-  statusCode?: number;
-}
+import type { HttpRequest, HttpResponse, RouteLike } from './types';
 
 function hrtimeToSeconds(hr: [number, number]): number {
   return hr[0] + hr[1] / 1e9;
@@ -46,8 +36,6 @@ export class HttpMetricsInterceptor implements NestInterceptor {
 
     const method = (req.method || 'GET').toUpperCase();
 
-    // Evitar acceder a req.route sin usar any/unknown, usando aserción estructural tipada
-    type RouteLike = { path?: string };
     const maybeRoute: RouteLike | undefined = (req as { route?: RouteLike })
       .route;
     let route = 'unknown';
