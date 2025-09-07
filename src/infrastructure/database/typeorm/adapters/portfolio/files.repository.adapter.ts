@@ -8,6 +8,7 @@ import {
   UpdateFileInput,
 } from '@domain/portfolio/types/file.types';
 import { FileEntity } from '@infra/database/typeorm/entities/portfolio/file.entity';
+import { ProjectEntity } from '@infra/database/typeorm/entities/portfolio/project.entity';
 
 export class FilesRepositoryTypeormAdapter implements FilesRepositoryPort {
   constructor(
@@ -31,7 +32,17 @@ export class FilesRepositoryTypeormAdapter implements FilesRepositoryPort {
       provider: input.provider ?? null,
       mimeType: input.mimeType ?? null,
       sizeBytes: input.sizeBytes ?? null,
-      projectId: input.projectId ?? null,
+      // Relaciones opcionales
+      project:
+        typeof input.projectId === 'number' && input.projectId !== null
+          ? ({ id: input.projectId } as ProjectEntity)
+          : null,
+      carouselProject:
+        typeof input.carouselProjectId === 'number' &&
+        input.carouselProjectId !== null
+          ? ({ id: input.carouselProjectId } as ProjectEntity)
+          : null,
+      carouselPosition: input.carouselPosition ?? null,
     } as unknown as FileEntity);
     const saved = await this.repo.save(entity);
     return this.toDomain(saved);
@@ -46,11 +57,24 @@ export class FilesRepositoryTypeormAdapter implements FilesRepositoryPort {
       provider: input.provider ?? found.provider,
       mimeType: input.mimeType ?? found.mimeType,
       sizeBytes: input.sizeBytes ?? found.sizeBytes,
-      projectId:
-        typeof input.projectId === 'number'
-          ? input.projectId
-          : (found.project?.id ?? null),
     });
+
+    if (input.projectId !== undefined) {
+      found.project =
+        typeof input.projectId === 'number' && input.projectId !== null
+          ? ({ id: input.projectId } as ProjectEntity)
+          : null;
+    }
+    if (input.carouselProjectId !== undefined) {
+      found.carouselProject =
+        typeof input.carouselProjectId === 'number' &&
+        input.carouselProjectId !== null
+          ? ({ id: input.carouselProjectId } as ProjectEntity)
+          : null;
+    }
+    if (input.carouselPosition !== undefined) {
+      found.carouselPosition = input.carouselPosition ?? null;
+    }
 
     const saved = await this.repo.save(found);
     return this.toDomain(saved);
@@ -69,6 +93,8 @@ export class FilesRepositoryTypeormAdapter implements FilesRepositoryPort {
       mimeType: e.mimeType ?? null,
       sizeBytes: e.sizeBytes ?? null,
       projectId: e.project?.id ?? null,
+      carouselProjectId: e.carouselProject?.id ?? null,
+      carouselPosition: e.carouselPosition ?? null,
     };
   }
 }

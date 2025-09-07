@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   NotFoundException,
   Param,
   ParseIntPipe,
@@ -14,8 +16,10 @@ import { PinoLogger } from 'nestjs-pino';
 import { toProjectView } from '@application/portfolio/mappers/project.mappers';
 import { ProjectsService } from '@application/portfolio/services/projects.service';
 
+import { AddImageToCarouselDto } from '../dto/add-image-to-carousel.dto';
 import { CreateProjectDto } from '../dto/create-project.dto';
 import { ProjectResponseDto } from '../dto/project.response.dto';
+import { ReorderCarouselDto } from '../dto/reorder-carousel.dto';
 import { UpdateProjectDto } from '../dto/update-project.dto';
 
 @Controller({ path: 'portfolio/projects', version: '1' })
@@ -103,5 +107,50 @@ export class ProjectsController {
     }
     this.logger.info({ id }, 'Proyecto eliminado');
     return { success: true };
+  }
+
+  // --- Endpoints del Carrusel ---
+
+  @Post(':id/images')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async addImageToCarousel(
+    @Param('id', ParseIntPipe) projectId: number,
+    @Body() dto: AddImageToCarouselDto,
+  ): Promise<void> {
+    this.logger.info(
+      { projectId, fileId: dto.fileId, position: dto.position },
+      'Añadiendo imagen al carrusel',
+    );
+    await this.projectsService.addImageToCarousel(
+      projectId,
+      dto.fileId,
+      dto.position,
+    );
+    this.logger.info(
+      { projectId, fileId: dto.fileId },
+      'Imagen añadida al carrusel',
+    );
+  }
+
+  @Delete(':id/images/:fileId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removeImageFromCarousel(
+    @Param('id', ParseIntPipe) projectId: number,
+    @Param('fileId', ParseIntPipe) fileId: number,
+  ): Promise<void> {
+    this.logger.info({ projectId, fileId }, 'Eliminando imagen del carrusel');
+    await this.projectsService.removeImageFromCarousel(projectId, fileId);
+    this.logger.info({ projectId, fileId }, 'Imagen eliminada del carrusel');
+  }
+
+  @Patch(':id/images')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async reorderCarouselImages(
+    @Param('id', ParseIntPipe) projectId: number,
+    @Body() dto: ReorderCarouselDto,
+  ): Promise<void> {
+    this.logger.info({ projectId }, 'Reordenando imágenes del carrusel');
+    await this.projectsService.updateCarouselImageOrder(projectId, dto.images);
+    this.logger.info({ projectId }, 'Carrusel de imágenes reordenado');
   }
 }

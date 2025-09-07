@@ -4,9 +4,9 @@ import { Repository } from 'typeorm';
 import { ProjectsRepositoryPort } from '@application/portfolio/ports/projects-repository.port';
 import {
   CreateProjectInput,
+  FileRef,
   Project,
   TechnologyRef,
-  FileRef,
   UpdateProjectInput,
 } from '@domain/portfolio/types/project.types';
 import { FileEntity } from '@infra/database/typeorm/entities/portfolio/file.entity';
@@ -15,6 +15,11 @@ import { ProjectEntity } from '@infra/database/typeorm/entities/portfolio/projec
 type HasProjectRels = {
   technologies?: Array<{ id: number; name: string; slug: string }>;
   previewImage?: { id: number; url: string } | null;
+  carouselImages?: Array<{
+    id: number;
+    url: string;
+    carouselPosition?: number | null;
+  }>;
 };
 
 export class ProjectsRepositoryTypeormAdapter
@@ -23,6 +28,8 @@ export class ProjectsRepositoryTypeormAdapter
   constructor(
     @InjectRepository(ProjectEntity)
     private readonly repo: Repository<ProjectEntity>,
+    @InjectRepository(FileEntity)
+    private readonly filesRepo: Repository<FileEntity>,
   ) {}
 
   async findAll(): Promise<Project[]> {
@@ -32,6 +39,32 @@ export class ProjectsRepositoryTypeormAdapter
 
   async findBySlug(slug: string): Promise<Project | null> {
     const found = await this.repo.findOne({ where: { slug } });
+    return found ? this.toDomain(found) : null;
+  }
+
+  async findBySlugWithDetails(slug: string): Promise<Project | null> {
+    const found = await this.repo.findOne({
+      where: { slug },
+      relations: ['technologies', 'previewImage', 'carouselImages'],
+      order: {
+        carouselImages: {
+          carouselPosition: 'ASC',
+        },
+      },
+    });
+    return found ? this.toDomain(found) : null;
+  }
+
+  async findByIdWithDetails(id: number): Promise<Project | null> {
+    const found = await this.repo.findOne({
+      where: { id },
+      relations: ['technologies', 'previewImage', 'carouselImages'],
+      order: {
+        carouselImages: {
+          carouselPosition: 'ASC',
+        },
+      },
+    });
     return found ? this.toDomain(found) : null;
   }
 
@@ -45,7 +78,6 @@ export class ProjectsRepositoryTypeormAdapter
       category: input.category ?? null,
       year: input.year ?? null,
       isFeatured: input.isFeatured ?? false,
-      // technologyIds y previewImageId se resuelven en capas superiores o mediante otra lógica
     } as unknown as ProjectEntity);
     const saved = await this.repo.save(entity);
     return this.toDomain(saved);
@@ -78,7 +110,6 @@ export class ProjectsRepositoryTypeormAdapter
     return (result.affected ?? 0) > 0;
   }
 
-  // ManyToMany: reemplaza completamente las tecnologías del proyecto
   async setTechnologies(
     projectId: number,
     technologyIds: number[],
@@ -90,12 +121,10 @@ export class ProjectsRepositoryTypeormAdapter
       .set(technologyIds);
   }
 
-  // OneToOne (FK en FileEntity): limpia previo preview y asigna nuevo file si corresponde
   async setPreviewImage(
     projectId: number,
     fileId: number | null,
   ): Promise<void> {
-    // Limpia cualquier preview actual del proyecto (si existe)
     await this.repo
       .createQueryBuilder()
       .relation(ProjectEntity, 'previewImage')
@@ -103,13 +132,58 @@ export class ProjectsRepositoryTypeormAdapter
       .set(null);
 
     if (fileId !== null) {
-      // Asigna el archivo como preview del proyecto estableciendo la FK en FileEntity
       await this.repo
         .createQueryBuilder()
         .relation(FileEntity, 'project')
         .of(fileId)
         .set(projectId);
     }
+  }
+
+  async addImageToCarousel(
+    projectId: number,
+    fileId: number,
+    position?: number | null,
+  ): Promise<void> {
+    const file = await this.filesRepo.findOneBy({ id: fileId });
+    if (!file) {
+      // Opcional: lanzar NotFoundException si el archivo no existe
+      return;
+    }
+
+    file.carouselProject = { id: projectId } as ProjectEntity;
+    file.carouselPosition = position ?? 0;
+    await this.filesRepo.save(file);
+  }
+
+  async removeImageFromCarousel(
+    projectId: number,
+    fileId: number,
+  ): Promise<void> {
+    const file = await this.filesRepo.findOne({
+      where: { id: fileId, carouselProject: { id: projectId } },
+    });
+
+    if (file) {
+      file.carouselProject = null;
+      file.carouselPosition = null;
+      await this.filesRepo.save(file);
+    }
+  }
+
+  async updateCarouselImageOrder(
+    projectId: number,
+    imageOrders: Array<{ fileId: number; position: number }>,
+  ): Promise<void> {
+    await this.repo.manager.transaction(async (em) => {
+      for (const order of imageOrders) {
+        await em.update(
+          FileEntity,
+          { id: order.fileId, carouselProject: { id: projectId } },
+          { carouselPosition: order.position },
+        );
+      }
+    });
   }
 
   private toDomain(e: ProjectEntity): Project {
@@ -126,6 +200,15 @@ export class ProjectsRepositoryTypeormAdapter
       ? { id: rels.previewImage.id, url: rels.previewImage.url }
       : null;
 
+    const carouselImages: FileRef[] =
+      Array.isArray(rels.carouselImages) && rels.carouselImages.length
+        ? rels.carouselImages.map((img) => ({
+            id: img.id,
+            url: img.url,
+            position: img.carouselPosition,
+          }))
+        : [];
+
     return {
       id: e.id,
       name: e.name,
@@ -138,6 +221,7 @@ export class ProjectsRepositoryTypeormAdapter
       isFeatured: e.isFeatured ?? false,
       technologies,
       previewImage,
+      carouselImages,
     };
   }
 }
