@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -8,13 +9,15 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { PinoLogger } from 'nestjs-pino';
 
 import { toFileView } from '@application/portfolio/mappers/file.mappers';
 import { FilesService } from '@application/portfolio/services/files.service';
 
-import { CreateFileDto } from '../dto/create-file.dto';
 import { FileResponseDto } from '../dto/file.response.dto';
 import { UpdateFileDto } from '../dto/update-file.dto';
 
@@ -49,18 +52,35 @@ export class FilesController {
   }
 
   @Post()
-  async create(@Body() dto: CreateFileDto): Promise<FileResponseDto> {
+  @UseInterceptors(FileInterceptor('file'))
+  async create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('projectId') projectIdRaw?: string,
+  ): Promise<FileResponseDto> {
+    if (!file) {
+      throw new BadRequestException('No file uploaded');
+    }
+
     this.logger.info(
-      { url: dto.url, projectId: dto.projectId },
+      {
+        fileName: file.originalname,
+        mimeType: file.mimetype,
+        size: file.size,
+        projectId: projectIdRaw,
+      },
       'Creando archivo',
     );
-    const created = await this.filesService.create({
-      url: dto.url,
-      provider: dto.provider ?? null,
-      mimeType: dto.mimeType ?? null,
-      sizeBytes: dto.sizeBytes ?? null,
-      projectId: dto.projectId ?? null,
-    });
+    const projectId = projectIdRaw ? parseInt(projectIdRaw, 10) : undefined;
+    const created = await this.filesService.create(
+      {
+        fileName: file.originalname,
+        fileType: file.mimetype,
+        body: file.buffer,
+        sizeBytes: file.size,
+        pathPrefix: `projects/${projectId}`,
+      },
+      projectId,
+    );
     this.logger.info({ id: created.id }, 'Archivo creado');
     return toFileView(created);
   }
