@@ -14,6 +14,56 @@
       }
     ]
   },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          "// Script global para verificar y obtener token",
+          "const isPublicRequest = pm.request.url.path.some(segment => ['auth', 'health', 'metrics'].includes(segment));",
+          "",
+          "if (!isPublicRequest && !pm.environment.get('accessToken')) {",
+          "    console.log('⚠️ Token no encontrado. Realizando login automático...');",
+          "",
+          "    const loginRequest = {",
+          "        url: `${pm.environment.get('baseUrl')}/${pm.environment.get('version')}/auth/login`,",
+          "        method: 'POST',",
+          "        header: {",
+          "            'Content-Type': 'application/json'",
+          "        },",
+          "        body: {",
+          "            mode: 'raw',",
+          "            raw: JSON.stringify({",
+          "                email: 'admin@example.com',",
+          "                password: 'password123'",
+          "            })",
+          "        }",
+          "    };",
+          "",
+          "    pm.sendRequest(loginRequest, (err, response) => {",
+          "        if (err) {",
+          "            console.error('Error en login automático:', err);",
+          "        } else if (response.code === 200) {",
+          "            const responseData = response.json();",
+          "            pm.environment.set('accessToken', responseData.accessToken);",
+          "            pm.environment.set('refreshToken', responseData.refreshToken);",
+          "            pm.environment.set('userId', responseData.user.id);",
+          "            console.log('✅ Login automático exitoso. Token guardado.');",
+          "        } else {",
+          "            console.error(`❌ Error en login automático: ${response.status} - ${response.code}`);",
+          "            try {",
+          "                console.error('Respuesta:', response.json());",
+          "            } catch (e) {",
+          "                console.error('Respuesta (raw): ', response.text());",
+          "            }",
+          "        }",
+          "    });",
+          "}"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
   "item": [
     {
       "name": "List Files",
@@ -51,25 +101,31 @@
       "response": []
     },
     {
-      "name": "Create File",
+      "name": "Create File (Upload)",
       "request": {
         "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
+        "header": [],
         "body": {
-          "mode": "raw",
-          "raw": "{\n  \"url\": \"https://example.com/image.jpg\",\n  \"provider\": \"cloudinary\",\n  \"mimeType\": \"image/jpeg\",\n  \"sizeBytes\": 102400,\n  \"projectId\": 1\n}"
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "projectId",
+              "value": "1",
+              "type": "text"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": []
+            }
+          ]
         },
         "url": {
           "raw": "{{baseUrl}}/{{version}}/portfolio/files",
           "host": ["{{baseUrl}}"],
           "path": ["{{version}}", "portfolio", "files"]
         },
-        "description": "Crear un nuevo archivo"
+        "description": "Crea un nuevo archivo subiendo el fichero. El body es de tipo form-data."
       },
       "response": []
     },
