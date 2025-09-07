@@ -1,5 +1,9 @@
 import type { Project } from '@domain/portfolio/types/project.types';
 
+import { toFileView } from './file.mappers';
+
+import type { FileView } from './file.mappers';
+
 export interface ProjectView {
   id: number;
   name: string;
@@ -12,6 +16,7 @@ export interface ProjectView {
   isFeatured: boolean;
   technologies: { id: number; name: string; slug: string }[];
   previewImage?: { id: number; url: string } | null;
+  carouselImages?: FileView[];
 }
 
 export const toProjectView = (p: Project): ProjectView => ({
@@ -32,4 +37,5 @@ export const toProjectView = (p: Project): ProjectView => ({
   previewImage: p.previewImage
     ? { id: p.previewImage.id, url: p.previewImage.url }
     : null,
+  carouselImages: p.carouselImages?.map(toFileView) ?? [],
 });

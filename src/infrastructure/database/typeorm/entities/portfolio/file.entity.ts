@@ -5,6 +5,7 @@ import {
   OneToOne,
   JoinColumn,
   CreateDateColumn,
+  ManyToOne,
 } from 'typeorm';
 
 import { ProjectEntity } from './project.entity';
@@ -34,6 +35,21 @@ export class FileEntity {
   })
   @JoinColumn({ name: 'project_id', referencedColumnName: 'id' })
   project?: ProjectEntity | null;
+
+  // Relación ManyToOne opcional para carrusel
+  @ManyToOne(
+    () => ProjectEntity,
+    (project: ProjectEntity) => project.carouselImages,
+    {
+      nullable: true,
+      onDelete: 'CASCADE',
+    },
+  )
+  @JoinColumn({ name: 'carousel_project_id', referencedColumnName: 'id' })
+  carouselProject?: ProjectEntity | null;
+
+  @Column({ name: 'carousel_position', type: 'int', nullable: true })
+  carouselPosition?: number | null;
 
   @CreateDateColumn({
     name: 'created_at',

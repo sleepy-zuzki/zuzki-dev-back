@@ -16,6 +16,8 @@ export interface TechnologyRef {
 export interface FileRef {
   id: number;
   url: string;
+  // Posición opcional dentro de un carrusel
+  position?: number | null;
 }
 
 export interface Project {
@@ -30,6 +32,8 @@ export interface Project {
   isFeatured: boolean;
   technologies: TechnologyRef[];
   previewImage?: FileRef | null;
+  // Imágenes del carrusel ordenadas por position
+  carouselImages?: FileRef[];
 }
 
 export interface CreateProjectInput {

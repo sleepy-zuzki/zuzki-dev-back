@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 
 import { TechnologyEntity } from '../catalog/technology.entity';
@@ -62,6 +63,12 @@ export class ProjectEntity {
     nullable: true,
   })
   previewImage?: FileEntity | null;
+
+  // Relación 1-N para imágenes de carrusel (FK y posición viven en FileEntity)
+  @OneToMany(() => FileEntity, (file) => file.carouselProject, {
+    cascade: ['insert', 'update'],
+  })
+  carouselImages?: FileEntity[];
 
   @CreateDateColumn({
     name: 'created_at',
