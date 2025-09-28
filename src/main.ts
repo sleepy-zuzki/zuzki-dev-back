@@ -10,6 +10,13 @@ async function bootstrap() {
     bufferLogs: true,
   });
 
+  app.enableCors({
+    origin: ['http://localhost:4200', 'https://api.zuzki.dev'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    allowedHeaders: ['content-type', 'Authorization'],
+    credentials: true,
+  });
+
   // Compresión HTTP
   app.use(
     compression({
