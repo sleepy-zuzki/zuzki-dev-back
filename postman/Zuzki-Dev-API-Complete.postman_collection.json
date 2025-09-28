@@ -20,7 +20,7 @@
       "script": {
         "exec": [
           "// Script global para verificar y obtener token",
-          "const isPublicRequest = pm.request.url.path.some(segment => ['auth', 'health', 'metrics'].includes(segment));",
+          "const isPublicRequest = pm.request.url.path.some(segment => ['auth', 'health', 'metrics', 'contact'].includes(segment));",
           "",
           "if (!isPublicRequest && !pm.environment.get('accessToken')) {",
           "    console.log('⚠️ Token no encontrado. Realizando login automático...');",
@@ -771,6 +771,38 @@
         }
       ],
       "description": "Métricas de monitoreo (público)"
+    },
+    {
+      "name": "✉️ Contact",
+      "item": [
+        {
+          "name": "Send Contact Message",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"message\": \"Hola, me gustaría ponerme en contacto.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/{{version}}/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{version}}", "contact"]
+            },
+            "description": "Enviar mensaje de contacto. Debe responder 204 No Content."
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoint de contacto (público)"
     }
   ]
 }

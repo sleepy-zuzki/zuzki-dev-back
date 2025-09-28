@@ -1,0 +1,35 @@
+{
+  "info": {
+    "name": "09 - Contact",
+    "description": "Colección para el endpoint de contacto",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Send Contact Message",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"message\": \"Hola, me gustaría ponerme en contacto.\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/contact",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "contact"]
+        },
+        "description": "Envía un mensaje de contacto. Responde 204 No Content si es exitoso."
+      },
+      "response": []
+    }
+  ]
+}
