@@ -28,6 +28,7 @@ import { ConfigurationService } from '@config/configuration.service';
           synchronize: config.getBoolean('TYPEORM_SYNC', false),
           logging: config.getBoolean('TYPEORM_LOGGING', false),
           ssl: sslValue,
+          logger: 'advanced-console',
         };
       },
     }),
