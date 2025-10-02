@@ -10,6 +10,23 @@ function parseSsl(val?: string) {
   return undefined;
 }
 
+// Log seguro para CLI/migraciones (no expone secretos)
+(() => {
+  const safeVal = (v?: string) => (v ? '***' : 'undefined');
+  // eslint-disable-next-line no-console
+  console.log('[DB Init][CLI] Configuración de conexión', {
+    host: process.env.POSTGRES_HOST || 'localhost',
+    port: Number(process.env.POSTGRES_PORT || 5432),
+    database: process.env.POSTGRES_DB || 'postgres',
+    schema: process.env.POSTGRES_SCHEMA || 'portfolio',
+    ssl: process.env.POSTGRES_SSL || 'false',
+    usernameDefined: Boolean(process.env.POSTGRES_USER),
+    passwordDefined: Boolean(process.env.POSTGRES_PASSWORD),
+    username: safeVal(process.env.POSTGRES_USER),
+    password: safeVal(process.env.POSTGRES_PASSWORD),
+  });
+})();
+
 export default new DataSource({
   type: 'postgres',
   host: process.env.POSTGRES_HOST || 'localhost',

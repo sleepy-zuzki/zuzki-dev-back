@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -14,20 +14,53 @@ import { ConfigurationService } from '@config/configuration.service';
       imports: [ConfigurationModule],
       inject: [ConfigurationService],
       useFactory: (config: ConfigurationService) => {
+        const logger = new Logger('DatabaseModule');
         const sslValue = config.getPostgresSsl();
+
+        const host = config.getString('POSTGRES_HOST', 'localhost');
+        const port = config.getNumber('POSTGRES_PORT', 5432);
+        const username = config.getString('POSTGRES_USER', 'postgres');
+        const password = config.getString('POSTGRES_PASSWORD', 'postgres');
+        const database = config.getString('POSTGRES_DB', 'postgres');
+        const schema = 'portfolio';
+        const synchronize = config.getBoolean('TYPEORM_SYNC', false);
+        const logging = config.getBoolean('TYPEORM_LOGGING', false);
+
+        // Log seguro sin exponer secretos
+        logger.log(`Intentando conectar a Postgres`);
+        logger.log(
+          JSON.stringify(
+            {
+              host,
+              port,
+              database,
+              schema,
+              ssl: sslValue,
+              synchronize,
+              logging,
+              usernameDefined: Boolean(username),
+              passwordDefined: Boolean(password),
+            },
+            null,
+            2,
+          ),
+        );
 
         return {
           type: 'postgres',
-          host: config.getString('POSTGRES_HOST', 'localhost'),
-          port: config.getNumber('POSTGRES_PORT', 5432),
-          username: config.getString('POSTGRES_USER', 'postgres'),
-          password: config.getString('POSTGRES_PASSWORD', 'postgres'),
-          database: config.getString('POSTGRES_DB', 'postgres'),
-          schema: 'portfolio',
+          host,
+          port,
+          username,
+          password,
+          database,
+          schema,
           autoLoadEntities: true,
-          synchronize: config.getBoolean('TYPEORM_SYNC', false),
-          logging: config.getBoolean('TYPEORM_LOGGING', false),
+          synchronize,
+          logging,
           ssl: sslValue,
+          // Parámetros de reintento útiles para depurar intermitencias
+          retryAttempts: 3,
+          retryDelay: 2000,
           logger: 'advanced-console',
         };
       },
