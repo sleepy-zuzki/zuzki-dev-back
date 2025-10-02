@@ -58,6 +58,9 @@ import { ConfigurationService } from '@config/configuration.service';
           synchronize,
           logging,
           ssl: sslValue,
+          extra: {
+            poolMode: config.getString('POSTGRES_POOL_MODE', 'session'),
+          },
           // Parámetros de reintento útiles para depurar intermitencias
           retryAttempts: 3,
           retryDelay: 2000,

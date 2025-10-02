@@ -40,4 +40,5 @@ export default new DataSource({
   synchronize: false,
   logging: process.env.TYPEORM_LOGGING === 'true',
   ssl: parseSsl(process.env.POSTGRES_SSL),
+  extra: { poolMode: process.env.POSTGRES_POOL_MODE || 'session' },
 });
