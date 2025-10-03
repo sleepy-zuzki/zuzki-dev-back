@@ -118,7 +118,7 @@ export class ProjectsRepositoryTypeormAdapter
       .createQueryBuilder()
       .relation(ProjectEntity, 'technologies')
       .of(projectId)
-      .set(technologyIds);
+      .add(technologyIds);
   }
 
   async setPreviewImage(
