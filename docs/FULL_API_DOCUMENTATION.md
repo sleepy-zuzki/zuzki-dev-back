@@ -129,7 +129,21 @@ Endpoints for managing the projects portfolio.
 
 - **Endpoint**: `POST /portfolio/projects`
 - **Authentication**: Required.
-- **Request Body** (`application/json`): See `CreateProjectDto` for all optional and required fields (name, slug, description, etc.).
+- **Request Body** (`application/json`):
+
+| Campo            | Tipo           | Requerido | Validaciones                                                              | Descripción                          |
+| :--------------- | :------------- | :-------- | :------------------------------------------------------------------------ | :----------------------------------- |
+| `name`           | string         | Sí        | 2-150 caracteres; se recorta espacios                                     | Nombre del proyecto.                 |
+| `slug`           | string         | Sí        | 2-160; kebab-case `^[a-z0-9]+(?:-[a-z0-9]+)*$`; se convierte a minúsculas | Slug único del proyecto.             |
+| `description`    | string \| null | No        | Máx. 1000 caracteres                                                      | Descripción del proyecto.            |
+| `repoUrl`        | string \| null | No        | URL válida con protocolo; máx. 255                                        | URL del repositorio.                 |
+| `liveUrl`        | string \| null | No        | URL válida con protocolo; máx. 255                                        | URL del sitio en producción/demo.    |
+| `category`       | string \| null | No        | Valor enumerado permitido por el backend                                  | Categoría del proyecto.              |
+| `year`           | number \| null | No        | Entero; rango 1900-2100                                                   | Año de realización.                  |
+| `isFeatured`     | boolean        | No        | Acepta booleano o cadena `"true"`/`"false"`                               | Indica si el proyecto es destacado.  |
+| `technologyIds`  | number[]       | No        | Arreglo de enteros; cada valor >= 1                                       | IDs de tecnologías asociadas.        |
+| `previewImageId` | number \| null | No        | Entero >= 1                                                               | ID de la imagen de previsualización. |
+
 - **Success Response (`201 Created`)**: Returns the newly created `ProjectResponseDto`.
 
 ### **Update Project**
@@ -138,7 +152,21 @@ Endpoints for managing the projects portfolio.
 - **Authentication**: Required.
 - **URL Parameters**:
   - `id` (integer, required): The ID of the project to update.
-- **Request Body** (`application/json`): See `UpdateProjectDto` for all available fields. All fields are optional.
+- **Request Body** (`application/json`): Todos los campos son opcionales.
+
+| Campo            | Tipo             | Requerido | Validaciones                                                              | Descripción                                                   |
+| :--------------- | :--------------- | :-------- | :------------------------------------------------------------------------ | :------------------------------------------------------------ |
+| `name`           | string           | No        | 2-150 caracteres; se recorta                                              | Nombre del proyecto.                                          |
+| `slug`           | string           | No        | 2-160; kebab-case `^[a-z0-9]+(?:-[a-z0-9]+)*$`; se convierte a minúsculas | Slug único.                                                   |
+| `description`    | string \| null   | No        | Máx. 1000 caracteres                                                      | Descripción; enviar `null` para limpiar.                      |
+| `repoUrl`        | string \| null   | No        | URL válida con protocolo; máx. 255                                        | URL de repo; enviar `null` para limpiar.                      |
+| `liveUrl`        | string \| null   | No        | URL válida con protocolo; máx. 255                                        | URL en producción; enviar `null` para limpiar.                |
+| `category`       | string \| null   | No        | Valor enumerado permitido por el backend                                  | Categoría del proyecto.                                       |
+| `year`           | number \| null   | No        | Entero; rango 1900-2100                                                   | Año de realización.                                           |
+| `isFeatured`     | boolean          | No        | Acepta booleano o cadena `"true"`/`"false"`                               | Proyecto destacado.                                           |
+| `technologyIds`  | number[] \| null | No        | Arreglo de enteros; cada valor >= 1                                       | IDs de tecnologías; enviar `null` para limpiar.               |
+| `previewImageId` | number \| null   | No        | Entero >= 1                                                               | ID de imagen de previsualización; enviar `null` para limpiar. |
+
 - **Success Response (`200 OK`)**: Returns the updated `ProjectResponseDto`.
 
 ### **Delete Project**
@@ -206,12 +234,17 @@ Endpoints for managing files.
 
 - **Endpoint**: `POST /portfolio/files`
 - **Authentication**: Required.
-- **Request Body** (`multipart/form-data`):
+- **Request Body** (`application/json`):
 
-| Campo       | Tipo   | Requerido | Descripción                                  |
-| :---------- | :----- | :-------- | :------------------------------------------- |
-| `file`      | File   | Sí        | El archivo a subir.                          |
-| `projectId` | string | No        | ID del proyecto al que se asocia el archivo. |
+| Campo       | Tipo           | Requerido | Validaciones                         | Descripción                                      |
+| :---------- | :------------- | :-------- | :----------------------------------- | :----------------------------------------------- |
+| `url`       | string         | Sí        | URL válida con protocolo; se recorta | URL pública del archivo.                         |
+| `provider`  | string \| null | No        | Máx. 50 caracteres                   | Proveedor de almacenamiento (p. ej., s3, local). |
+| `mimeType`  | string \| null | No        | Máx. 100 caracteres                  | Tipo MIME del archivo.                           |
+| `sizeBytes` | number \| null | No        | Entero >= 0                          | Tamaño en bytes.                                 |
+| `projectId` | number \| null | No        | Entero >= 1                          | ID del proyecto asociado.                        |
+
+Nota: Enviar `null` en `provider`, `mimeType`, `sizeBytes` o `projectId` para no establecer o limpiar dichos valores.
 
 - **Success Response (`201 Created`)**: Returns the created `FileResponseDto`.
 
@@ -221,7 +254,16 @@ Endpoints for managing files.
 - **Authentication**: Required.
 - **URL Parameters**:
   - `id` (integer, required): The ID of the file to update.
-- **Request Body** (`application/json`): See `UpdateFileDto`. All fields are optional.
+- **Request Body** (`application/json`): Todos los campos son opcionales.
+
+| Campo       | Tipo           | Requerido | Validaciones             | Descripción                                       |
+| :---------- | :------------- | :-------- | :----------------------- | :------------------------------------------------ |
+| `url`       | string         | No        | URL válida con protocolo | URL pública del archivo.                          |
+| `provider`  | string \| null | No        | Máx. 50 caracteres       | Proveedor de almacenamiento; `null` para limpiar. |
+| `mimeType`  | string \| null | No        | Máx. 100 caracteres      | Tipo MIME; `null` para limpiar.                   |
+| `sizeBytes` | number \| null | No        | Entero >= 0              | Tamaño en bytes; `null` para limpiar.             |
+| `projectId` | number \| null | No        | Entero >= 1              | ID de proyecto asociado; `null` para limpiar.     |
+
 - **Success Response (`200 OK`)**: Returns the updated `FileResponseDto`.
 
 ### **Delete File**
