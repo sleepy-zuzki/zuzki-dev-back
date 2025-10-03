@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "",
   "author": "",
+  "engines": {
+    "pnpm": ">=9.0.0",
+    "node": ">=20.0.0 <22.14.0"
+  },
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
