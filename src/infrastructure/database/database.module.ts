@@ -1,4 +1,4 @@
-import { Module, Logger } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 
@@ -9,8 +9,6 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
     }),
     TypeOrmModule.forRoot(
       (() => {
-        const logger = new Logger('DatabaseModule');
-
         const getString = (key: string, def: string) => process.env[key] ?? def;
         const getNumber = (key: string, def: number) => {
           const v = process.env[key];
@@ -49,26 +47,6 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
         const synchronize = getBoolean('TYPEORM_SYNC', false);
         const logging = getBoolean('TYPEORM_LOGGING', false);
         const poolMode = getString('POSTGRES_POOL_MODE', 'session');
-
-        // Log seguro sin exponer secretos
-        logger.log(`Intentando conectar a Postgres`);
-        logger.log(
-          JSON.stringify(
-            {
-              host,
-              port,
-              database,
-              schema,
-              ssl: sslValue,
-              synchronize,
-              logging,
-              usernameDefined: Boolean(username),
-              passwordDefined: Boolean(password),
-            },
-            null,
-            2,
-          ),
-        );
 
         const options: TypeOrmModuleOptions = {
           type: 'postgres',
