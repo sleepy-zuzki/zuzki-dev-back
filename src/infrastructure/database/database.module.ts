@@ -60,8 +60,10 @@ import { ConfigurationService } from '@config/configuration.service';
           ssl: sslValue,
           extra: {
             poolMode: config.getString('POSTGRES_POOL_MODE', 'session'),
+            max: 5,
+            idleTimeoutMillis: 10000,
+            connectionTimeoutMillis: 10000,
           },
-          // Parámetros de reintento útiles para depurar intermitencias
           retryAttempts: 3,
           retryDelay: 2000,
           logger: 'advanced-console',
