@@ -13,7 +13,12 @@ import { FileEntity } from '@infra/database/typeorm/entities/portfolio/file.enti
 import { ProjectEntity } from '@infra/database/typeorm/entities/portfolio/project.entity';
 
 type HasProjectRels = {
-  technologies?: Array<{ id: number; name: string; slug: string }>;
+  technologies?: Array<{
+    id: number;
+    name: string;
+    slug: string;
+    website: string;
+  }>;
   previewImage?: { id: number; url: string } | null;
   carouselImages?: Array<{
     id: number;
@@ -202,6 +207,7 @@ export class ProjectsRepositoryTypeormAdapter
             id: t.id,
             name: t.name,
             slug: t.slug,
+            website: t.website,
           }))
         : [];
     const previewImage: FileRef | null = rels.previewImage

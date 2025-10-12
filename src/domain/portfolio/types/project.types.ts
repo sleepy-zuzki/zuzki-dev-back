@@ -11,6 +11,7 @@ export interface TechnologyRef {
   id: number;
   name: string;
   slug: string;
+  website: string;
 }
 
 export interface FileRef {
