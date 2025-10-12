@@ -38,6 +38,16 @@ export class ProjectsController {
     return items.map(toProjectView);
   }
 
+  @Get('featured')
+  async listFeatured(): Promise<ProjectResponseDto[]> {
+    const items = await this.projectsService.findFeatured();
+    this.logger.debug(
+      { count: items.length },
+      'Listado de proyectos destacados',
+    );
+    return items.map(toProjectView);
+  }
+
   @Get(':slug')
   async getBySlug(@Param('slug') slug: string): Promise<ProjectResponseDto> {
     this.logger.info({ slug }, 'Buscando proyecto por slug');

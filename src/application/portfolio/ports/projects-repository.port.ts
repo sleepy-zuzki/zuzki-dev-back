@@ -6,6 +6,7 @@ import type {
 
 export interface ProjectsRepositoryPort {
   findAll(): Promise<Project[]>;
+  findFeatured(): Promise<Project[]>;
   findBySlug(slug: string): Promise<Project | null>;
   findBySlugWithDetails(slug: string): Promise<Project | null>;
   findByIdWithDetails(id: number): Promise<Project | null>;

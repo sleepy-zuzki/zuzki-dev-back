@@ -19,6 +19,10 @@ export class ProjectsService {
     return this.projectsRepo.findAll();
   }
 
+  async findFeatured(): Promise<Project[]> {
+    return this.projectsRepo.findFeatured();
+  }
+
   findBySlug(slug: string): Promise<Project | null> {
     return this.projectsRepo.findBySlugWithDetails(slug);
   }

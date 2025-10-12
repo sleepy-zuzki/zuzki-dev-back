@@ -37,6 +37,14 @@ export class ProjectsRepositoryTypeormAdapter
     return list.map((e) => this.toDomain(e));
   }
 
+  async findFeatured(): Promise<Project[]> {
+    const list = await this.repo.find({
+      where: { isFeatured: true },
+      order: { name: 'ASC' },
+    });
+    return list.map((e) => this.toDomain(e));
+  }
+
   async findBySlug(slug: string): Promise<Project | null> {
     const found = await this.repo.findOne({ where: { slug } });
     return found ? this.toDomain(found) : null;
