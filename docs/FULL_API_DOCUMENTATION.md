@@ -282,16 +282,110 @@ Endpoints for managing catalog entities like Technologies and Stacks.
 
 ### **Technologies**
 
-- `GET /catalog/technologies`: Lists all technologies.
-- `GET /catalog/technologies/:slug`: Gets a single technology by slug.
-- `POST /catalog/technologies`: Creates a new technology.
-- `PATCH /catalog/technologies/:id`: Updates a technology.
-- `DELETE /catalog/technologies/:id`: Deletes a technology.
+#### **List Technologies**
+
+- **Endpoint**: `GET /catalog/technologies`
+- **Authentication**: Required.
+- **Success Response (`200 OK`)**: Returns an array of `TechnologyResponseDto` objects.
+
+#### **Get Technology by Slug**
+
+- **Endpoint**: `GET /catalog/technologies/:slug`
+- **Authentication**: Required.
+- **URL Parameters**:
+  - `slug` (string, required): The unique slug of the technology.
+- **Success Response (`200 OK`)**: Returns a single `TechnologyResponseDto` object.
+
+#### **Create Technology**
+
+- **Endpoint**: `POST /catalog/technologies`
+- **Authentication**: Required.
+- **Request Body** (`application/json`):
+
+| Campo     | Tipo           | Requerido | Validaciones                                  | Descripción                |
+| :-------- | :------------- | :-------- | :-------------------------------------------- | :------------------------- |
+| `name`    | string         | Sí        | 2-100 caracteres; se recorta                  | Nombre de la tecnología.   |
+| `slug`    | string         | Sí        | 2-50; kebab-case `^[a-z0-9]+(?:-[a-z0-9]+)*$` | Slug único.                |
+| `website` | string \| null | No        | URL válida con protocolo                      | URL del sitio web oficial. |
+
+- **Success Response (`201 Created`)**: Returns the newly created `TechnologyResponseDto`.
+
+#### **Update Technology**
+
+- **Endpoint**: `PATCH /catalog/technologies/:id`
+- **Authentication**: Required.
+- **URL Parameters**:
+  - `id` (integer, required): The ID of the technology to update.
+- **Request Body** (`application/json`): Todos los campos son opcionales.
+
+| Campo     | Tipo           | Requerido | Validaciones                                  | Descripción                             |
+| :-------- | :------------- | :-------- | :-------------------------------------------- | :-------------------------------------- |
+| `name`    | string         | No        | 2-100 caracteres; se recorta                  | Nombre de la tecnología.                |
+| `slug`    | string         | No        | 2-50; kebab-case `^[a-z0-9]+(?:-[a-z0-9]+)*$` | Slug único.                             |
+| `website` | string \| null | No        | URL válida con protocolo                      | URL del sitio web; `null` para limpiar. |
+
+- **Success Response (`200 OK`)**: Returns the updated `TechnologyResponseDto`.
+
+#### **Delete Technology**
+
+- **Endpoint**: `DELETE /catalog/technologies/:id`
+- **Authentication**: Required.
+- **URL Parameters**:
+  - `id` (integer, required): The ID of the technology to delete.
+- **Success Response (`200 OK`)**: Returns `{ "success": true }`.
 
 ### **Stacks**
 
-- `GET /catalog/stacks`: Lists all stacks.
-- `GET /catalog/stacks/:slug`: Gets a single stack by slug.
-- `POST /catalog/stacks`: Creates a new stack.
-- `PATCH /catalog/stacks/:id`: Updates a stack.
-- `DELETE /catalog/stacks/:id`: Deletes a stack.
+#### **List Stacks**
+
+- **Endpoint**: `GET /catalog/stacks`
+- **Authentication**: Required.
+- **Success Response (`200 OK`)**: Returns an array of `StackResponseDto` objects.
+
+#### **Get Stack by Slug**
+
+- **Endpoint**: `GET /catalog/stacks/:slug`
+- **Authentication**: Required.
+- **URL Parameters**:
+  - `slug` (string, required): The unique slug of the stack.
+- **Success Response (`200 OK`)**: Returns a single `StackResponseDto` object.
+
+#### **Create Stack**
+
+- **Endpoint**: `POST /catalog/stacks`
+- **Authentication**: Required.
+- **Request Body** (`application/json`):
+
+| Campo         | Tipo           | Requerido | Validaciones                                  | Descripción                       |
+| :------------ | :------------- | :-------- | :-------------------------------------------- | :-------------------------------- |
+| `name`        | string         | Sí        | 2-100 caracteres; se recorta                  | Nombre del stack.                 |
+| `slug`        | string         | Sí        | 2-50; kebab-case `^[a-z0-9]+(?:-[a-z0-9]+)*$` | Slug único.                       |
+| `area`        | string         | Sí        | Valor enumerado (`backend`, `frontend`, etc.) | Área a la que pertenece el stack. |
+| `description` | string \| null | No        | Máx. 1000 caracteres                          | Descripción del stack.            |
+
+- **Success Response (`201 Created`)**: Returns the newly created `StackResponseDto`.
+
+#### **Update Stack**
+
+- **Endpoint**: `PATCH /catalog/stacks/:id`
+- **Authentication**: Required.
+- **URL Parameters**:
+  - `id` (integer, required): The ID of the stack to update.
+- **Request Body** (`application/json`): Todos los campos son opcionales.
+
+| Campo         | Tipo           | Requerido | Validaciones                                  | Descripción                       |
+| :------------ | :------------- | :-------- | :-------------------------------------------- | :-------------------------------- |
+| `name`        | string         | No        | 2-100 caracteres; se recorta                  | Nombre del stack.                 |
+| `slug`        | string         | No        | 2-50; kebab-case `^[a-z0-9]+(?:-[a-z0-9]+)*$` | Slug único.                       |
+| `area`        | string         | No        | Valor enumerado (`backend`, `frontend`, etc.) | Área del stack.                   |
+| `description` | string \| null | No        | Máx. 1000 caracteres                          | Descripción; `null` para limpiar. |
+
+- **Success Response (`200 OK`)**: Returns the updated `StackResponseDto`.
+
+#### **Delete Stack**
+
+- **Endpoint**: `DELETE /catalog/stacks/:id`
+- **Authentication**: Required.
+- **URL Parameters**:
+  - `id` (integer, required): The ID of the stack to delete.
+- **Success Response (`200 OK`)**: Returns `{ "success": true }`.
