@@ -51,12 +51,11 @@ export class TechnologiesRepositoryTypeormAdapter
   }
 
   private toDomain = (e: TechnologyEntity): Technology => {
-    const withDesc = e as unknown as { description?: string | null };
     return {
       id: e.id,
       name: e.name,
       slug: e.slug,
-      description: withDesc.description ?? null,
+      website: e.website ?? null,
     };
   };
 }

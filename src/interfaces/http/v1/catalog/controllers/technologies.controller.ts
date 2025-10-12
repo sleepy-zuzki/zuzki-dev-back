@@ -54,6 +54,7 @@ export class TechnologiesController {
     const created = await this.technologiesService.create({
       name: dto.name,
       slug: dto.slug,
+      website: dto.website,
     });
     this.logger.info(
       { id: created.id, slug: created.slug },
