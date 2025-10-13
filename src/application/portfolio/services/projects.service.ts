@@ -27,38 +27,16 @@ export class ProjectsService {
     return this.projectsRepo.findBySlugWithDetails(slug);
   }
 
-  async create(input: CreateProjectInput): Promise<Project> {
-    const { technologyIds, previewImageId, ...data } = input;
-
-    const created = await this.projectsRepo.create({
-      ...data,
-    } as CreateProjectInput);
-
-    if (technologyIds !== undefined) {
-      await this.projectsRepo.setTechnologies(created.id, technologyIds ?? []);
-    }
-    if (previewImageId !== undefined) {
-      await this.projectsRepo.setPreviewImage(
-        created.id,
-        previewImageId ?? null,
-      );
-    }
-    return created;
+  async create(input: CreateProjectInput): Promise<Project | null> {
+    const created = await this.projectsRepo.create(input);
+    if (!created) return null;
+    return this.projectsRepo.findByIdWithDetails(created.id);
   }
 
   async update(id: number, input: UpdateProjectInput): Promise<Project | null> {
-    const { technologyIds, previewImageId, ...data } = input;
-
-    const updated = await this.projectsRepo.update(id, data);
+    const updated = await this.projectsRepo.update(id, input);
     if (!updated) return null;
-
-    if (technologyIds !== undefined) {
-      await this.projectsRepo.setTechnologies(id, technologyIds ?? []);
-    }
-    if (previewImageId !== undefined) {
-      await this.projectsRepo.setPreviewImage(id, previewImageId ?? null);
-    }
-    return updated;
+    return this.projectsRepo.findByIdWithDetails(id);
   }
 
   remove(id: number): Promise<boolean> {

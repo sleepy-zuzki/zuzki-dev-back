@@ -9,6 +9,7 @@ import {
   TechnologyRef,
   UpdateProjectInput,
 } from '@domain/portfolio/types/project.types';
+import { TechnologyEntity } from '@infra/database/typeorm/entities/catalog/technology.entity';
 import { FileEntity } from '@infra/database/typeorm/entities/portfolio/file.entity';
 import { ProjectEntity } from '@infra/database/typeorm/entities/portfolio/project.entity';
 
@@ -88,7 +89,7 @@ export class ProjectsRepositoryTypeormAdapter
     return found ? this.toDomain(found) : null;
   }
 
-  async create(input: CreateProjectInput): Promise<Project> {
+  async create(input: CreateProjectInput): Promise<Project | null> {
     const entity = this.repo.create({
       name: input.name,
       slug: input.slug,
@@ -98,13 +99,24 @@ export class ProjectsRepositoryTypeormAdapter
       category: input.category ?? null,
       year: input.year ?? null,
       isFeatured: input.isFeatured ?? false,
+      ...(input.technologyIds && {
+        technologies: input.technologyIds.map(
+          (id) => ({ id }) as TechnologyEntity,
+        ),
+      }),
+      ...(input.previewImageId && {
+        previewImage: { id: input.previewImageId } as FileEntity,
+      }),
     } as unknown as ProjectEntity);
     const saved = await this.repo.save(entity);
     return this.toDomain(saved);
   }
 
   async update(id: number, input: UpdateProjectInput): Promise<Project | null> {
-    const found = await this.repo.findOne({ where: { id } });
+    // Cargamos la entidad con sus relaciones actuales para poder modificarlas.
+    const found = await this.repo.findOne({
+      where: { id },
+    });
     if (!found) return null;
 
     Object.assign(found, {
@@ -121,6 +133,13 @@ export class ProjectsRepositoryTypeormAdapter
           : found.isFeatured,
     });
 
+    // Si se proporcionan technologyIds, los sincronizamos.
+    if (input.technologyIds) {
+      found.technologies = input.technologyIds.map(
+        (techId) => ({ id: techId }) as TechnologyEntity,
+      );
+    }
+
     const saved = await this.repo.save(found);
     return this.toDomain(saved);
   }
@@ -128,17 +147,6 @@ export class ProjectsRepositoryTypeormAdapter
   async remove(id: number): Promise<boolean> {
     const result = await this.repo.delete(id);
     return (result.affected ?? 0) > 0;
-  }
-
-  async setTechnologies(
-    projectId: number,
-    technologyIds: number[],
-  ): Promise<void> {
-    await this.repo
-      .createQueryBuilder()
-      .relation(ProjectEntity, 'technologies')
-      .of(projectId)
-      .set(technologyIds);
   }
 
   async setPreviewImage(

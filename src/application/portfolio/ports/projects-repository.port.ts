@@ -10,15 +10,9 @@ export interface ProjectsRepositoryPort {
   findBySlug(slug: string): Promise<Project | null>;
   findBySlugWithDetails(slug: string): Promise<Project | null>;
   findByIdWithDetails(id: number): Promise<Project | null>;
-  create(input: CreateProjectInput): Promise<Project>;
+  create(input: CreateProjectInput): Promise<Project | null>;
   update(id: number, input: UpdateProjectInput): Promise<Project | null>;
   remove(id: number): Promise<boolean>;
-
-  /**
-   * Establece (reemplaza) el conjunto de tecnologías asociadas al proyecto.
-   * Usa un array vacío para limpiar todas.
-   */
-  setTechnologies(projectId: number, technologyIds: number[]): Promise<void>;
 
   /**
    * Establece (reemplaza) la imagen de preview del proyecto.

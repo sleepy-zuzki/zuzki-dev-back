@@ -75,6 +75,24 @@ export class ProjectsController {
       technologyIds: dto.technologyIds ?? null,
       previewImageId: dto.previewImageId ?? null,
     });
+
+    if (!created) {
+      return {
+        carouselImages: [],
+        category: undefined,
+        description: undefined,
+        id: 0,
+        isFeatured: false,
+        liveUrl: undefined,
+        name: '',
+        previewImage: undefined,
+        repoUrl: undefined,
+        slug: '',
+        technologies: [],
+        year: undefined,
+      };
+    }
+
     this.logger.info({ id: created.id, slug: created.slug }, 'Proyecto creado');
     return toProjectView(created);
   }
