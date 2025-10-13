@@ -38,7 +38,10 @@ export class ProjectsRepositoryTypeormAdapter
   ) {}
 
   async findAll(): Promise<Project[]> {
-    const list = await this.repo.find({ order: { name: 'ASC' } });
+    const list = await this.repo.find({
+      order: { name: 'ASC' },
+      relations: ['technologies', 'previewImage'],
+    });
     return list.map((e) => this.toDomain(e));
   }
 
@@ -46,12 +49,16 @@ export class ProjectsRepositoryTypeormAdapter
     const list = await this.repo.find({
       where: { isFeatured: true },
       order: { name: 'ASC' },
+      relations: ['technologies', 'previewImage'],
     });
     return list.map((e) => this.toDomain(e));
   }
 
   async findBySlug(slug: string): Promise<Project | null> {
-    const found = await this.repo.findOne({ where: { slug } });
+    const found = await this.repo.findOne({
+      where: { slug },
+      relations: ['technologies', 'previewImage'],
+    });
     return found ? this.toDomain(found) : null;
   }
 

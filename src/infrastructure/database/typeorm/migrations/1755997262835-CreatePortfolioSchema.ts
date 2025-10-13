@@ -11,7 +11,7 @@ export class CreatePortfolioSchema1755997262835 implements MigrationInterface {
       `CREATE UNIQUE INDEX "IDX_e1b296cd0df9807f28db43bcab" ON "catalog"."technologies" ("slug") `,
     );
     await queryRunner.query(
-      `CREATE TABLE "portfolio"."files" ("id" SERIAL NOT NULL, "url" text NOT NULL, "provider" character varying(50), "mime_type" character varying(100), "size_bytes" integer, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "project_id" integer, CONSTRAINT "REL_b3c17c323fdc479a109e517f13" UNIQUE ("project_id"), CONSTRAINT "PK_6c16b9093a142e0e7613b04a3d9" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "portfolio"."files" ("id" SERIAL NOT NULL, "url" text NOT NULL, "provider" character varying(50), "mime_type" character varying(100), "size_bytes" integer, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "project_id" integer, "carousel_position" integer, "carousel_project_id" integer, CONSTRAINT "REL_b3c17c323fdc479a109e517f13" UNIQUE ("project_id"), CONSTRAINT "PK_6c16b9093a142e0e7613b04a3d9" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "portfolio"."projects" ("id" SERIAL NOT NULL, "name" character varying(150) NOT NULL, "slug" character varying(160) NOT NULL, "description" text, "repo_url" character varying(255), "live_url" character varying(255), "category" character varying(20), "year" integer, "is_featured" boolean NOT NULL DEFAULT false, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), CONSTRAINT "UQ_96e045ab8b0271e5f5a91eae1ee" UNIQUE ("slug"), CONSTRAINT "PK_6271df0a7aed1d6c0691ce6ac50" PRIMARY KEY ("id"))`,
@@ -35,6 +35,9 @@ export class CreatePortfolioSchema1755997262835 implements MigrationInterface {
       `ALTER TABLE "portfolio"."files" ADD CONSTRAINT "FK_b3c17c323fdc479a109e517f138" FOREIGN KEY ("project_id") REFERENCES "portfolio"."projects"("id") ON DELETE SET NULL ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
+      `ALTER TABLE "portfolio"."files" ADD CONSTRAINT "FK_aa9fe896dd6021d62a2a215284e" FOREIGN KEY ("carousel_project_id") REFERENCES "portfolio"."projects"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
       `ALTER TABLE "portfolio"."project_technologies" ADD CONSTRAINT "FK_f47224297940ea91297f9aaa898" FOREIGN KEY ("project_id") REFERENCES "portfolio"."projects"("id") ON DELETE CASCADE ON UPDATE CASCADE`,
     );
     await queryRunner.query(
@@ -48,6 +51,9 @@ export class CreatePortfolioSchema1755997262835 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE "portfolio"."project_technologies" DROP CONSTRAINT "FK_f47224297940ea91297f9aaa898"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "portfolio"."files" DROP CONSTRAINT "FK_aa9fe896dd6021d62a2a215284e"`,
     );
     await queryRunner.query(
       `ALTER TABLE "portfolio"."files" DROP CONSTRAINT "FK_b3c17c323fdc479a109e517f138"`,
