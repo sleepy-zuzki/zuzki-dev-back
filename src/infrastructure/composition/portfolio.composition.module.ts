@@ -29,7 +29,7 @@ import { StorageInfrastructureModule } from '@infra/storage/storage.module';
         projectsRepo: ProjectsRepositoryPort,
         filesRepo: FilesRepositoryPort,
       ) => new ProjectsService(projectsRepo, filesRepo),
-      inject: [PROJECTS_REPOSITORY],
+      inject: [PROJECTS_REPOSITORY, FILES_REPOSITORY],
     },
     {
       provide: FilesService,
