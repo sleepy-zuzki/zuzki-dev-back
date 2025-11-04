@@ -1,10 +1,14 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
+import {
+  CreateProjectInputSchema,
+  UpdateProjectInputSchema,
+} from '@domain/schemas/portfolio/project.schema';
 import type {
   Project,
   CreateProjectInput,
   UpdateProjectInput,
-} from '@domain/portfolio/types/project.types';
+} from '@domain/schemas/portfolio/project.schema';
 
 import type { FilesRepositoryPort } from '../ports/files-repository.port';
 import type { ProjectsRepositoryPort } from '../ports/projects-repository.port';
@@ -28,13 +32,15 @@ export class ProjectsService {
   }
 
   async create(input: CreateProjectInput): Promise<Project | null> {
-    const created = await this.projectsRepo.create(input);
+    const validatedInput = CreateProjectInputSchema.parse(input);
+    const created = await this.projectsRepo.create(validatedInput);
     if (!created) return null;
     return this.projectsRepo.findByIdWithDetails(created.id);
   }
 
   async update(id: number, input: UpdateProjectInput): Promise<Project | null> {
-    const updated = await this.projectsRepo.update(id, input);
+    const validatedInput = UpdateProjectInputSchema.parse(input);
+    const updated = await this.projectsRepo.update(id, validatedInput);
     if (!updated) return null;
     return this.projectsRepo.findByIdWithDetails(id);
   }
