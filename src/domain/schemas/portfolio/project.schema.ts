@@ -1,6 +1,13 @@
 import { z } from 'zod';
 
-import { PROJECT_CATEGORIES } from '@domain/portfolio/types/project.types';
+export const PROJECT_CATEGORIES = [
+  'front',
+  'back',
+  'mobile',
+  'devops',
+  'design',
+] as const;
+export type ProjectCategory = (typeof PROJECT_CATEGORIES)[number];
 
 // Schema for TechnologyRef
 export const TechnologyRefSchema = z.object({
@@ -25,6 +32,7 @@ export const ProjectSchema = z.object({
   name: z.string(),
   slug: z.string(),
   description: z.string().optional().nullable(),
+  details: z.string().optional().nullable(),
   repoUrl: z.string().optional().nullable(),
   liveUrl: z.string().optional().nullable(),
   category: z.enum(PROJECT_CATEGORIES).optional().nullable(),
@@ -41,6 +49,7 @@ export const CreateProjectInputSchema = z.object({
   name: z.string(),
   slug: z.string(),
   description: z.string().optional().nullable(),
+  details: z.string().optional().nullable(),
   repoUrl: z.string().optional().nullable(),
   liveUrl: z.string().optional().nullable(),
   category: z.enum(PROJECT_CATEGORIES).optional().nullable(),
@@ -56,6 +65,7 @@ export const UpdateProjectInputSchema = z.object({
   name: z.string().optional(),
   slug: z.string().optional(),
   description: z.string().optional().nullable(),
+  details: z.string().optional().nullable(),
   repoUrl: z.string().optional().nullable(),
   liveUrl: z.string().optional().nullable(),
   category: z.enum(PROJECT_CATEGORIES).optional().nullable(),

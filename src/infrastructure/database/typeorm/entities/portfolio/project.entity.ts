@@ -14,7 +14,7 @@ import { TechnologyEntity } from '../catalog/technology.entity';
 
 import { FileEntity } from './file.entity';
 
-import type { ProjectCategory } from '../../../../../domain/portfolio/types/project.types';
+import type { ProjectCategory } from '../../../../../domain/schemas/portfolio/project.schema';
 
 @Entity({ name: 'projects', schema: 'portfolio' })
 export class ProjectEntity {
@@ -29,6 +29,9 @@ export class ProjectEntity {
 
   @Column({ type: 'text', nullable: true })
   description?: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  details?: string | null;
 
   @Column({ name: 'repo_url', type: 'varchar', length: 255, nullable: true })
   repoUrl?: string | null;

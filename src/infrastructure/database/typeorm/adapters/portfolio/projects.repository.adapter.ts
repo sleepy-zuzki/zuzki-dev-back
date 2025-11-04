@@ -8,7 +8,7 @@ import {
   Project,
   TechnologyRef,
   UpdateProjectInput,
-} from '@domain/portfolio/types/project.types';
+} from '@domain/schemas/portfolio/project.schema';
 import { TechnologyEntity } from '@infra/database/typeorm/entities/catalog/technology.entity';
 import { FileEntity } from '@infra/database/typeorm/entities/portfolio/file.entity';
 import { ProjectEntity } from '@infra/database/typeorm/entities/portfolio/project.entity';
@@ -94,6 +94,7 @@ export class ProjectsRepositoryTypeormAdapter
       name: input.name,
       slug: input.slug,
       description: input.description ?? null,
+      details: input.details ?? null,
       repoUrl: input.repoUrl ?? null,
       liveUrl: input.liveUrl ?? null,
       category: input.category ?? null,
@@ -123,6 +124,7 @@ export class ProjectsRepositoryTypeormAdapter
       name: input.name ?? found.name,
       slug: input.slug ?? found.slug,
       description: input.description ?? found.description,
+      details: input.details ?? found.details,
       repoUrl: input.repoUrl ?? found.repoUrl,
       liveUrl: input.liveUrl ?? found.liveUrl,
       category: input.category ?? found.category,
@@ -243,6 +245,7 @@ export class ProjectsRepositoryTypeormAdapter
       name: e.name,
       slug: e.slug,
       description: e.description ?? null,
+      details: e.details ?? null,
       repoUrl: e.repoUrl ?? null,
       liveUrl: e.liveUrl ?? null,
       category: e.category ?? null,

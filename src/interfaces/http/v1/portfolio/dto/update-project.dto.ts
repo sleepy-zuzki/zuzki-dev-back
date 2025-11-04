@@ -18,7 +18,7 @@ import {
 import {
   PROJECT_CATEGORIES,
   type ProjectCategory,
-} from '@domain/portfolio/types/project.types';
+} from '@domain/schemas/portfolio/project.schema';
 
 export class UpdateProjectDto {
   @IsOptional()
@@ -46,6 +46,15 @@ export class UpdateProjectDto {
     typeof value === 'string' ? value.trim() : value,
   )
   description?: string | null;
+
+  @IsOptional()
+  @ValidateIf((_o, v) => v !== null)
+  @IsString()
+  @MaxLength(1000)
+  @Transform(({ value }): string | null | undefined =>
+    typeof value === 'string' ? value.trim() : value,
+  )
+  details?: string | null;
 
   @IsOptional()
   @ValidateIf((_o, v) => v !== null)

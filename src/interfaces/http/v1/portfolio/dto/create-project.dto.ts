@@ -18,7 +18,7 @@ import {
 import {
   PROJECT_CATEGORIES,
   type ProjectCategory,
-} from '@domain/portfolio/types/project.types';
+} from '@domain/schemas/portfolio/project.schema';
 
 export class CreateProjectDto {
   @IsString()
@@ -45,6 +45,14 @@ export class CreateProjectDto {
     typeof value === 'string' ? value.trim() : value,
   )
   description?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(1000)
+  @Transform(({ value }): string | null | undefined =>
+    typeof value === 'string' ? value.trim() : value,
+  )
+  details?: string | null;
 
   @IsOptional()
   @IsUrl({ require_protocol: true })

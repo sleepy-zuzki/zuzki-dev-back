@@ -2,7 +2,7 @@ import type {
   Project,
   CreateProjectInput,
   UpdateProjectInput,
-} from '@domain/portfolio/types/project.types';
+} from '@domain/schemas/portfolio/project.schema';
 
 export interface ProjectsRepositoryPort {
   findAll(): Promise<Project[]>;

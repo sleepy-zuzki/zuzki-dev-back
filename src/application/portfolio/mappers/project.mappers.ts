@@ -1,4 +1,4 @@
-import type { Project } from '@domain/portfolio/types/project.types';
+import type { Project } from '@domain/schemas/portfolio/project.schema';
 
 import { toFileView } from './file.mappers';
 
@@ -9,6 +9,7 @@ export interface ProjectView {
   name: string;
   slug: string;
   description?: string | null;
+  details?: string | null;
   repoUrl?: string | null;
   liveUrl?: string | null;
   category?: string | null;
@@ -24,6 +25,7 @@ export const toProjectView = (p: Project): ProjectView => ({
   name: p.name,
   slug: p.slug,
   description: p.description ?? null,
+  details: p.details ?? null,
   repoUrl: p.repoUrl ?? null,
   liveUrl: p.liveUrl ?? null,
   category: p.category ?? null,
