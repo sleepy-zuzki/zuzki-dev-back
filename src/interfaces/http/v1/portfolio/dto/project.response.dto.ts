@@ -5,6 +5,7 @@ export class ProjectResponseDto {
   name!: string;
   slug!: string;
   description?: string | null;
+  details?: string | null;
   repoUrl?: string | null;
   liveUrl?: string | null;
   category?: string | null;
