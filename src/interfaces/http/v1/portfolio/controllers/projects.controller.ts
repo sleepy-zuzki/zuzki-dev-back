@@ -109,6 +109,7 @@ export class ProjectsController {
       name: dto.name,
       slug: dto.slug,
       description: dto.description,
+      details: dto.details,
       repoUrl: dto.repoUrl,
       liveUrl: dto.liveUrl,
       category: dto.category,
