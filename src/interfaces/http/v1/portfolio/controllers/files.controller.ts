@@ -15,6 +15,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PinoLogger } from 'nestjs-pino';
 
+import { UNASSOCIATED_FILES_PREFIX } from 'src/shared/constants/storage.constants';
+
 import { toFileView } from '@application/portfolio/mappers/file.mappers';
 import { FilesService } from '@application/portfolio/services/files.service';
 
@@ -55,7 +57,6 @@ export class FilesController {
   @UseInterceptors(FileInterceptor('file'))
   async create(
     @UploadedFile() file: Express.Multer.File,
-    @Body('projectId') projectIdRaw?: string,
   ): Promise<FileResponseDto> {
     if (!file) {
       throw new BadRequestException('No file uploaded');
@@ -66,21 +67,16 @@ export class FilesController {
         fileName: file.originalname,
         mimeType: file.mimetype,
         size: file.size,
-        projectId: projectIdRaw,
       },
       'Creando archivo',
     );
-    const projectId = projectIdRaw ? parseInt(projectIdRaw, 10) : undefined;
-    const created = await this.filesService.create(
-      {
-        fileName: file.originalname,
-        fileType: file.mimetype,
-        body: file.buffer,
-        sizeBytes: file.size,
-        pathPrefix: `projects/${projectId}`,
-      },
-      projectId,
-    );
+    const created = await this.filesService.create({
+      fileName: file.originalname,
+      fileType: file.mimetype,
+      body: file.buffer,
+      sizeBytes: file.size,
+      pathPrefix: UNASSOCIATED_FILES_PREFIX,
+    });
     this.logger.info({ id: created.id }, 'Archivo creado');
     return toFileView(created);
   }

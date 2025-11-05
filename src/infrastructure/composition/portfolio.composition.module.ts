@@ -28,8 +28,9 @@ import { StorageInfrastructureModule } from '@infra/storage/storage.module';
       useFactory: (
         projectsRepo: ProjectsRepositoryPort,
         filesRepo: FilesRepositoryPort,
-      ) => new ProjectsService(projectsRepo, filesRepo),
-      inject: [PROJECTS_REPOSITORY, FILES_REPOSITORY],
+        storage: FileStoragePort,
+      ) => new ProjectsService(projectsRepo, filesRepo, storage),
+      inject: [PROJECTS_REPOSITORY, FILES_REPOSITORY, FILE_STORAGE_PORT],
     },
     {
       provide: FilesService,

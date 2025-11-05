@@ -19,6 +19,9 @@ export class FileEntity {
   @Column({ type: 'text' })
   url!: string;
 
+  @Column({ type: 'text', nullable: true })
+  key?: string | null;
+
   @Column({ type: 'varchar', length: 50, nullable: true })
   provider?: string | null;
 

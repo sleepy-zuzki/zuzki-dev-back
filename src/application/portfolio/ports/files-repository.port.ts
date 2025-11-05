@@ -10,4 +10,9 @@ export interface FilesRepositoryPort {
   create(input: CreateFileInput): Promise<File>;
   update(id: number, input: UpdateFileInput): Promise<File | null>;
   remove(id: number): Promise<boolean>;
+  updateUrl(
+    fileId: number,
+    newUrl: string,
+    newKey: string,
+  ): Promise<File | null>;
 }

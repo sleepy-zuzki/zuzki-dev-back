@@ -1,4 +1,9 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  PutObjectCommand,
+  S3Client,
+  CopyObjectCommand,
+  DeleteObjectCommand,
+} from '@aws-sdk/client-s3';
 import { Inject, Injectable } from '@nestjs/common';
 
 import {
@@ -61,5 +66,40 @@ export class CloudflareR2StorageAdapter implements FileStoragePort {
       sizeBytes: file.sizeBytes,
       key,
     };
+  }
+
+  async moveFile(sourceKey: string, destinationKey: string): Promise<void> {
+    const copyCommand = new CopyObjectCommand({
+      Bucket: this.bucket,
+      CopySource: `${this.bucket}/${sourceKey}`,
+      Key: destinationKey,
+    });
+
+    try {
+      await this.client.send(copyCommand);
+    } catch (err) {
+      throw new Error(
+        `Cloudflare R2 copy failed for key ${sourceKey}: ${
+          (err as Error).message
+        }`,
+      );
+    }
+
+    await this.delete(sourceKey);
+  }
+
+  async delete(key: string): Promise<void> {
+    const deleteCommand = new DeleteObjectCommand({
+      Bucket: this.bucket,
+      Key: key,
+    });
+
+    try {
+      await this.client.send(deleteCommand);
+    } catch (err) {
+      throw new Error(
+        `Cloudflare R2 delete failed for key ${key}: ${(err as Error).message}`,
+      );
+    }
   }
 }

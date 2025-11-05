@@ -17,14 +17,14 @@ export class FilesService {
     return this.repo.findOne(id);
   }
 
-  async create(file: FileToUpload, projectId?: number): Promise<File> {
+  async create(file: FileToUpload): Promise<File> {
     const uploaded = await this.storage.upload(file);
     return this.repo.create({
       url: uploaded.url,
+      key: uploaded.key,
       provider: uploaded.provider,
       mimeType: uploaded.fileType ?? null,
       sizeBytes: uploaded.sizeBytes ?? file.sizeBytes ?? null,
-      projectId: typeof projectId === 'number' ? projectId : null,
     });
   }
 

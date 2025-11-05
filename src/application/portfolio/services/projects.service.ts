@@ -10,6 +10,7 @@ import type {
   UpdateProjectInput,
 } from '@domain/schemas/portfolio/project.schema';
 
+import type { FileStoragePort } from '../ports/file-storage.port';
 import type { FilesRepositoryPort } from '../ports/files-repository.port';
 import type { ProjectsRepositoryPort } from '../ports/projects-repository.port';
 
@@ -17,6 +18,7 @@ export class ProjectsService {
   constructor(
     private readonly projectsRepo: ProjectsRepositoryPort,
     private readonly filesRepo: FilesRepositoryPort,
+    private readonly storage: FileStoragePort,
   ) {}
 
   findAll(): Promise<Project[]> {
@@ -65,6 +67,24 @@ export class ProjectsService {
     if (!file) {
       throw new NotFoundException(`File with ID ${fileId} not found`);
     }
+
+    if (!file.key) {
+      throw new BadRequestException(
+        `File with ID ${fileId} does not have a key`,
+      );
+    }
+
+    const fileName = file.key.split('/').pop();
+    if (!fileName) {
+      throw new Error(`Could not extract file name from key ${file.key}`);
+    }
+
+    const destinationKey = `public/projects/${project.slug}/carousel/${fileName}`;
+
+    await this.storage.moveFile(file.key, destinationKey);
+
+    const newUrl = file.url.replace(file.key, destinationKey);
+    await this.filesRepo.updateUrl(fileId, newUrl, destinationKey);
 
     return this.projectsRepo.addImageToCarousel(projectId, fileId, position);
   }

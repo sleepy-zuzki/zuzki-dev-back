@@ -29,6 +29,7 @@ export class FilesRepositoryTypeormAdapter implements FilesRepositoryPort {
   async create(input: CreateFileInput): Promise<DomainFile> {
     const entity = this.repo.create({
       url: input.url,
+      key: input.key ?? null,
       provider: input.provider ?? null,
       mimeType: input.mimeType ?? null,
       sizeBytes: input.sizeBytes ?? null,
@@ -54,6 +55,7 @@ export class FilesRepositoryTypeormAdapter implements FilesRepositoryPort {
 
     Object.assign(found, {
       url: input.url ?? found.url,
+      key: input.key ?? found.key,
       provider: input.provider ?? found.provider,
       mimeType: input.mimeType ?? found.mimeType,
       sizeBytes: input.sizeBytes ?? found.sizeBytes,
@@ -85,10 +87,26 @@ export class FilesRepositoryTypeormAdapter implements FilesRepositoryPort {
     return (result.affected ?? 0) > 0;
   }
 
+  async updateUrl(
+    fileId: number,
+    newUrl: string,
+    newKey: string,
+  ): Promise<DomainFile | null> {
+    const found = await this.repo.findOne({ where: { id: fileId } });
+    if (!found) return null;
+
+    found.url = newUrl;
+    found.key = newKey;
+
+    const saved = await this.repo.save(found);
+    return this.toDomain(saved);
+  }
+
   private toDomain(e: FileEntity): DomainFile {
     return {
       id: e.id,
       url: e.url,
+      key: e.key ?? null,
       provider: e.provider ?? null,
       mimeType: e.mimeType ?? null,
       sizeBytes: e.sizeBytes ?? null,

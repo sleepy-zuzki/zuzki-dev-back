@@ -1,6 +1,7 @@
 export interface File {
   id: number;
   url: string;
+  key?: string | null;
   provider?: string | null;
   mimeType?: string | null;
   sizeBytes?: number | null;
@@ -13,6 +14,7 @@ export interface File {
 
 export interface CreateFileInput {
   url: string;
+  key?: string | null;
   provider?: string | null;
   mimeType?: string | null;
   sizeBytes?: number | null;
@@ -23,6 +25,7 @@ export interface CreateFileInput {
 
 export interface UpdateFileInput {
   url?: string;
+  key?: string | null;
   provider?: string | null;
   mimeType?: string | null;
   sizeBytes?: number | null;
