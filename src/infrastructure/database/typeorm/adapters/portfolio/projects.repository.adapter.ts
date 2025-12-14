@@ -9,7 +9,7 @@ import {
   TechnologyRef,
   UpdateProjectInput,
 } from '@domain/schemas/portfolio/project.schema';
-import { TechnologyEntity } from '@infra/database/typeorm/entities/catalog/technology.entity';
+import { TechnologyEntity } from '@features/catalog/entities/technology.entity';
 import { FileEntity } from '@infra/database/typeorm/entities/portfolio/file.entity';
 import { ProjectEntity } from '@infra/database/typeorm/entities/portfolio/project.entity';
 
@@ -29,14 +29,13 @@ type HasProjectRels = {
 };
 
 export class ProjectsRepositoryTypeormAdapter
-  implements ProjectsRepositoryPort
-{
+  implements ProjectsRepositoryPort {
   constructor(
     @InjectRepository(ProjectEntity)
     private readonly repo: Repository<ProjectEntity>,
     @InjectRepository(FileEntity)
     private readonly filesRepo: Repository<FileEntity>,
-  ) {}
+  ) { }
 
   async findAll(): Promise<Project[]> {
     const list = await this.repo.find({
@@ -221,11 +220,11 @@ export class ProjectsRepositoryTypeormAdapter
     const technologies: TechnologyRef[] =
       Array.isArray(rels.technologies) && rels.technologies.length
         ? rels.technologies.map((t) => ({
-            id: t.id,
-            name: t.name,
-            slug: t.slug,
-            website: t.website,
-          }))
+          id: t.id,
+          name: t.name,
+          slug: t.slug,
+          website: t.website,
+        }))
         : [];
     const previewImage: FileRef | null = rels.previewImage
       ? { id: rels.previewImage.id, url: rels.previewImage.url }
@@ -234,10 +233,10 @@ export class ProjectsRepositoryTypeormAdapter
     const carouselImages: FileRef[] =
       Array.isArray(rels.carouselImages) && rels.carouselImages.length
         ? rels.carouselImages.map((img) => ({
-            id: img.id,
-            url: img.url,
-            position: img.carouselPosition,
-          }))
+          id: img.id,
+          url: img.url,
+          position: img.carouselPosition,
+        }))
         : [];
 
     return {

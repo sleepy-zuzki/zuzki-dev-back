@@ -5,7 +5,7 @@ import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
 
-import { CatalogApplicationModule } from '@application/catalog/catalog.application.module';
+
 import { HealthApplicationModule } from '@application/health/health.application.module';
 import { PortfolioApplicationModule } from '@application/portfolio/portfolio.application.module';
 import { UsersApplicationModule } from '@application/users/users.application.module';
@@ -43,13 +43,13 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
         transport:
           process.env.NODE_ENV !== 'production'
             ? {
-                target: 'pino-pretty',
-                options: {
-                  colorize: true,
-                  translateTime: 'SYS:standard',
-                  singleLine: false,
-                },
-              }
+              target: 'pino-pretty',
+              options: {
+                colorize: true,
+                translateTime: 'SYS:standard',
+                singleLine: false,
+              },
+            }
             : undefined,
       },
     }),
@@ -61,7 +61,6 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
     DatabaseModule,
     // Application root: usa Application Modules que encapsulan la composición
     UsersApplicationModule,
-    CatalogApplicationModule,
     PortfolioApplicationModule,
     HealthApplicationModule,
     AuthModule,
@@ -77,4 +76,4 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
   ],
   exports: [],
 })
-export class AppModule {}
+export class AppModule { }

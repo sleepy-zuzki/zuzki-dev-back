@@ -1,8 +1,8 @@
 #!/usr/bin/env ts-node
 import 'reflect-metadata';
 import dataSource from '@infra/database/data-source';
-import { StackEntity } from '@infra/database/typeorm/entities/catalog/stack.entity';
-import { TechnologyEntity } from '@infra/database/typeorm/entities/catalog/technology.entity';
+import { StackEntity } from '../src/features/catalog/entities/stack.entity';
+import { TechnologyEntity } from '../src/features/catalog/entities/technology.entity';
 
 function ensureNotProd() {
   const isProd = process.env.NODE_ENV === 'production';
@@ -26,12 +26,12 @@ async function seedCatalog() {
     area: StackArea;
     description: null;
   }> = [
-    { name: 'Frontend', slug: 'frontend', area: 'front', description: null },
-    { name: 'Backend', slug: 'backend', area: 'back', description: null },
-    { name: 'Mobile', slug: 'mobile', area: 'mobile', description: null },
-    { name: 'DevOps', slug: 'devops', area: 'devops', description: null },
-    { name: 'Design', slug: 'design', area: 'design', description: null },
-  ];
+      { name: 'Frontend', slug: 'frontend', area: 'front', description: null },
+      { name: 'Backend', slug: 'backend', area: 'back', description: null },
+      { name: 'Mobile', slug: 'mobile', area: 'mobile', description: null },
+      { name: 'DevOps', slug: 'devops', area: 'devops', description: null },
+      { name: 'Design', slug: 'design', area: 'design', description: null },
+    ];
 
   const technologies = [
     {

@@ -10,7 +10,7 @@ import {
   OneToMany,
 } from 'typeorm';
 
-import { TechnologyEntity } from '../catalog/technology.entity';
+import { TechnologyEntity } from '../../../../../features/catalog/entities/technology.entity';
 
 import { FileEntity } from './file.entity';
 
