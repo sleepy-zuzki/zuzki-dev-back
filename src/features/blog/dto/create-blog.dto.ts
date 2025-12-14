@@ -6,7 +6,10 @@ import {
   IsString,
   Length,
   Matches,
+  MaxLength,
 } from 'class-validator';
+
+import type { EditorJsContent } from '@shared/types/editor-js-content.type';
 
 export class CreateBlogDto {
   @IsString()
@@ -32,7 +35,16 @@ export class CreateBlogDto {
   slug!: string;
 
   @IsOptional()
-  content?: any;
+  @IsString()
+  @MaxLength(1000)
+  @Transform(
+    ({ value }) =>
+      (typeof value === 'string' ? value.trim() : value) as string | undefined,
+  )
+  description?: string;
+
+  @IsOptional()
+  content?: EditorJsContent;
 
   @IsOptional()
   @IsDateString()

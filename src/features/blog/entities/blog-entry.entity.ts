@@ -8,6 +8,8 @@ import {
   OneToMany,
 } from 'typeorm';
 
+import type { EditorJsContent } from '@shared/types/editor-js-content.type';
+
 import { BlogFileEntity } from './blog-file.entity';
 
 @Entity({ name: 'entries', schema: 'blog' })
@@ -21,8 +23,11 @@ export class BlogEntryEntity {
   @Column({ type: 'varchar', unique: true })
   slug!: string;
 
+  @Column({ type: 'text', nullable: true })
+  description?: string | null;
+
   @Column({ type: 'jsonb', nullable: true })
-  content?: never;
+  content?: EditorJsContent | null;
 
   @Column({ name: 'publish_date', type: 'timestamp', nullable: true })
   publishDate?: Date | null;

@@ -13,6 +13,7 @@ import {
 
 import { CatalogItemEntity } from '@features/catalog/entities/catalog-item.entity';
 import { StackTechnologyEntity } from '@features/stack/entities/technology.entity';
+import type { EditorJsContent } from '@shared/types/editor-js-content.type';
 
 import { ShowcaseFileEntity } from './showcase-file.entity';
 
@@ -22,7 +23,7 @@ export class ShowcaseEntity {
   id!: string;
 
   @Column({ type: 'varchar', length: 150 })
-  name!: string;
+  title!: string;
 
   @Column({ type: 'varchar', length: 160, unique: true })
   slug!: string;
@@ -30,8 +31,8 @@ export class ShowcaseEntity {
   @Column({ type: 'text', nullable: true })
   description?: string | null;
 
-  @Column({ type: 'text', nullable: true })
-  details?: string | null;
+  @Column({ type: 'jsonb', nullable: true })
+  content?: EditorJsContent | null;
 
   @Column({ name: 'repo_url', type: 'varchar', length: 255, nullable: true })
   repoUrl?: string | null;

@@ -15,6 +15,8 @@ import {
   Min,
 } from 'class-validator';
 
+import type { EditorJsContent } from '@shared/types/editor-js-content.type';
+
 export class CreateShowcaseDto {
   @IsString()
   @IsNotEmpty()
@@ -22,7 +24,7 @@ export class CreateShowcaseDto {
   @Transform(
     ({ value }) => (typeof value === 'string' ? value.trim() : value) as string,
   )
-  name!: string;
+  title!: string;
 
   @IsString()
   @IsNotEmpty()
@@ -46,13 +48,7 @@ export class CreateShowcaseDto {
   description?: string;
 
   @IsOptional()
-  @IsString()
-  @MaxLength(5000)
-  @Transform(
-    ({ value }) =>
-      (typeof value === 'string' ? value.trim() : value) as string | undefined,
-  )
-  details?: string;
+  content?: EditorJsContent;
 
   @IsOptional()
   @IsUrl({ require_protocol: true })
