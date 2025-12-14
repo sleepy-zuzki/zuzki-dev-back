@@ -2,20 +2,14 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
-  JoinColumn,
   CreateDateColumn,
-  ManyToOne,
 } from 'typeorm';
 
-import { ProjectEntity } from './project.entity';
-
-@Entity({ name: 'files', schema: 'portfolio' })
+@Entity({ name: 'files' })
 export class FileEntity {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
-  // URL del CDN (R2, S3, etc.)
   @Column({ type: 'text' })
   url!: string;
 
@@ -30,29 +24,6 @@ export class FileEntity {
 
   @Column({ name: 'size_bytes', type: 'int', nullable: true })
   sizeBytes?: number | null;
-
-  // Relación 1-1 hacia Project. Esta entidad posee la FK (project_id) y es única (1 archivo preview por proyecto).
-  @OneToOne(() => ProjectEntity, (project) => project.previewImage, {
-    nullable: true,
-    onDelete: 'SET NULL',
-  })
-  @JoinColumn({ name: 'project_id', referencedColumnName: 'id' })
-  project?: ProjectEntity | null;
-
-  // Relación ManyToOne opcional para carrusel
-  @ManyToOne(
-    () => ProjectEntity,
-    (project: ProjectEntity) => project.carouselImages,
-    {
-      nullable: true,
-      onDelete: 'CASCADE',
-    },
-  )
-  @JoinColumn({ name: 'carousel_project_id', referencedColumnName: 'id' })
-  carouselProject?: ProjectEntity | null;
-
-  @Column({ name: 'carousel_position', type: 'int', nullable: true })
-  carouselPosition?: number | null;
 
   @CreateDateColumn({
     name: 'created_at',

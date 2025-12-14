@@ -10,7 +10,7 @@ import {
 
 import { RefreshTokenEntity } from '@features/auth/entities/refresh-token.entity';
 
-@Entity({ name: 'users', schema: 'portfolio' })
+@Entity({ name: 'users' })
 @Index('uq_users_email', ['email'], { unique: true })
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')

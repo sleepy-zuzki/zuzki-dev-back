@@ -1,11 +1,12 @@
 import { Module } from '@nestjs/common';
+import { LoggerModule } from 'nestjs-pino';
 
 import { ContactController } from './controllers/contact.controller';
 import { ContactSenderService } from './services/contact-sender.service';
 import { ContactService } from './services/contact.service';
 
 @Module({
-  imports: [], // Native fetch doesn't need HttpModule
+  imports: [LoggerModule],
   controllers: [ContactController],
   providers: [ContactService, ContactSenderService],
 })

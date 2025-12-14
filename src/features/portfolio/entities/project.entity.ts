@@ -3,23 +3,23 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToMany,
-  OneToOne,
+  JoinTable,
   CreateDateColumn,
   UpdateDateColumn,
-  JoinTable,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
-import { TechnologyEntity } from '@features/catalog/entities/technology.entity';
+import { CatalogItemEntity } from '@features/catalog/entities/catalog-item.entity';
+import { StackTechnologyEntity } from '@features/catalog/entities/technology.entity';
 
-import { FileEntity } from './file.entity';
+import { ShowcaseFileEntity } from './project-file.entity';
 
-import type { ProjectCategory } from '../dto/project.schema';
-
-@Entity({ name: 'projects', schema: 'portfolio' })
-export class ProjectEntity {
-  @PrimaryGeneratedColumn()
-  id!: number;
+@Entity({ name: 'showcases', schema: 'project' })
+export class ShowcaseEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column({ type: 'varchar', length: 150 })
   name!: string;
@@ -39,39 +39,32 @@ export class ProjectEntity {
   @Column({ name: 'live_url', type: 'varchar', length: 255, nullable: true })
   liveUrl?: string | null;
 
-  // Categoría del proyecto (front, back, mobile, devops, design)
-  @Column({ type: 'varchar', length: 20, nullable: true })
-  category?: ProjectCategory | null;
+  @Column({ name: 'category_id', nullable: true })
+  categoryId?: string | null;
 
-  // Año en el que se realizó el proyecto
+  @ManyToOne(() => CatalogItemEntity)
+  @JoinColumn({ name: 'category_id' })
+  category?: CatalogItemEntity | null;
+
   @Column({ type: 'int', nullable: true })
   year?: number | null;
 
-  // Marca si el proyecto es destacado
   @Column({ name: 'is_featured', type: 'boolean', default: false })
   isFeatured!: boolean;
 
-  @ManyToMany(() => TechnologyEntity, { eager: false })
+  @ManyToMany(() => StackTechnologyEntity)
   @JoinTable({
-    name: 'project_technologies',
-    schema: 'portfolio',
-    joinColumn: { name: 'project_id', referencedColumnName: 'id' },
+    name: 'technologies', // Table project.technologies
+    schema: 'project',
+    joinColumn: { name: 'showcase_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'technology_id', referencedColumnName: 'id' },
   })
-  technologies?: TechnologyEntity[];
+  technologies?: StackTechnologyEntity[];
 
-  // Relación 1-1 con FileEntity para la imagen de preview (la FK vive en FileEntity)
-  @OneToOne(() => FileEntity, (file) => file.project, {
-    cascade: ['insert', 'update'],
-    nullable: true,
+  @OneToMany(() => ShowcaseFileEntity, (projectFile) => projectFile.showcase, {
+    cascade: true,
   })
-  previewImage?: FileEntity | null;
-
-  // Relación 1-N para imágenes de carrusel (FK y posición viven en FileEntity)
-  @OneToMany(() => FileEntity, (file) => file.carouselProject, {
-    cascade: ['insert', 'update'],
-  })
-  carouselImages?: FileEntity[];
+  files?: ShowcaseFileEntity[];
 
   @CreateDateColumn({
     name: 'created_at',

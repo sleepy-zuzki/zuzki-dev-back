@@ -74,8 +74,7 @@ export default tseslint.config(
           ],
           pathGroups: [
             {
-              pattern:
-                '@{features,shared,config,metrics,health}/**',
+              pattern: '@{features,shared,config,metrics,health}/**',
               group: 'internal',
               position: 'after',
             },

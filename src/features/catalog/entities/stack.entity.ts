@@ -2,35 +2,35 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  Index,
   CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
-import type { StackArea } from '@features/catalog/dto/stack.types';
+@Entity({ name: 'areas', schema: 'stack' })
+export class StackAreaEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
-@Entity({ name: 'tech_stacks', schema: 'catalog' })
-export class StackEntity {
-  @PrimaryGeneratedColumn()
-  id!: number;
-
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ length: 100 })
   name!: string;
 
-  @Index({ unique: true })
-  @Column({ type: 'varchar', length: 120 })
+  @Column({ length: 120, unique: true })
   slug!: string;
 
-  // Área a la que pertenece (front, back, mobile, devops, design)
-  @Column({ type: 'varchar', length: 20 })
-  area!: StackArea;
-
-  @Column({ type: 'text', nullable: true })
-  description?: string | null;
+  @Column({ name: 'icon_code', length: 50, nullable: true })
+  iconCode?: string;
 
   @CreateDateColumn({
     name: 'created_at',
     type: 'timestamp with time zone',
-    default: () => 'CURRENT_TIMESTAMP',
+    default: () => 'now()',
   })
   createdAt!: Date;
+
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamp with time zone',
+    default: () => 'now()',
+  })
+  updatedAt!: Date;
 }
