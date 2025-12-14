@@ -12,9 +12,9 @@ import {
 } from 'typeorm';
 
 import { CatalogItemEntity } from '@features/catalog/entities/catalog-item.entity';
-import { StackTechnologyEntity } from '@features/catalog/entities/technology.entity';
+import { StackTechnologyEntity } from '@features/stack/entities/technology.entity';
 
-import { ShowcaseFileEntity } from './project-file.entity';
+import { ShowcaseFileEntity } from './showcase-file.entity';
 
 @Entity({ name: 'showcases', schema: 'project' })
 export class ShowcaseEntity {

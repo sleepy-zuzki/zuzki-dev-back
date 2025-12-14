@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { StackAreaEntity } from './stack.entity';
+import { StackAreaEntity } from './area.entity';
 
 @Entity({ name: 'technologies', schema: 'stack' })
 export class StackTechnologyEntity {

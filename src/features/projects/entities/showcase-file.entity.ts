@@ -1,9 +1,9 @@
 import { Entity, Column, ManyToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 
 import { CatalogItemEntity } from '@features/catalog/entities/catalog-item.entity';
+import { FileEntity } from '@features/files/entities/file.entity';
 
-import { FileEntity } from './file.entity';
-import { ShowcaseEntity } from './project.entity';
+import { ShowcaseEntity } from './showcase.entity';
 
 @Entity({ name: 'files', schema: 'project' })
 export class ShowcaseFileEntity {
