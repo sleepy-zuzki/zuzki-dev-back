@@ -8,8 +8,10 @@ import { LoggerModule } from 'nestjs-pino';
 // Legacy Auth import
 import { AuthModule } from '@features/auth/auth.module';
 import { CatalogModule } from '@features/catalog/catalog.module';
+import { FilesModule } from '@features/files/files.module';
 import { HealthModule } from '@features/health/health.module';
-import { PortfolioModule } from '@features/portfolio/portfolio.module';
+import { ProjectsModule } from '@features/projects/projects.module';
+import { StackModule } from '@features/stack/stack.module';
 import { UsersModule } from '@features/users/users.module';
 import { MetricsModule } from '@metrics/metrics.module';
 import { DatabaseModule } from '@shared/database/database.module';
@@ -63,7 +65,9 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
     DatabaseModule,
     // Features
     CatalogModule,
-    PortfolioModule,
+    FilesModule,
+    ProjectsModule,
+    StackModule,
     UsersModule, // Migrated
     // Legacy Applications
     HealthModule,

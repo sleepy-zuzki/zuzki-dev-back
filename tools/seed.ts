@@ -1,8 +1,8 @@
 #!/usr/bin/env ts-node
 import 'reflect-metadata';
+import { StackAreaEntity } from '@features/stack/entities/area.entity';
+import { StackTechnologyEntity } from '@features/stack/entities/technology.entity';
 import dataSource from '@shared/database/data-source';
-import { StackEntity } from '@features/catalog/entities/stack.entity';
-import { TechnologyEntity } from '@features/catalog/entities/technology.entity';
 
 function ensureNotProd() {
   const isProd = process.env.NODE_ENV === 'production';
@@ -16,46 +16,73 @@ function ensureNotProd() {
 }
 
 async function seedCatalog() {
-  const stackRepo = dataSource.getRepository(StackEntity);
-  const techRepo = dataSource.getRepository(TechnologyEntity);
+  const areaRepo = dataSource.getRepository(StackAreaEntity);
+  const techRepo = dataSource.getRepository(StackTechnologyEntity);
 
-  type StackArea = 'front' | 'back' | 'mobile' | 'devops' | 'design';
-  const stacks: Array<{
-    name: string;
-    slug: string;
-    area: StackArea;
-    description: null;
-  }> = [
-    { name: 'Frontend', slug: 'frontend', area: 'front', description: null },
-    { name: 'Backend', slug: 'backend', area: 'back', description: null },
-    { name: 'Mobile', slug: 'mobile', area: 'mobile', description: null },
-    { name: 'DevOps', slug: 'devops', area: 'devops', description: null },
-    { name: 'Design', slug: 'design', area: 'design', description: null },
+  const areasData = [
+    { name: 'Frontend', slug: 'frontend', iconCode: 'monitor' },
+    { name: 'Backend', slug: 'backend', iconCode: 'server' },
+    { name: 'Mobile', slug: 'mobile', iconCode: 'smartphone' },
+    { name: 'DevOps', slug: 'devops', iconCode: 'cloud' },
+    { name: 'Design', slug: 'design', iconCode: 'pen-tool' },
   ];
+
+  const savedAreas: StackAreaEntity[] = [];
+
+  for (const area of areasData) {
+    let entity = await areaRepo.findOneBy({ slug: area.slug });
+    if (!entity) {
+      entity = areaRepo.create(area);
+      await areaRepo.save(entity);
+    }
+    savedAreas.push(entity);
+  }
+
+  const frontend = savedAreas.find((a) => a.slug === 'frontend');
+  const backend = savedAreas.find((a) => a.slug === 'backend');
+  const devops = savedAreas.find((a) => a.slug === 'devops');
+
+  if (!frontend || !backend || !devops) return;
 
   const technologies = [
     {
       name: 'TypeScript',
       slug: 'typescript',
-      website: 'https://www.typescriptlang.org/',
+      websiteUrl: 'https://www.typescriptlang.org/',
+      area: frontend,
     },
-    { name: 'NestJS', slug: 'nestjs', website: 'https://nestjs.com/' },
-    { name: 'React', slug: 'react', website: 'https://react.dev/' },
+    {
+      name: 'NestJS',
+      slug: 'nestjs',
+      websiteUrl: 'https://nestjs.com/',
+      area: backend,
+    },
+    {
+      name: 'React',
+      slug: 'react',
+      websiteUrl: 'https://react.dev/',
+      area: frontend,
+    },
     {
       name: 'PostgreSQL',
       slug: 'postgresql',
-      website: 'https://www.postgresql.org/',
+      websiteUrl: 'https://www.postgresql.org/',
+      area: backend,
     },
-    { name: 'Docker', slug: 'docker', website: 'https://www.docker.com/' },
+    {
+      name: 'Docker',
+      slug: 'docker',
+      websiteUrl: 'https://www.docker.com/',
+      area: devops,
+    },
   ];
 
-  // Idempotente por slug
-  await stackRepo.upsert(stacks, ['slug']);
-  await techRepo.upsert(technologies, ['slug']);
-
-  console.log(
-    `Semillas cargadas: ${stacks.length} stacks, ${technologies.length} technologies`,
-  );
+  for (const tech of technologies) {
+    const exists = await techRepo.findOneBy({ slug: tech.slug });
+    if (!exists) {
+      await techRepo.save(techRepo.create(tech));
+    }
+  }
 }
 
 async function main() {

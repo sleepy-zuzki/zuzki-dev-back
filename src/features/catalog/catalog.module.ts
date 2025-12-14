@@ -1,17 +1,19 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { StacksController } from './controllers/stacks.controller';
-import { TechnologiesController } from './controllers/technologies.controller';
-import { StackEntity } from './entities/stack.entity';
-import { TechnologyEntity } from './entities/technology.entity';
-import { StacksService } from './services/stacks.service';
-import { TechnologiesService } from './services/technologies.service';
+import { CatalogItemEntity } from './entities/catalog-item.entity';
+import { CatalogTypeEntity } from './entities/catalog-type.entity';
+
+// TODO: Refactor controllers and services for new generic catalog structure
+// import { StacksController } from './controllers/stacks.controller';
+// import { TechnologiesController } from './controllers/technologies.controller';
+// import { StacksService } from './services/stacks.service';
+// import { TechnologiesService } from './services/technologies.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([StackEntity, TechnologyEntity])],
-  controllers: [StacksController, TechnologiesController],
-  providers: [StacksService, TechnologiesService],
-  exports: [StacksService, TechnologiesService],
+  imports: [TypeOrmModule.forFeature([CatalogTypeEntity, CatalogItemEntity])],
+  controllers: [],
+  providers: [],
+  exports: [TypeOrmModule],
 })
 export class CatalogModule {}
