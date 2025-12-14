@@ -20,7 +20,7 @@ export default registerAs(
     user: getEnv('POSTGRES_USER'),
     pass: getEnv('POSTGRES_PASSWORD'),
     dbName: getEnv('POSTGRES_DB'),
-    schema: process.env.POSTGRES_SCHEMA || 'portfolio',
+    schema: process.env.POSTGRES_SCHEMA || 'public',
     sync: process.env.TYPEORM_SYNC === 'true',
     logging: process.env.TYPEORM_LOGGING === 'true',
     ssl:

@@ -1,26 +1,20 @@
-import { Transform, Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import {
-  IsArray,
-  IsBoolean,
-  IsInt,
+  IsDateString,
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUrl,
-  IsUUID,
   Length,
   Matches,
-  Max,
   MaxLength,
-  Min,
 } from 'class-validator';
 
 import type { EditorJsContent } from '@shared/types/editor-js-content.type';
 
-export class CreateShowcaseDto {
+export class CreateBlogDto {
   @IsString()
   @IsNotEmpty()
-  @Length(2, 150)
+  @Length(5, 255)
   @Transform(
     ({ value }) => (typeof value === 'string' ? value.trim() : value) as string,
   )
@@ -28,8 +22,10 @@ export class CreateShowcaseDto {
 
   @IsString()
   @IsNotEmpty()
-  @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
-  @Length(2, 160)
+  @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
+    message: 'Slug must be lowercase and kebab-case (e.g., my-blog-post)',
+  })
+  @Length(5, 255)
   @Transform(
     ({ value }) =>
       (typeof value === 'string'
@@ -51,31 +47,6 @@ export class CreateShowcaseDto {
   content?: EditorJsContent;
 
   @IsOptional()
-  @IsUrl({ require_protocol: true })
-  repoUrl?: string;
-
-  @IsOptional()
-  @IsUrl({ require_protocol: true })
-  liveUrl?: string;
-
-  @IsOptional()
-  @IsUUID()
-  categoryId?: string;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1900)
-  @Max(2100)
-  year?: number;
-
-  @IsOptional()
-  @IsBoolean()
-  @Transform(({ value }) => value === 'true' || value === true)
-  isFeatured?: boolean;
-
-  @IsOptional()
-  @IsArray()
-  @IsUUID('4', { each: true })
-  technologyIds?: string[];
+  @IsDateString()
+  publishDate?: Date;
 }

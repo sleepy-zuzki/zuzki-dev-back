@@ -11,13 +11,13 @@ export class StackAreaEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ length: 100 })
+  @Column({ type: 'varchar', length: 100 })
   name!: string;
 
-  @Column({ length: 120, unique: true })
+  @Column({ type: 'varchar', length: 120, unique: true })
   slug!: string;
 
-  @Column({ name: 'icon_code', length: 50, nullable: true })
+  @Column({ name: 'icon_code', type: 'varchar', length: 50, nullable: true })
   iconCode?: string;
 
   @CreateDateColumn({

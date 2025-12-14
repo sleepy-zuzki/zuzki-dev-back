@@ -3,21 +3,21 @@ import { Entity, Column, ManyToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { CatalogItemEntity } from '@features/catalog/entities/catalog-item.entity';
 import { FileEntity } from '@features/files/entities/file.entity';
 
-import { ShowcaseEntity } from './showcase.entity';
+import { BlogEntryEntity } from './blog-entry.entity';
 
-@Entity({ name: 'files', schema: 'project' })
-export class ShowcaseFileEntity {
-  @PrimaryColumn({ name: 'showcase_id', type: 'uuid' })
-  showcaseId!: string;
+@Entity({ name: 'files', schema: 'blog' })
+export class BlogFileEntity {
+  @PrimaryColumn({ name: 'blog_id', type: 'uuid' })
+  blogId!: string;
 
   @PrimaryColumn({ name: 'file_id', type: 'uuid' })
   fileId!: string;
 
-  @ManyToOne(() => ShowcaseEntity, (showcase) => showcase.files, {
+  @ManyToOne(() => BlogEntryEntity, (blog) => blog.files, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'showcase_id' })
-  showcase!: ShowcaseEntity;
+  @JoinColumn({ name: 'blog_id' })
+  blog!: BlogEntryEntity;
 
   @ManyToOne(() => FileEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'file_id' })

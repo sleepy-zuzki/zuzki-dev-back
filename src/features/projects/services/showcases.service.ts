@@ -19,7 +19,7 @@ export class ShowcasesService {
 
   findAll(): Promise<ShowcaseEntity[]> {
     return this.repo.find({
-      order: { year: 'DESC', name: 'ASC' },
+      order: { year: 'DESC', title: 'ASC' },
       relations: ['technologies'],
     });
   }

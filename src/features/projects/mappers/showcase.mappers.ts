@@ -7,10 +7,10 @@ export const toShowcaseView = (
   entity: ShowcaseEntity,
 ): ShowcaseResponseDto => ({
   id: entity.id,
-  name: entity.name,
+  title: entity.title,
   slug: entity.slug,
   description: entity.description,
-  details: entity.details,
+  content: entity.content,
   repoUrl: entity.repoUrl,
   liveUrl: entity.liveUrl,
   categoryId: entity.categoryId,
