@@ -9,7 +9,7 @@ import {
 
 import { UserEntity } from '@features/users/entities/user.entity';
 
-@Entity({ name: 'refresh_tokens', schema: 'portfolio' })
+@Entity({ name: 'refresh_tokens' })
 @Index('idx_refresh_tokens_user_id', ['userId'])
 @Index('idx_refresh_tokens_expires_at', ['expiresAt'])
 export class RefreshTokenEntity {

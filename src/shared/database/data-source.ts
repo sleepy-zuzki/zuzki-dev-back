@@ -18,7 +18,7 @@ function parseSsl(val?: string) {
     host: process.env.POSTGRES_HOST || 'localhost',
     port: Number(process.env.POSTGRES_PORT || 5432),
     database: process.env.POSTGRES_DB || 'postgres',
-    schema: process.env.POSTGRES_SCHEMA || 'portfolio',
+    schema: process.env.POSTGRES_SCHEMA || 'public',
     ssl: process.env.POSTGRES_SSL || 'false',
     usernameDefined: Boolean(process.env.POSTGRES_USER),
     passwordDefined: Boolean(process.env.POSTGRES_PASSWORD),
