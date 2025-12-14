@@ -1,11 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-
-import { ContactSenderPort } from '@application/contact/ports/contact-sender.port';
-import { ContactMessage } from '@domain/contact/types/contact-message.types';
+import { ContactMessage } from '../dto/contact-message.types';
 
 @Injectable()
-export class HttpContactSenderAdapter implements ContactSenderPort {
-  private readonly logger = new Logger(HttpContactSenderAdapter.name);
+export class ContactSenderService {
+  private readonly logger = new Logger(ContactSenderService.name);
 
   private getWebhookUrl(): string {
     const url = process.env.CONTACT_WEBHOOK_URL;

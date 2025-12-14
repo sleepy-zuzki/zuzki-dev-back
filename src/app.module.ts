@@ -5,7 +5,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
-import { HealthApplicationModule } from '@application/health/health.application.module';
+import { HealthModule } from '@features/health/health.module';
 import { DatabaseModule } from '@infra/database/database.module';
 // Legacy Auth import
 import { AuthModule } from '@features/auth/auth.module';
@@ -64,7 +64,7 @@ import { UsersModule } from '@features/users/users.module';
     PortfolioModule,
     UsersModule, // Migrated
     // Legacy Applications
-    HealthApplicationModule,
+    HealthModule,
     AuthModule,
     MetricsModule,
     V1Module,

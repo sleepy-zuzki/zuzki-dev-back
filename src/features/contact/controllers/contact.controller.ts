@@ -8,13 +8,13 @@ import {
 } from '@nestjs/common';
 
 import { Public } from '@features/auth/decorators/public.decorator';
-import { SubmitContactService } from '@application/contact/services/submit-contact.service';
+import { ContactService } from '../services/contact.service';
 
 import { ContactRequestDto } from '../dto/contact-request.dto';
 
 @Controller({ path: 'contact', version: '1' })
 export class ContactController {
-  constructor(private readonly submitContactService: SubmitContactService) { }
+  constructor(private readonly contactService: ContactService) { }
 
   @Public()
   @Post()
@@ -29,6 +29,6 @@ export class ContactController {
     )
     dto: ContactRequestDto,
   ): Promise<void> {
-    await this.submitContactService.execute(dto);
+    await this.contactService.execute(dto);
   }
 }
