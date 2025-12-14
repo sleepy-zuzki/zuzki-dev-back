@@ -5,14 +5,18 @@ import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
 
-import { CatalogApplicationModule } from '@application/catalog/catalog.application.module';
-import { HealthApplicationModule } from '@application/health/health.application.module';
-import { PortfolioApplicationModule } from '@application/portfolio/portfolio.application.module';
-import { UsersApplicationModule } from '@application/users/users.application.module';
-import { DatabaseModule } from '@infra/database/database.module';
-import { AuthModule } from '@interfaces/http/v1/auth/auth.module';
-import { V1Module } from '@interfaces/http/v1/v1.module';
+// Legacy Auth import
+import { AuthModule } from '@features/auth/auth.module';
+import { CatalogModule } from '@features/catalog/catalog.module';
+import { FilesModule } from '@features/files/files.module';
+import { HealthModule } from '@features/health/health.module';
+import { ProjectsModule } from '@features/projects/projects.module';
+import { StackModule } from '@features/stack/stack.module';
+import { UsersModule } from '@features/users/users.module';
 import { MetricsModule } from '@metrics/metrics.module';
+import { DatabaseModule } from '@shared/database/database.module';
+
+import { V1Module } from './v1.module';
 
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
@@ -59,11 +63,14 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
       max: Number(process.env.CACHE_MAX ?? 100),
     }),
     DatabaseModule,
-    // Application root: usa Application Modules que encapsulan la composición
-    UsersApplicationModule,
-    CatalogApplicationModule,
-    PortfolioApplicationModule,
-    HealthApplicationModule,
+    // Features
+    CatalogModule,
+    FilesModule,
+    ProjectsModule,
+    StackModule,
+    UsersModule, // Migrated
+    // Legacy Applications
+    HealthModule,
     AuthModule,
     MetricsModule,
     V1Module,

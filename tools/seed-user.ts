@@ -1,8 +1,10 @@
 #!/usr/bin/env ts-node
 import 'reflect-metadata';
-import dataSource from '@infra/database/data-source';
-import { UserEntity } from '@infra/database/typeorm/entities/user/user.entity';
 import argon2 from 'argon2';
+
+import { UserEntity } from '@features/users/entities/user.entity';
+
+import dataSource from '@shared/database/data-source';
 
 type SeedArgs = {
   email: string;

@@ -1,6 +1,6 @@
-# shared
+# infrastructure
 
-Código cross-cutting reutilizable:
+Detalles técnicos: persistencia, clientes externos, logging, cache, etc.
 
-- types, utils, interceptors, guards, pipes, filters, decorators, constants
-- No dependas de implementaciones específicas de dominio
+- TypeORM: entities y migrations bajo database/typeorm.
+- data-source.ts vive en infrastructure/database/ (no en la raíz del repo).
