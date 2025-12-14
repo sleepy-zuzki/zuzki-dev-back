@@ -26,12 +26,12 @@ async function seedCatalog() {
     area: StackArea;
     description: null;
   }> = [
-      { name: 'Frontend', slug: 'frontend', area: 'front', description: null },
-      { name: 'Backend', slug: 'backend', area: 'back', description: null },
-      { name: 'Mobile', slug: 'mobile', area: 'mobile', description: null },
-      { name: 'DevOps', slug: 'devops', area: 'devops', description: null },
-      { name: 'Design', slug: 'design', area: 'design', description: null },
-    ];
+    { name: 'Frontend', slug: 'frontend', area: 'front', description: null },
+    { name: 'Backend', slug: 'backend', area: 'back', description: null },
+    { name: 'Mobile', slug: 'mobile', area: 'mobile', description: null },
+    { name: 'DevOps', slug: 'devops', area: 'devops', description: null },
+    { name: 'Design', slug: 'design', area: 'design', description: null },
+  ];
 
   const technologies = [
     {

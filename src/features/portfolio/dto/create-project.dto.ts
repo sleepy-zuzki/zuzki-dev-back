@@ -15,10 +15,7 @@ import {
   Min,
 } from 'class-validator';
 
-import {
-  PROJECT_CATEGORIES,
-  type ProjectCategory,
-} from '../dto/project.schema';
+import { PROJECT_CATEGORIES, type ProjectCategory } from './project.schema';
 
 export class CreateProjectDto {
   @IsString()

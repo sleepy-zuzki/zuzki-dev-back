@@ -14,7 +14,7 @@ export class StacksService {
   constructor(
     @InjectRepository(StackEntity)
     private readonly repo: Repository<StackEntity>,
-  ) { }
+  ) {}
 
   findAll(): Promise<Stack[]> {
     return this.repo.find({ order: { name: 'ASC' } });

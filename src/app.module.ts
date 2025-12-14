@@ -1,20 +1,22 @@
 import { randomUUID } from 'node:crypto';
+
 import { CacheModule, CacheInterceptor } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
-import type { IncomingMessage, ServerResponse } from 'node:http';
 
-import { HealthModule } from '@features/health/health.module';
-import { DatabaseModule } from '@shared/database/database.module';
 // Legacy Auth import
 import { AuthModule } from '@features/auth/auth.module';
-import { V1Module } from './v1.module';
-import { MetricsModule } from '@metrics/metrics.module';
-
 import { CatalogModule } from '@features/catalog/catalog.module';
+import { HealthModule } from '@features/health/health.module';
 import { PortfolioModule } from '@features/portfolio/portfolio.module';
 import { UsersModule } from '@features/users/users.module';
+import { MetricsModule } from '@metrics/metrics.module';
+import { DatabaseModule } from '@shared/database/database.module';
+
+import { V1Module } from './v1.module';
+
+import type { IncomingMessage, ServerResponse } from 'node:http';
 
 @Module({
   imports: [
@@ -43,13 +45,13 @@ import { UsersModule } from '@features/users/users.module';
         transport:
           process.env.NODE_ENV !== 'production'
             ? {
-              target: 'pino-pretty',
-              options: {
-                colorize: true,
-                translateTime: 'SYS:standard',
-                singleLine: false,
-              },
-            }
+                target: 'pino-pretty',
+                options: {
+                  colorize: true,
+                  translateTime: 'SYS:standard',
+                  singleLine: false,
+                },
+              }
             : undefined,
       },
     }),
@@ -78,4 +80,4 @@ import { UsersModule } from '@features/users/users.module';
   ],
   exports: [],
 })
-export class AppModule { }
+export class AppModule {}

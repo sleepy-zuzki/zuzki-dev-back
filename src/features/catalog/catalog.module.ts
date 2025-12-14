@@ -3,10 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { StacksController } from './controllers/stacks.controller';
 import { TechnologiesController } from './controllers/technologies.controller';
-import { StacksService } from './services/stacks.service';
-import { TechnologiesService } from './services/technologies.service';
 import { StackEntity } from './entities/stack.entity';
 import { TechnologyEntity } from './entities/technology.entity';
+import { StacksService } from './services/stacks.service';
+import { TechnologiesService } from './services/technologies.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([StackEntity, TechnologyEntity])],
@@ -14,4 +14,4 @@ import { TechnologyEntity } from './entities/technology.entity';
   providers: [StacksService, TechnologiesService],
   exports: [StacksService, TechnologiesService],
 })
-export class CatalogModule { }
+export class CatalogModule {}

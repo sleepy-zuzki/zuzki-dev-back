@@ -5,7 +5,6 @@ import {
   HttpCode,
   Post,
   UnauthorizedException,
-  Inject,
 } from '@nestjs/common';
 
 import { Argon2HashingAdapter } from '@shared/security/argon2-hashing.adapter';
@@ -18,7 +17,6 @@ import { AuthConfigService } from '../services/auth-config.service';
 import { AuthService } from '../services/auth.service';
 import { LoginResponse } from '../types/auth.types';
 
-
 @Controller({ path: 'auth', version: '1' })
 export class AuthController {
   constructor(
@@ -26,7 +24,7 @@ export class AuthController {
     private readonly auth: AuthService,
     private readonly authConfig: AuthConfigService,
     private readonly hashing: Argon2HashingAdapter,
-  ) { }
+  ) {}
 
   @Public()
   @Post('login')

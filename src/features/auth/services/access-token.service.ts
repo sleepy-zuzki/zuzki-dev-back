@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AccessTokenService {
-  constructor(private readonly jwt: JwtService) { }
+  constructor(private readonly jwt: JwtService) {}
 
   signAccessToken(payload: {
     id: string;

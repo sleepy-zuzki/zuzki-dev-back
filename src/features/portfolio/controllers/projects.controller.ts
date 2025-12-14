@@ -13,14 +13,13 @@ import {
 } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
-import { toProjectView } from '../mappers/project.mappers';
-import { ProjectsService } from '../services/projects.service';
-
 import { AddImageToCarouselDto } from '../dto/add-image-to-carousel.dto';
 import { CreateProjectDto } from '../dto/create-project.dto';
 import { ProjectResponseDto } from '../dto/project.response.dto';
 import { ReorderCarouselDto } from '../dto/reorder-carousel.dto';
 import { UpdateProjectDto } from '../dto/update-project.dto';
+import { toProjectView } from '../mappers/project.mappers';
+import { ProjectsService } from '../services/projects.service';
 
 @Controller({ path: 'portfolio/projects', version: '1' })
 export class ProjectsController {

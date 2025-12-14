@@ -5,7 +5,7 @@ import { DatabasePingResult } from '../dto/database-ping.types';
 
 @Injectable()
 export class DatabasePingService {
-  constructor(private readonly dataSource: DataSource) { }
+  constructor(private readonly dataSource: DataSource) {}
 
   async ping(): Promise<DatabasePingResult> {
     if (!this.dataSource?.isInitialized) {

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+
 import { AccessTokenService } from './access-token.service';
 import { RefreshTokenService } from './refresh-token.service';
 
@@ -7,7 +8,7 @@ export class AuthService {
   constructor(
     private readonly accessTokens: AccessTokenService,
     private readonly refreshTokens: RefreshTokenService,
-  ) { }
+  ) {}
 
   signAccessToken(payload: {
     id: string;

@@ -17,11 +17,10 @@ import { PinoLogger } from 'nestjs-pino';
 
 import { UNASSOCIATED_FILES_PREFIX } from 'src/shared/constants/storage.constants';
 
-import { toFileView } from '../mappers/file.mappers';
-import { FilesService } from '../services/files.service';
-
 import { FileResponseDto } from '../dto/file.response.dto';
 import { UpdateFileDto } from '../dto/update-file.dto';
+import { toFileView } from '../mappers/file.mappers';
+import { FilesService } from '../services/files.service';
 
 @Controller({ path: 'portfolio/files', version: '1' })
 export class FilesController {

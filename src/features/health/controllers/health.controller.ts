@@ -4,7 +4,7 @@ import { HealthService } from '../services/health.service';
 
 @Controller({ path: 'health', version: '1' })
 export class HealthController {
-  constructor(private readonly health: HealthService) { }
+  constructor(private readonly health: HealthService) {}
 
   @Get()
   async check() {

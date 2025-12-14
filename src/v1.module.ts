@@ -20,4 +20,4 @@ import { UsersModule } from '@features/users/users.module';
   providers: [],
   exports: [],
 })
-export class V1Module { }
+export class V1Module {}

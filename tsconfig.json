@@ -15,21 +15,11 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@shared/*": [
-        "src/shared/*"
-      ],
-      "@config/*": [
-        "src/config/*"
-      ],
-      "@metrics/*": [
-        "src/metrics/*"
-      ],
-      "@health/*": [
-        "src/health/*"
-      ],
-      "@features/*": [
-        "src/features/*"
-      ]
+      "@shared/*": ["src/shared/*"],
+      "@config/*": ["src/config/*"],
+      "@metrics/*": ["src/metrics/*"],
+      "@health/*": ["src/health/*"],
+      "@features/*": ["src/features/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

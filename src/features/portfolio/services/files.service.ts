@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { File, UpdateFileInput } from '../dto/file.types';
-import { FileEntity } from '../entities/file.entity';
 import { CloudflareR2StorageAdapter } from '@shared/storage/cloudflare-r2.storage.adapter';
 import { FileToUpload } from '@shared/storage/file-storage.types';
+
+import { File, UpdateFileInput } from '../dto/file.types';
+import { FileEntity } from '../entities/file.entity';
 
 @Injectable()
 export class FilesService {
@@ -13,10 +14,12 @@ export class FilesService {
     @InjectRepository(FileEntity)
     private readonly repo: Repository<FileEntity>,
     private readonly storage: CloudflareR2StorageAdapter,
-  ) { }
+  ) {}
 
   findAll(): Promise<File[]> {
-    return this.repo.find().then((files) => files.map(this.toDomain));
+    return this.repo
+      .find()
+      .then((files) => files.map((file) => this.toDomain(file)));
   }
 
   findOne(id: number): Promise<File | null> {
@@ -60,7 +63,6 @@ export class FilesService {
       mimeType: entity.mimeType ?? undefined,
       sizeBytes: entity.sizeBytes ?? undefined,
       createdAt: entity.createdAt,
-
     };
   }
 }

@@ -6,19 +6,21 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { TechnologyEntity } from '@features/catalog/entities/technology.entity';
+import { CloudflareR2StorageAdapter } from '@shared/storage/cloudflare-r2.storage.adapter';
+
 import {
   CreateProjectInputSchema,
   UpdateProjectInputSchema,
 } from '../dto/project.schema';
+import { FileEntity } from '../entities/file.entity';
+import { ProjectEntity } from '../entities/project.entity';
+
 import type {
   Project,
   CreateProjectInput,
   UpdateProjectInput,
 } from '../dto/project.schema';
-
-import { ProjectEntity } from '../entities/project.entity';
-import { FileEntity } from '../entities/file.entity';
-import { CloudflareR2StorageAdapter } from '@shared/storage/cloudflare-r2.storage.adapter';
 
 @Injectable()
 export class ProjectsService {
@@ -28,7 +30,7 @@ export class ProjectsService {
     @InjectRepository(FileEntity)
     private readonly filesRepo: Repository<FileEntity>,
     private readonly storage: CloudflareR2StorageAdapter,
-  ) { }
+  ) {}
 
   findAll(): Promise<Project[]> {
     return this.projectsRepo
@@ -41,7 +43,7 @@ export class ProjectsService {
           carouselImages: true,
         },
       })
-      .then((list) => list.map(this.toDomain));
+      .then((list) => list.map((p) => this.toDomain(p)));
   }
 
   async findFeatured(): Promise<Project[]> {
@@ -56,7 +58,7 @@ export class ProjectsService {
           carouselImages: true,
         },
       })
-      .then((list) => list.map(this.toDomain));
+      .then((list) => list.map((p) => this.toDomain(p)));
   }
 
   findBySlug(slug: string): Promise<Project | null> {
@@ -98,14 +100,14 @@ export class ProjectsService {
         })) ?? [],
       previewImage: e.previewImage
         ? {
-          id: e.previewImage.id,
-          url: e.previewImage.url,
-          // key is missing in entity type definition? No, it has key.
-          // FileRef schema has id, url, position.
-          // ProjectSchema's previewImage is FileRefSchema (id, url, position).
-          // It does NOT have key, provider, mimeType etc.
-          // So we just map id and url.
-        }
+            id: e.previewImage.id,
+            url: e.previewImage.url,
+            // key is missing in entity type definition? No, it has key.
+            // FileRef schema has id, url, position.
+            // ProjectSchema's previewImage is FileRefSchema (id, url, position).
+            // It does NOT have key, provider, mimeType etc.
+            // So we just map id and url.
+          }
         : null,
       carouselImages:
         e.carouselImages?.map((img) => ({
@@ -147,15 +149,21 @@ export class ProjectsService {
     // Merge doesn't always handle M2M well.
     // Manual handling for technologies if present.
     if (validatedInput.technologyIds) {
-      existing.technologies = validatedInput.technologyIds.map((tid) => ({
-        id: tid,
-      })) as any;
+      existing.technologies = validatedInput.technologyIds.map((tid) => {
+        const t = new TechnologyEntity();
+        t.id = tid;
+        return t;
+      });
     }
     // Stack removed from logic as it's not in schema/entity
     if (validatedInput.previewImageId !== undefined) {
-      existing.previewImage = validatedInput.previewImageId
-        ? ({ id: validatedInput.previewImageId } as any)
-        : null;
+      if (validatedInput.previewImageId) {
+        const f = new FileEntity();
+        f.id = validatedInput.previewImageId;
+        existing.previewImage = f;
+      } else {
+        existing.previewImage = null;
+      }
     }
 
     this.projectsRepo.merge(existing, validatedInput);

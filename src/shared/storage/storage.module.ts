@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { ConfigurationModule } from '@config/configuration.module';
 import { ConfigurationService } from '@config/configuration.service';
 import { CLOUDFLARE_R2_CONFIG } from '@shared/config/configs/cloudflare-r2.config';
@@ -24,4 +25,4 @@ import { CloudflareR2StorageAdapter } from './cloudflare-r2.storage.adapter';
   ],
   exports: [CloudflareR2StorageAdapter],
 })
-export class SharedStorageModule { }
+export class SharedStorageModule {}

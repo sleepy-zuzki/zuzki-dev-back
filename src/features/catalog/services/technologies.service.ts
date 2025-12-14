@@ -14,7 +14,7 @@ export class TechnologiesService {
   constructor(
     @InjectRepository(TechnologyEntity)
     private readonly repo: Repository<TechnologyEntity>,
-  ) { }
+  ) {}
 
   findAll(): Promise<Technology[]> {
     return this.repo.find({ order: { name: 'ASC' } });

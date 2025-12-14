@@ -1,11 +1,13 @@
 import * as crypto from 'crypto';
+
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 
 import { ConfigurationService } from '@config/configuration.service';
-import { RefreshTokenEntity } from '../entities/refresh-token.entity';
 import { Argon2HashingAdapter } from '@shared/security/argon2-hashing.adapter';
+
+import { RefreshTokenEntity } from '../entities/refresh-token.entity';
 
 @Injectable()
 export class RefreshTokenService {
@@ -14,7 +16,7 @@ export class RefreshTokenService {
     private readonly repo: Repository<RefreshTokenEntity>,
     private readonly hashing: Argon2HashingAdapter,
     private readonly config: ConfigurationService,
-  ) { }
+  ) {}
 
   private ttlSeconds(): number {
     return this.config.getNumber('REFRESH_TOKEN_TTL', 60 * 60 * 24 * 7); // 7 días por defecto

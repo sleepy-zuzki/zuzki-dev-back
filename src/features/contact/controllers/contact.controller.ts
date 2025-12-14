@@ -8,13 +8,13 @@ import {
 } from '@nestjs/common';
 
 import { Public } from '@features/auth/decorators/public.decorator';
-import { ContactService } from '../services/contact.service';
 
 import { ContactRequestDto } from '../dto/contact-request.dto';
+import { ContactService } from '../services/contact.service';
 
 @Controller({ path: 'contact', version: '1' })
 export class ContactController {
-  constructor(private readonly contactService: ContactService) { }
+  constructor(private readonly contactService: ContactService) {}
 
   @Public()
   @Post()

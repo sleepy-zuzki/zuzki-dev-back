@@ -6,14 +6,14 @@ import {
 } from '@aws-sdk/client-s3';
 import { Inject, Injectable } from '@nestjs/common';
 
+import { CLOUDFLARE_R2_CONFIG } from '@shared/config/configs/cloudflare-r2.config';
+import type { CloudflareR2Config } from '@shared/config/types';
+
 import {
   FileStoragePort,
   FileToUpload,
   UploadedFile,
 } from './file-storage.types';
-import { CLOUDFLARE_R2_CONFIG } from '@shared/config/configs/cloudflare-r2.config';
-
-import type { CloudflareR2Config } from '@shared/config/types';
 
 @Injectable()
 export class CloudflareR2StorageAdapter implements FileStoragePort {
@@ -79,7 +79,8 @@ export class CloudflareR2StorageAdapter implements FileStoragePort {
       await this.client.send(copyCommand);
     } catch (err) {
       throw new Error(
-        `Cloudflare R2 copy failed for key ${sourceKey}: ${(err as Error).message
+        `Cloudflare R2 copy failed for key ${sourceKey}: ${
+          (err as Error).message
         }`,
       );
     }

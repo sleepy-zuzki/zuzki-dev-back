@@ -1,8 +1,7 @@
-import type { Project } from '../dto/project.schema';
-
 import { toFileView } from './file.mappers';
 
 import type { FileView } from './file.mappers';
+import type { Project } from '../dto/project.schema';
 
 export interface ProjectView {
   id: number;

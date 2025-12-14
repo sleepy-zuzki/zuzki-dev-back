@@ -11,12 +11,11 @@ import {
 } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
-import { toStackView } from '../mappers/stack.mappers';
-import { StacksService } from '../services/stacks.service';
-
 import { CreateStackDto } from '../dto/create-stack.dto';
 import { StackResponseDto } from '../dto/stack.response.dto';
 import { UpdateStackDto } from '../dto/update-stack.dto';
+import { toStackView } from '../mappers/stack.mappers';
+import { StacksService } from '../services/stacks.service';
 
 @Controller({ path: 'catalog/stacks', version: '1' })
 export class StacksController {

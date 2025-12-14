@@ -7,15 +7,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UserResponseDto } from '../dto/user.response.dto';
 import { toUserView } from '../mappers/user.mappers';
 import { UsersService } from '../services/users.service';
 
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UserResponseDto } from '../dto/user.response.dto';
-
 @Controller({ path: 'users', version: '1' })
 export class UsersController {
-  constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
   @Get(':id')
   async getById(@Param('id') id: string): Promise<UserResponseDto> {

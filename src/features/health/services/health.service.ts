@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { DatabasePingService } from './database-ping.service';
+
 import { DatabasePingResult } from '../dto/database-ping.types';
+
+import { DatabasePingService } from './database-ping.service';
 
 @Injectable()
 export class HealthService {
-  constructor(private readonly dbPing: DatabasePingService) { }
+  constructor(private readonly dbPing: DatabasePingService) {}
 
   async check(): Promise<{
     status: string;

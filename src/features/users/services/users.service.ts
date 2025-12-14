@@ -3,13 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Argon2HashingAdapter } from '@shared/security/argon2-hashing.adapter';
+
+import { UserEntity } from '../entities/user.entity';
+
 import type {
   User,
   UserId,
   CreateUserInput,
   CreateUserWithPasswordInput,
 } from '../dto/user.types';
-import { UserEntity } from '../entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -17,14 +19,16 @@ export class UsersService {
     @InjectRepository(UserEntity)
     private readonly repo: Repository<UserEntity>,
     private readonly hashing: Argon2HashingAdapter,
-  ) { }
+  ) {}
 
   findByEmail(email: string): Promise<User | null> {
-    return this.repo.findOne({ where: { email } }).then(this.toDomain);
+    return this.repo
+      .findOne({ where: { email } })
+      .then((u) => this.toDomain(u));
   }
 
   findById(id: UserId): Promise<User | null> {
-    return this.repo.findOne({ where: { id } }).then(this.toDomain);
+    return this.repo.findOne({ where: { id } }).then((u) => this.toDomain(u));
   }
 
   async create(input: CreateUserInput): Promise<User> {
