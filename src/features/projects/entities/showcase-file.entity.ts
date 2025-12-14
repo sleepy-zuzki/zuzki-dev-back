@@ -7,10 +7,10 @@ import { ShowcaseEntity } from './showcase.entity';
 
 @Entity({ name: 'files', schema: 'project' })
 export class ShowcaseFileEntity {
-  @PrimaryColumn({ name: 'showcase_id' })
+  @PrimaryColumn({ name: 'showcase_id', type: 'uuid' })
   showcaseId!: string;
 
-  @PrimaryColumn({ name: 'file_id' })
+  @PrimaryColumn({ name: 'file_id', type: 'uuid' })
   fileId!: string;
 
   @ManyToOne(() => ShowcaseEntity, (showcase) => showcase.files, {
@@ -23,7 +23,7 @@ export class ShowcaseFileEntity {
   @JoinColumn({ name: 'file_id' })
   file!: FileEntity;
 
-  @Column({ name: 'file_type_id' })
+  @Column({ name: 'file_type_id', type: 'uuid' })
   fileTypeId!: string;
 
   @ManyToOne(() => CatalogItemEntity)

@@ -39,7 +39,7 @@ export class ShowcaseEntity {
   @Column({ name: 'live_url', type: 'varchar', length: 255, nullable: true })
   liveUrl?: string | null;
 
-  @Column({ name: 'category_id', nullable: true })
+  @Column({ name: 'category_id', type: 'uuid', nullable: true })
   categoryId?: string | null;
 
   @ManyToOne(() => CatalogItemEntity)

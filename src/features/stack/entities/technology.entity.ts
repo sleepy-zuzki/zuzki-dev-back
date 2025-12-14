@@ -15,29 +15,29 @@ export class StackTechnologyEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ name: 'area_id' })
+  @Column({ name: 'area_id', type: 'uuid' })
   areaId!: string;
 
   @ManyToOne(() => StackAreaEntity)
   @JoinColumn({ name: 'area_id' })
   area!: StackAreaEntity;
 
-  @Column({ length: 100 })
+  @Column({ type: 'varchar', length: 100 })
   name!: string;
 
-  @Column({ length: 120, unique: true })
+  @Column({ type: 'varchar', length: 120, unique: true })
   slug!: string;
 
-  @Column({ name: 'website_url', length: 255, nullable: true })
+  @Column({ name: 'website_url', type: 'varchar', length: 255, nullable: true })
   websiteUrl?: string | null;
 
-  @Column({ name: 'docs_url', length: 255, nullable: true })
+  @Column({ name: 'docs_url', type: 'varchar', length: 255, nullable: true })
   docsUrl?: string | null;
 
-  @Column({ name: 'icon_class', length: 50, nullable: true })
+  @Column({ name: 'icon_class', type: 'varchar', length: 50, nullable: true })
   iconClass?: string | null;
 
-  @Column({ name: 'primary_color', length: 7, nullable: true })
+  @Column({ name: 'primary_color', type: 'varchar', length: 7, nullable: true })
   primaryColor?: string | null;
 
   @CreateDateColumn({

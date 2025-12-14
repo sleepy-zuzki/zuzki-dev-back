@@ -13,16 +13,16 @@ export class CatalogItemEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ name: 'type_id' })
+  @Column({ name: 'type_id', type: 'uuid' })
   typeId!: string;
 
   @ManyToOne(() => CatalogTypeEntity)
   @JoinColumn({ name: 'type_id' })
   type!: CatalogTypeEntity;
 
-  @Column()
+  @Column({ type: 'varchar' })
   name!: string;
 
-  @Column()
+  @Column({ type: 'varchar' })
   slug!: string;
 }
