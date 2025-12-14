@@ -2,44 +2,41 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import {
-  Technology,
-  CreateTechnologyInput,
-  UpdateTechnologyInput,
-} from '@features/catalog/dto/technology.types';
-import { TechnologyEntity } from '@features/catalog/entities/technology.entity';
+import { CreateAreaDto } from '../dto/create-area.dto';
+import { UpdateAreaDto } from '../dto/update-area.dto';
+import { StackAreaEntity } from '../entities/area.entity';
 
 @Injectable()
-export class TechnologiesService {
+export class AreasService {
   constructor(
-    @InjectRepository(TechnologyEntity)
-    private readonly repo: Repository<TechnologyEntity>,
+    @InjectRepository(StackAreaEntity)
+    private readonly repo: Repository<StackAreaEntity>,
   ) {}
 
-  findAll(): Promise<Technology[]> {
+  findAll(): Promise<StackAreaEntity[]> {
     return this.repo.find({ order: { name: 'ASC' } });
   }
 
-  findBySlug(slug: string): Promise<Technology | null> {
+  findBySlug(slug: string): Promise<StackAreaEntity | null> {
     return this.repo.findOne({ where: { slug } });
   }
 
-  create(input: CreateTechnologyInput): Promise<Technology> {
+  create(input: CreateAreaDto): Promise<StackAreaEntity> {
     const entity = this.repo.create(input);
     return this.repo.save(entity);
   }
 
   async update(
-    id: number,
-    input: UpdateTechnologyInput,
-  ): Promise<Technology | null> {
+    id: string,
+    input: UpdateAreaDto,
+  ): Promise<StackAreaEntity | null> {
     const found = await this.repo.findOne({ where: { id } });
     if (!found) return null;
     this.repo.merge(found, input);
     return this.repo.save(found);
   }
 
-  async remove(id: number): Promise<boolean> {
+  async remove(id: string): Promise<boolean> {
     const result = await this.repo.delete(id);
     return (result.affected ?? 0) > 0;
   }
