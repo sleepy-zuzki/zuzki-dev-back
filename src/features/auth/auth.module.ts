@@ -6,7 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ConfigurationModule } from '@config/configuration.module';
 import { ConfigurationService } from '@config/configuration.service';
-import { SharedSecurityModule } from '../shared/security/security.module';
+import { SharedSecurityModule } from '@shared/security/security.module';
 import { UsersModule } from '../users/users.module';
 
 import { JwtAuthGuard } from './guards/jwt-auth.guard';

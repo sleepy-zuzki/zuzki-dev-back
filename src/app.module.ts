@@ -6,10 +6,10 @@ import { LoggerModule } from 'nestjs-pino';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
 import { HealthModule } from '@features/health/health.module';
-import { DatabaseModule } from '@infra/database/database.module';
+import { DatabaseModule } from '@shared/database/database.module';
 // Legacy Auth import
 import { AuthModule } from '@features/auth/auth.module';
-import { V1Module } from '@interfaces/http/v1/v1.module';
+import { V1Module } from './v1.module';
 import { MetricsModule } from '@metrics/metrics.module';
 
 import { CatalogModule } from '@features/catalog/catalog.module';

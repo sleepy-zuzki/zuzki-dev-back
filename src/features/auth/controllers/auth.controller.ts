@@ -8,14 +8,16 @@ import {
   Inject,
 } from '@nestjs/common';
 
+import { Argon2HashingAdapter } from '@shared/security/argon2-hashing.adapter';
+
+import { UsersService } from '../../users/services/users.service';
 import { Public } from '../decorators/public.decorator';
 import { LoginDto } from '../dto/login.dto';
 import { RefreshDto } from '../dto/refresh.dto';
-import { LoginResponse } from '../types/auth.types';
 import { AuthConfigService } from '../services/auth-config.service';
 import { AuthService } from '../services/auth.service';
-import { Argon2HashingAdapter } from '../../shared/security/argon2-hashing.adapter';
-import { UsersService } from '../../users/services/users.service';
+import { LoginResponse } from '../types/auth.types';
+
 
 @Controller({ path: 'auth', version: '1' })
 export class AuthController {

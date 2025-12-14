@@ -5,7 +5,7 @@ import { Repository, IsNull } from 'typeorm';
 
 import { ConfigurationService } from '@config/configuration.service';
 import { RefreshTokenEntity } from '../entities/refresh-token.entity';
-import { Argon2HashingAdapter } from '../../shared/security/argon2-hashing.adapter';
+import { Argon2HashingAdapter } from '@shared/security/argon2-hashing.adapter';
 
 @Injectable()
 export class RefreshTokenService {

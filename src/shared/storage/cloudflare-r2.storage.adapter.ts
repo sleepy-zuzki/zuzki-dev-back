@@ -11,9 +11,9 @@ import {
   FileToUpload,
   UploadedFile,
 } from './file-storage.types';
-import { CLOUDFLARE_R2_CONFIG } from 'src/infrastructure/config/configs/cloudflare-r2.config';
+import { CLOUDFLARE_R2_CONFIG } from '@shared/config/configs/cloudflare-r2.config';
 
-import type { CloudflareR2Config } from '@infra/config/types';
+import type { CloudflareR2Config } from '@shared/config/types';
 
 @Injectable()
 export class CloudflareR2StorageAdapter implements FileStoragePort {

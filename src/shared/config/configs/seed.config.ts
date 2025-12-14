@@ -1,6 +1,6 @@
 import { registerAs } from '@nestjs/config';
 
-import type { SeedConfig } from '@infra/config/types';
+import type { SeedConfig } from '@shared/config/types';
 
 export const SEED_CONFIG = 'seed';
 

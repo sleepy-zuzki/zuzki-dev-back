@@ -1,8 +1,8 @@
 #!/usr/bin/env ts-node
 import 'reflect-metadata';
-import dataSource from '@infra/database/data-source';
-import { StackEntity } from '../src/features/catalog/entities/stack.entity';
-import { TechnologyEntity } from '../src/features/catalog/entities/technology.entity';
+import dataSource from '@shared/database/data-source';
+import { StackEntity } from '@features/catalog/entities/stack.entity';
+import { TechnologyEntity } from '@features/catalog/entities/technology.entity';
 
 function ensureNotProd() {
   const isProd = process.env.NODE_ENV === 'production';

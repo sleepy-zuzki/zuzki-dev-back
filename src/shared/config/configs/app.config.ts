@@ -1,6 +1,6 @@
 import { registerAs } from '@nestjs/config';
 
-import type { AppConfig } from '@infra/config/types';
+import type { AppConfig } from '@shared/config/types';
 
 export const APP_CONFIG = 'app';
 

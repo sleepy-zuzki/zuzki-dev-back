@@ -18,7 +18,7 @@ import type {
 
 import { ProjectEntity } from '../entities/project.entity';
 import { FileEntity } from '../entities/file.entity';
-import { CloudflareR2StorageAdapter } from '../../shared/storage/cloudflare-r2.storage.adapter';
+import { CloudflareR2StorageAdapter } from '@shared/storage/cloudflare-r2.storage.adapter';
 
 @Injectable()
 export class ProjectsService {

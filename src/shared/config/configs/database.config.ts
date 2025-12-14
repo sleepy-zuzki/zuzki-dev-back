@@ -1,6 +1,6 @@
 import { registerAs } from '@nestjs/config';
 
-import type { DatabaseConfig } from '@infra/config/types';
+import type { DatabaseConfig } from '@shared/config/types';
 
 function getEnv(key: string): string {
   const value = process.env[key];

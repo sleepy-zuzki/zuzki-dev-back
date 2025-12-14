@@ -1,6 +1,6 @@
 import { registerAs } from '@nestjs/config';
 
-import type { CloudflareR2Config } from '@infra/config/types';
+import type { CloudflareR2Config } from '@shared/config/types';
 
 export const CLOUDFLARE_R2_CONFIG = 'cloudflare-r2';
 

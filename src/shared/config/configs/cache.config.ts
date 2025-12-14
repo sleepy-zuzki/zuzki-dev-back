@@ -1,6 +1,6 @@
 import { registerAs } from '@nestjs/config';
 
-import type { CacheConfig } from '@infra/config/types';
+import type { CacheConfig } from '@shared/config/types';
 
 export const CACHE_CONFIG = 'cache';
 

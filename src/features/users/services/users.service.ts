@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Argon2HashingAdapter } from '../../shared/security/argon2-hashing.adapter';
+import { Argon2HashingAdapter } from '@shared/security/argon2-hashing.adapter';
 import type {
   User,
   UserId,

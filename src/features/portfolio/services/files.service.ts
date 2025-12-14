@@ -4,8 +4,8 @@ import { Repository } from 'typeorm';
 
 import { File, UpdateFileInput } from '../dto/file.types';
 import { FileEntity } from '../entities/file.entity';
-import { CloudflareR2StorageAdapter } from '../../shared/storage/cloudflare-r2.storage.adapter';
-import { FileToUpload } from '../../shared/storage/file-storage.types';
+import { CloudflareR2StorageAdapter } from '@shared/storage/cloudflare-r2.storage.adapter';
+import { FileToUpload } from '@shared/storage/file-storage.types';
 
 @Injectable()
 export class FilesService {

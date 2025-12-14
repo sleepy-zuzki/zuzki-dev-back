@@ -1,6 +1,6 @@
 import { registerAs } from '@nestjs/config';
 
-import type { AuthConfig } from '@infra/config/types';
+import type { AuthConfig } from '@shared/config/types';
 
 export const AUTH_CONFIG = 'auth';
 

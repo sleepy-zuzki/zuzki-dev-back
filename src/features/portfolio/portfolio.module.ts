@@ -12,7 +12,7 @@ import { ProjectEntity } from './entities/project.entity';
 // We can use a factory or class provider depending on config.
 // For now, I'll direct bind the interface to the implementation for simplicity, 
 // assuming ConfigService is available globally or injected.
-import { SharedStorageModule } from '../shared/storage/storage.module';
+import { SharedStorageModule } from '@shared/storage/storage.module';
 
 @Module({
   imports: [
