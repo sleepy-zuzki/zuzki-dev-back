@@ -55,7 +55,7 @@ export class ShowcaseEntity {
 
   @ManyToMany(() => StackTechnologyEntity)
   @JoinTable({
-    name: 'technologies', // Table project.technologies
+    name: 'showcase_technologies', // Renamed to avoid conflict and improve clarity
     schema: 'project',
     joinColumn: { name: 'showcase_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'technology_id', referencedColumnName: 'id' },

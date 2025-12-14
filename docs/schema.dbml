@@ -92,7 +92,7 @@ Table project.showcases {
   updated_at "timestamp with time zone" [not null, default: `CURRENT_TIMESTAMP`]
 }
 
-Table project.technologies {
+Table project.showcase_technologies {
   showcase_id uuid [not null]
   technology_id uuid [not null] // FK > stack.technologies
 }
@@ -141,8 +141,8 @@ Ref: catalog.items.type_id > catalog.types.id
 
 // Project
 Ref: project.showcases.category_id > catalog.items.id
-Ref: project.technologies.showcase_id > project.showcases.id
-Ref: project.technologies.technology_id > stack.technologies.id
+Ref: project.showcase_technologies.showcase_id > project.showcases.id
+Ref: project.showcase_technologies.technology_id > stack.technologies.id
 
 Ref: project.files.showcase_id > project.showcases.id
 Ref: project.files.file_type_id > catalog.items.id
