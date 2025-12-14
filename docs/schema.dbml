@@ -1,0 +1,153 @@
+// ------------------------------------------
+// AUTH & USERS (Public Schema)
+// ------------------------------------------
+Table users {
+  id uuid [pk]
+  email varchar(320) [unique, not null]
+  password_hash varchar(255) [not null]
+  is_active boolean [not null, default: true]
+  roles text[] [not null, default: "{}"]
+  created_at "timestamp with time zone" [not null, default: `now()`]
+  updated_at "timestamp with time zone" [not null, default: `now()`]
+}
+
+Table refresh_tokens {
+  id uuid [pk]
+  user_id uuid [not null]
+  token_hash varchar(255) [not null]
+  expires_at "timestamp with time zone" [not null]
+  revoked_at "timestamp with time zone"
+  created_at "timestamp with time zone" [not null, default: `now()`]
+}
+
+// ------------------------------------------
+// GLOBAL FILES
+// ------------------------------------------
+Table files {
+  id uuid [pk]
+  url text [not null]
+  key text
+  provider varchar(50)
+  mime_type varchar(100)
+  size_bytes int
+  created_at "timestamp with time zone" [not null, default: `CURRENT_TIMESTAMP`]
+}
+
+// ------------------------------------------
+// SCHEMA: CATALOG (Generic Dropdowns)
+// ------------------------------------------
+Table catalog.types {
+  id uuid [pk, not null]
+  name varchar [not null] // Ej: "File Type", "Project Category"
+  slug varchar [not null]
+}
+
+Table catalog.items {
+  id uuid [pk, not null]
+  type_id uuid [not null]
+  name varchar [not null] // Ej: "Thumbnail", "Frontend"
+  slug varchar [not null]
+}
+
+// ------------------------------------------
+// SCHEMA: STACK (Rich Tech Data)
+// ------------------------------------------
+Table stack.areas {
+  id uuid [pk]
+  name varchar(100) [not null] // Ej: "Frontend", "DevOps"
+  slug varchar(120) [unique, not null]
+  icon_code varchar(50)
+  created_at "timestamp with time zone" [default: `now()`]
+  updated_at "timestamp with time zone" [default: `now()`]
+}
+
+Table stack.technologies {
+  id uuid [pk]
+  area_id uuid [not null]
+  name varchar(100) [not null] // Ej: "Angular", "PostgreSQL"
+  slug varchar(120) [unique, not null]
+  website_url varchar(255)
+  docs_url varchar(255)
+  icon_class varchar(50)
+  primary_color varchar(7)
+  created_at "timestamp with time zone" [default: `now()`]
+  updated_at "timestamp with time zone" [default: `now()`]
+}
+
+// ------------------------------------------
+// SCHEMA: PROJECT (Portfolio)
+// ------------------------------------------
+Table project.showcases {
+  id uuid [pk]
+  name varchar(150) [not null]
+  slug varchar(160) [unique, not null]
+  description text
+  details text
+  repo_url varchar(255)
+  live_url varchar(255)
+  category_id uuid [not null] // FK > catalog.catalogs
+  year int
+  is_featured boolean [not null, default: false]
+  created_at "timestamp with time zone" [not null, default: `CURRENT_TIMESTAMP`]
+  updated_at "timestamp with time zone" [not null, default: `CURRENT_TIMESTAMP`]
+}
+
+Table project.technologies {
+  showcase_id uuid [not null]
+  technology_id uuid [not null] // FK > stack.technologies
+}
+
+Table project.files {
+  file_id uuid [not null]
+  showcase_id uuid [not null]
+  file_type_id uuid [not null] // FK > catalog.catalogs (Ej: "Cover")
+  order integer [not null, default: 1]
+}
+
+// ------------------------------------------
+// SCHEMA: BLOG
+// ------------------------------------------
+Table blog.entries {
+  id uuid [pk, not null]
+  title varchar(255) [not null]
+  slug varchar [not null]
+  content jsonb
+  publish_date timestamp
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  deleted_at timestamp
+}
+
+Table blog.files {
+  file_id uuid [not null]
+  blog_id uuid [not null]
+  file_type_id uuid [not null]
+  order integer [default: 1]
+}
+
+// ------------------------------------------
+// RELATIONS
+// ------------------------------------------
+
+// Auth
+Ref: refresh_tokens.user_id > users.id
+
+// Stack
+Ref: stack.technologies.area_id > stack.areas.id
+
+// Catalog
+Ref: catalog.items.type_id > catalog.types.id
+
+// Project
+Ref: project.showcases.category_id > catalog.items.id
+Ref: project.technologies.showcase_id > project.showcases.id
+Ref: project.technologies.technology_id > stack.technologies.id
+
+Ref: project.files.showcase_id > project.showcases.id
+Ref: project.files.file_type_id > catalog.items.id
+Ref: project.files.file_id > files.id
+
+// Blog
+Ref: blog.files.blog_id > blog.entries.id
+Ref: blog.files.file_type_id > catalog.items.id
+Ref: blog.files.file_id > files.id
