@@ -43,7 +43,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
         const username = getString('POSTGRES_USER', 'postgres');
         const password = getString('POSTGRES_PASSWORD', 'postgres');
         const database = getString('POSTGRES_DB', 'postgres');
-        const schema = 'portfolio';
+        const schema = 'public';
         const synchronize = getBoolean('TYPEORM_SYNC', false);
         const logging = getBoolean('TYPEORM_LOGGING', false);
         const poolMode = getString('POSTGRES_POOL_MODE', 'session');

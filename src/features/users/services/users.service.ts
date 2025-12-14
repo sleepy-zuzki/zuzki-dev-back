@@ -21,14 +21,14 @@ export class UsersService {
     private readonly hashing: Argon2HashingAdapter,
   ) {}
 
-  findByEmail(email: string): Promise<User | null> {
-    return this.repo
-      .findOne({ where: { email } })
-      .then((u) => this.toDomain(u));
+  async findByEmail(email: string): Promise<User | null> {
+    const u = await this.repo.findOne({ where: { email } });
+    return this.toDomain(u);
   }
 
-  findById(id: UserId): Promise<User | null> {
-    return this.repo.findOne({ where: { id } }).then((u) => this.toDomain(u));
+  async findById(id: UserId): Promise<User | null> {
+    const u = await this.repo.findOne({ where: { id } });
+    return this.toDomain(u);
   }
 
   async create(input: CreateUserInput): Promise<User> {
@@ -48,13 +48,6 @@ export class UsersService {
       isActive: input.isActive,
     });
   }
-
-  validateActive(user: Pick<User, 'isActive'>): void {
-    if (!user.isActive) {
-      throw new Error('El usuario está inactivo');
-    }
-  }
-
   private toDomain(entity: UserEntity): User;
   private toDomain(entity: UserEntity | null): User | null;
   private toDomain(entity: UserEntity | null): User | null {
