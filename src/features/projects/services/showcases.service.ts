@@ -24,6 +24,14 @@ export class ShowcasesService {
     });
   }
 
+  findFeatured(): Promise<ShowcaseEntity[]> {
+    return this.repo.find({
+      where: { isFeatured: true },
+      order: { year: 'DESC', title: 'ASC' },
+      relations: ['technologies'],
+    });
+  }
+
   findBySlug(slug: string): Promise<ShowcaseEntity | null> {
     return this.repo.findOne({ where: { slug }, relations: ['technologies'] });
   }

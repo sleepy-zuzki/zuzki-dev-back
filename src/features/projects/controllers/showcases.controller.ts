@@ -32,6 +32,13 @@ export class ShowcasesController {
     return items.map(toShowcaseView);
   }
 
+  @Get('featured')
+  async getFeatured(): Promise<ShowcaseResponseDto[]> {
+    const items = await this.showcasesService.findFeatured();
+    this.logger.debug({ count: items.length }, 'Listing featured showcases');
+    return items.map(toShowcaseView);
+  }
+
   @Get(':slug')
   async getBySlug(@Param('slug') slug: string): Promise<ShowcaseResponseDto> {
     const item = await this.showcasesService.findBySlug(slug);
