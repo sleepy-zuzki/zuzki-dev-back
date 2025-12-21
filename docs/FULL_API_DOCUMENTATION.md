@@ -1,391 +1,354 @@
-# **Zuzki Dev API Documentation**
+# **Documentación de la API de Zuzki Dev**
 
-This document provides a complete reference for all available endpoints in the Zuzki Dev API.
+Este documento proporciona una referencia completa de todos los endpoints disponibles en la API de Zuzki Dev.
 
-**Base URL**: `{{baseUrl}}`
-**API Version**: `v1`
+**URL Base**: `{{baseUrl}}/v1`
+**Versión de la API**: `v1`
 
 ---
 
-## **Authentication**
+## **Autenticación**
 
-Most endpoints require a Bearer Token for authentication. The token should be included in the `Authorization` header.
+La mayoría de los endpoints requieren un Token Bearer para la autenticación. El token debe incluirse en la cabecera `Authorization`.
 
 `Authorization: Bearer {{accessToken}}`
 
-The collection includes a pre-request script to automatically handle login and token renewal.
+### **Inicio de Sesión**
+
+- **Endpoint**: `POST /auth/login`
+- **Autenticación**: No requerida.
+- **Cuerpo de la Solicitud** (`application/json`):
+
+| Campo      | Tipo   | Requerido | Descripción                   |
+| :--------- | :----- | :-------- | :---------------------------- |
+| `email`    | string | Sí        | Email del usuario.            |
+| `password` | string | Sí        | Contraseña (mínimo 8 caract.). |
+
+- **Respuesta Exitosa (`200 OK`)**: Devuelve un objeto `LoginResponse` que contiene tokens de acceso/refresco e información del usuario.
+
+### **Refrescar Token de Acceso**
+
+- **Endpoint**: `POST /auth/refresh`
+- **Autenticación**: No requerida.
+- **Cuerpo de la Solicitud** (`application/json`):
+
+| Campo          | Tipo   | Requerido | Descripción                   |
+| :------------- | :----- | :-------- | :---------------------------- |
+| `userId`       | uuid   | Sí        | ID del usuario.               |
+| `refreshToken` | string | Sí        | Token de refresco válido.     |
+
+- **Respuesta Exitosa (`200 OK`)**: Devuelve un nuevo objeto `LoginResponse`.
+
+### **Cierre de Sesión**
+
+Revoca el token de refresco de un usuario.
+
+- **Endpoint**: `POST /auth/logout`
+- **Autenticación**: Requerida (implícitamente a través de la verificación de propiedad del token).
+- **Cuerpo de la Solicitud** (`application/json`):
+
+| Campo          | Tipo   | Requerido | Descripción                    |
+| :------------- | :----- | :-------- | :----------------------------- |
+| `userId`       | uuid   | Sí        | ID del usuario.                |
+| `refreshToken` | string | Sí        | El token de refresco a revocar.|
+
+- **Respuesta Exitosa (`200 OK`)**: Devuelve `{ "success": true }`.
+
+---
+
+## **Usuarios**
+
+Endpoints para la gestión de usuarios.
+
+### **Obtener Usuario por ID**
+
+- **Endpoint**: `GET /users/:id`
+- **Autenticación**: Requerida.
+- **Parámetros de URL**:
+  - `id` (uuid, requerido): El ID del usuario.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve un `UserResponseDto`.
+
+### **Crear Usuario**
+
+- **Endpoint**: `POST /users`
+- **Autenticación**: Requerida.
+- **Cuerpo de la Solicitud** (`application/json`):
+
+| Campo      | Tipo     | Requerido | Descripción                               |
+| :--------- | :------- | :-------- | :---------------------------------------- |
+| `email`    | string   | Sí        | Email del usuario.                        |
+| `password` | string   | Sí        | Contraseña (mínimo 8 caract.).            |
+| `roles`    | string[] | No        | Array de roles (ej: `["admin", "user"]`). |
+| `isActive` | boolean  | No        | Define si el usuario está activo.         |
+
+- **Respuesta Exitosa (`201 Created`)**: Devuelve un `UserResponseDto`.
+
+---
+
+## **Stack**
+
+Endpoints para gestionar áreas técnicas y tecnologías.
+
+### **Áreas**
+
+#### **Listar Áreas**
+- **Endpoint**: `GET /stack/areas`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve `AreaResponseDto[]`.
+
+#### **Obtener Área por Slug**
+- **Endpoint**: `GET /stack/areas/:slug`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve un `AreaResponseDto`.
+
+#### **Crear Área**
+- **Endpoint**: `POST /stack/areas`
+- **Autenticación**: Requerida.
+- **Cuerpo de la Solicitud** (`application/json`):
+
+| Campo      | Tipo   | Requerido | Descripción                      |
+| :--------- | :----- | :-------- | :------------------------------- |
+| `name`     | string | Sí        | Nombre del área (2-100 caract.). |
+| `slug`     | string | Sí        | Slug en formato kebab-case.      |
+| `iconCode` | string | No        | Código de ícono (1-50 caract.).  |
+
+- **Respuesta Exitosa (`201 Created`)**: Devuelve un `AreaResponseDto`.
+
+#### **Actualizar Área**
+- **Endpoint**: `PATCH /stack/areas/:id`
+- **Autenticación**: Requerida.
+- **Cuerpo de la Solicitud**: `CreateAreaDto` parcial.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve el `AreaResponseDto` actualizado.
+
+#### **Eliminar Área**
+- **Endpoint**: `DELETE /stack/areas/:id`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve `{ "success": true }`.
+
+### **Tecnologías**
+
+#### **Listar Tecnologías**
+- **Endpoint**: `GET /stack/technologies`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve `TechnologyResponseDto[]`.
+
+#### **Obtener Tecnología por Slug**
+- **Endpoint**: `GET /stack/technologies/:slug`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve un `TechnologyResponseDto`.
+
+#### **Crear Tecnología**
+- **Endpoint**: `POST /stack/technologies`
+- **Autenticación**: Requerida.
+- **Cuerpo de la Solicitud** (`application/json`):
+
+| Campo          | Tipo   | Requerido | Descripción                     |
+| :------------- | :----- | :-------- | :------------------------------ |
+| `areaId`       | uuid   | Sí        | ID del Área asociada.           |
+| `name`         | string | Sí        | Nombre (2-100 caract.).         |
+| `slug`         | string | Sí        | Slug en formato kebab-case.     |
+| `websiteUrl`   | string | No        | URL válida.                     |
+| `docsUrl`      | string | No        | URL válida.                     |
+| `iconClass`    | string | No        | Clase CSS del ícono.            |
+| `primaryColor` | string | No        | Color hexadecimal (ej: #FFFFFF).|
+
+- **Respuesta Exitosa (`201 Created`)**: Devuelve un `TechnologyResponseDto`.
+
+#### **Actualizar Tecnología**
+- **Endpoint**: `PATCH /stack/technologies/:id`
+- **Autenticación**: Requerida.
+- **Cuerpo de la Solicitud**: `CreateTechnologyDto` parcial.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve el `TechnologyResponseDto` actualizado.
+
+#### **Eliminar Tecnología**
+- **Endpoint**: `DELETE /stack/technologies/:id`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve `{ "success": true }`.
+
+---
+
+## **Proyectos (Showcases)**
+
+Endpoints para gestionar el portafolio de proyectos.
+
+### **Listar Proyectos**
+- **Endpoint**: `GET /projects/showcases`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve `ShowcaseResponseDto[]`.
+
+### **Listar Proyectos Destacados**
+- **Endpoint**: `GET /projects/showcases/featured`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve `ShowcaseResponseDto[]`.
+
+### **Obtener Proyecto por Slug**
+- **Endpoint**: `GET /projects/showcases/:slug`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve un `ShowcaseResponseDto` que incluye:
+  - Datos básicos (id, title, slug, description, content, year, isFeatured).
+  - `technologies`: Array de tecnologías utilizadas.
+  - `images`: Array de objetos con las imágenes asociadas:
+    - `id`: ID del archivo.
+    - `url`: URL pública del archivo.
+    - `type`: Contexto/Tipo de imagen (ej: `cover`, `hero-slide`, `gallery`).
+    - `order`: Orden de visualización.
+
+### **Crear Proyecto**
+- **Endpoint**: `POST /projects/showcases`
+- **Autenticación**: Requerida.
+- **Cuerpo de la Solicitud** (`application/json`):
+
+| Campo           | Tipo     | Requerido | Descripción                             |
+| :-------------- | :------- | :-------- | :-------------------------------------- |
+| `title`         | string   | Sí        | Título del proyecto (2-150 caract.).    |
+| `slug`          | string   | Sí        | Slug único en formato kebab-case.       |
+| `description`   | string   | No        | Máx 1000 caract.                        |
+| `content`       | object   | No        | Objeto de contenido de EditorJS.        |
+| `repoUrl`       | string   | No        | URL válida.                             |
+| `liveUrl`       | string   | No        | URL válida.                             |
+| `categoryId`    | uuid     | No        | ID de la categoría.                     |
+| `year`          | number   | No        | Año (1900-2100).                        |
+| `isFeatured`    | boolean  | No        | `false` por defecto.                    |
+| `technologyIds` | uuid[]   | No        | Array de IDs de Tecnologías.            |
+
+- **Respuesta Exitosa (`201 Created`)**: Devuelve un `ShowcaseResponseDto`.
+
+### **Actualizar Proyecto**
+- **Endpoint**: `PATCH /projects/showcases/:id`
+- **Autenticación**: Requerida.
+- **Cuerpo de la Solicitud**: `CreateShowcaseDto` parcial.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve el `ShowcaseResponseDto` actualizado.
+
+### **Eliminar Proyecto**
+- **Endpoint**: `DELETE /projects/showcases/:id`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve `{ "success": true }`.
+
+### **Gestión de Archivos de Proyecto**
+
+#### **Adjuntar Archivo**
+- **Endpoint**: `POST /projects/showcases/:id/files`
+- **Autenticación**: Requerida.
+- **Cuerpo** (`application/json`):
+  - `fileId` (uuid): ID del archivo previamente subido.
+  - `contextSlug` (string): Contexto (`cover`, `hero-slide`, `gallery`).
+  - `order` (number, opcional): Posición en la lista.
+
+#### **Desvincular Archivo**
+- **Endpoint**: `DELETE /projects/showcases/:id/files/:fileId`
+- **Autenticación**: Requerida.
+
+#### **Reordenar Archivos**
+- **Endpoint**: `PATCH /projects/showcases/:id/files/order`
+- **Autenticación**: Requerida.
+- **Cuerpo**: `{"items": [{"fileId": "uuid", "order": 1}, ...]}`
+
+#### **Establecer Portada (Cover)**
+- **Endpoint**: `PUT /projects/showcases/:id/cover/:fileId`
+- **Autenticación**: Requerida.
+- **Nota**: Al establecer una nueva portada, la anterior pasará automáticamente a ser de tipo `gallery`.
+
+---
+
+## **Blog**
+
+Endpoints para gestionar las entradas del blog.
+
+### **Listar Entradas**
+- **Endpoint**: `GET /blog/entries`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve `BlogEntryEntity[]`.
+
+### **Obtener Entrada por ID**
+- **Endpoint**: `GET /blog/entries/:id`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve una `BlogEntryEntity`.
+
+### **Obtener Entrada por Slug**
+- **Endpoint**: `GET /blog/entries/slug/:slug`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve una `BlogEntryEntity`.
+
+### **Crear Entrada**
+- **Endpoint**: `POST /blog/entries`
+- **Autenticación**: Requerida.
+- **Cuerpo de la Solicitud** (`application/json`):
+
+| Campo         | Tipo     | Requerido | Descripción                          |
+| :------------ | :------- | :-------- | :----------------------------------- |
+| `title`       | string   | Sí        | Título (5-255 caract.).              |
+| `slug`        | string   | Sí        | Slug en formato kebab-case.          |
+| `description` | string   | No        | Máx 1000 caract.                     |
+| `content`     | object   | No        | Objeto de contenido de EditorJS.     |
+| `publishDate` | string   | No        | Fecha en formato ISO.                |
+
+- **Respuesta Exitosa (`201 Created`)**: Devuelve una `BlogEntryEntity`.
+
+### **Actualizar Entrada**
+- **Endpoint**: `PATCH /blog/entries/:id`
+- **Autenticación**: Requerida.
+- **Cuerpo de la Solicitud**: `CreateBlogDto` parcial.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve la `BlogEntryEntity` actualizada.
+
+### **Eliminar Entrada**
+- **Endpoint**: `DELETE /blog/entries/:id`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve `{ "success": true }`.
+
+---
+
+## **Archivos**
+
+Endpoints para gestionar archivos.
+
+### **Subir Archivo**
+- **Endpoint**: `POST /files/upload`
+- **Autenticación**: Requerida.
+- **Solicitud**: `multipart/form-data`
+    - `file`: El contenido del archivo (Máx 5MB).
+- **Respuesta Exitosa (`201 Created`)**: Devuelve una `FileEntity` (id, url, etc.).
+
+### **Obtener Información del Archivo**
+- **Endpoint**: `GET /files/:id`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve una `FileEntity`.
+
+### **Eliminar Archivo**
+- **Endpoint**: `DELETE /files/:id`
+- **Autenticación**: Requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve `{ "success": true }`.
+
+---
+
+## **Contacto**
+
+### **Enviar Solicitud de Contacto**
+- **Endpoint**: `POST /contact`
+- **Autenticación**: No requerida (Público).
+- **Cuerpo de la Solicitud** (`application/json`):
+
+| Campo     | Tipo   | Requerido | Descripción           |
+| :-------- | :----- | :-------- | :-------------------- |
+| `name`    | string | Sí        | Máx 120 caract.       |
+| `email`   | string | Sí        | Email válido.         |
+| `message` | string | Sí        | Máx 4000 caract.      |
+
+- **Respuesta Exitosa (`204 No Content`)**: No devuelve contenido.
 
 ---
 
 ## **Health Check**
 
-Endpoints for monitoring the application's health.
-
-### **Check Service Health**
-
-Verifies the status of the application and its database connection.
-
+### **Verificar Salud del Servicio**
 - **Endpoint**: `GET /health`
-- **Authentication**: Not required.
-- **Success Response (`200 OK`)**: Returns a status object detailing the health of various application components.
+- **Autenticación**: No requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve un objeto de estado.
 
 ---
 
-## **Authentication**
-
-Endpoints for user login, logout, and token management.
-
-### **User Login**
-
-- **Endpoint**: `POST /auth/login`
-- **Authentication**: Not required.
-- **Request Body** (`application/json`):
-
-| Campo      | Tipo   | Requerido | Descripción             |
-| :--------- | :----- | :-------- | :---------------------- |
-| `email`    | string | Sí        | Email del usuario.      |
-| `password` | string | Sí        | Contraseña del usuario. |
-
-- **Success Response (`200 OK`)**: Returns a `LoginResponse` object containing access and refresh tokens, and user information.
-
-### **Refresh Access Token**
-
-- **Endpoint**: `POST /auth/refresh`
-- **Authentication**: Not required.
-- **Request Body** (`application/json`):
-
-| Campo          | Tipo   | Requerido | Descripción                          |
-| :------------- | :----- | :-------- | :----------------------------------- |
-| `userId`       | string | Sí        | ID del usuario.                      |
-| `refreshToken` | string | Sí        | El refresh token válido del usuario. |
-
-- **Success Response (`200 OK`)**: Returns a new `LoginResponse` object.
-
-### **User Logout**
-
-Revokes a user's refresh token.
-
-- **Endpoint**: `POST /auth/logout`
-- **Authentication**: Required.
-- **Request Body** (`application/json`):
-
-| Campo          | Tipo   | Requerido | Descripción                 |
-| :------------- | :----- | :-------- | :-------------------------- |
-| `userId`       | string | Sí        | ID del usuario.             |
-| `refreshToken` | string | Sí        | El refresh token a revocar. |
-
-- **Success Response (`200 OK`)**: Returns `{ "success": true }`.
-
----
-
-## **Users**
-
-User management endpoints.
-
-### **Get User by ID**
-
-- **Endpoint**: `GET /users/:id`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `id` (string, required): The ID of the user to retrieve.
-- **Success Response (`200 OK`)**: Returns a `UserResponseDto` object.
-
-### **Create User**
-
-- **Endpoint**: `POST /users`
-- **Authentication**: Required.
-- **Request Body** (`application/json`):
-
-| Campo      | Tipo     | Requerido | Descripción                                 |
-| :--------- | :------- | :-------- | :------------------------------------------ |
-| `email`    | string   | Sí        | Email del nuevo usuario.                    |
-| `password` | string   | Sí        | Contraseña (mínimo 8 caracteres).           |
-| `roles`    | string[] | No        | Array de roles (e.g., `["admin", "user"]`). |
-| `isActive` | boolean  | No        | Define si el usuario está activo.           |
-
-- **Success Response (`201 Created`)**: Returns the newly created `UserResponseDto` object.
-
----
-
-## **Portfolio: Projects**
-
-Endpoints for managing the projects portfolio.
-
-### **List Projects**
-
-- **Endpoint**: `GET /portfolio/projects`
-- **Authentication**: Required.
-- **Success Response (`200 OK`)**: Returns an array of `ProjectResponseDto` objects.
-
-### **Get Project by Slug**
-
-- **Endpoint**: `GET /portfolio/projects/:slug`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `slug` (string, required): The unique slug of the project.
-- **Success Response (`200 OK`)**: Returns a single `ProjectResponseDto` object, now including `carouselImages`.
-
-### **Create Project**
-
-- **Endpoint**: `POST /portfolio/projects`
-- **Authentication**: Required.
-- **Request Body** (`application/json`):
-
-| Campo            | Tipo           | Requerido | Validaciones                                                              | Descripción                          |
-| :--------------- | :------------- | :-------- | :------------------------------------------------------------------------ | :----------------------------------- |
-| `name`           | string         | Sí        | 2-150 caracteres; se recorta espacios                                     | Nombre del proyecto.                 |
-| `slug`           | string         | Sí        | 2-160; kebab-case `^[a-z0-9]+(?:-[a-z0-9]+)*$`; se convierte a minúsculas | Slug único del proyecto.             |
-| `description`    | string \| null | No        | Máx. 1000 caracteres                                                      | Descripción del proyecto.            |
-| `repoUrl`        | string \| null | No        | URL válida con protocolo; máx. 255                                        | URL del repositorio.                 |
-| `liveUrl`        | string \| null | No        | URL válida con protocolo; máx. 255                                        | URL del sitio en producción/demo.    |
-| `category`       | string \| null | No        | Valor enumerado permitido por el backend                                  | Categoría del proyecto.              |
-| `year`           | number \| null | No        | Entero; rango 1900-2100                                                   | Año de realización.                  |
-| `isFeatured`     | boolean        | No        | Acepta booleano o cadena `"true"`/`"false"`                               | Indica si el proyecto es destacado.  |
-| `technologyIds`  | number[]       | No        | Arreglo de enteros; cada valor >= 1                                       | IDs de tecnologías asociadas.        |
-| `previewImageId` | number \| null | No        | Entero >= 1                                                               | ID de la imagen de previsualización. |
-
-- **Success Response (`201 Created`)**: Returns the newly created `ProjectResponseDto`.
-
-### **Update Project**
-
-- **Endpoint**: `PATCH /portfolio/projects/:id`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `id` (integer, required): The ID of the project to update.
-- **Request Body** (`application/json`): Todos los campos son opcionales.
-
-| Campo            | Tipo             | Requerido | Validaciones                                                              | Descripción                                                   |
-| :--------------- | :--------------- | :-------- | :------------------------------------------------------------------------ | :------------------------------------------------------------ |
-| `name`           | string           | No        | 2-150 caracteres; se recorta                                              | Nombre del proyecto.                                          |
-| `slug`           | string           | No        | 2-160; kebab-case `^[a-z0-9]+(?:-[a-z0-9]+)*$`; se convierte a minúsculas | Slug único.                                                   |
-| `description`    | string \| null   | No        | Máx. 1000 caracteres                                                      | Descripción; enviar `null` para limpiar.                      |
-| `repoUrl`        | string \| null   | No        | URL válida con protocolo; máx. 255                                        | URL de repo; enviar `null` para limpiar.                      |
-| `liveUrl`        | string \| null   | No        | URL válida con protocolo; máx. 255                                        | URL en producción; enviar `null` para limpiar.                |
-| `category`       | string \| null   | No        | Valor enumerado permitido por el backend                                  | Categoría del proyecto.                                       |
-| `year`           | number \| null   | No        | Entero; rango 1900-2100                                                   | Año de realización.                                           |
-| `isFeatured`     | boolean          | No        | Acepta booleano o cadena `"true"`/`"false"`                               | Proyecto destacado.                                           |
-| `technologyIds`  | number[] \| null | No        | Arreglo de enteros; cada valor >= 1                                       | IDs de tecnologías; enviar `null` para limpiar.               |
-| `previewImageId` | number \| null   | No        | Entero >= 1                                                               | ID de imagen de previsualización; enviar `null` para limpiar. |
-
-- **Success Response (`200 OK`)**: Returns the updated `ProjectResponseDto`.
-
-### **Delete Project**
-
-- **Endpoint**: `DELETE /portfolio/projects/:id`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `id` (integer, required): The ID of the project to delete.
-- **Success Response (`200 OK`)**: Returns `{ "success": true }`.
-
-### **Add Image to Carousel**
-
-- **Endpoint**: `POST /portfolio/projects/:id/images`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `id` (integer, required): The ID of the project.
-- **Request Body** (`application/json`):
-
-| Campo      | Tipo    | Requerido | Descripción                            |
-| :--------- | :------ | :-------- | :------------------------------------- |
-| `fileId`   | integer | Sí        | ID del archivo a añadir al carrusel.   |
-| `position` | integer | No        | Posición en el carrusel. Default: `0`. |
-
-- **Success Response (`204 No Content`)**.
-
-### **Remove Image from Carousel**
-
-- **Endpoint**: `DELETE /portfolio/projects/:id/images/:fileId`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `id` (integer, required): The ID of the project.
-  - `fileId` (integer, required): The ID of the file to remove.
-- **Success Response (`204 No Content`)**.
-
-### **Reorder Carousel Images**
-
-- **Endpoint**: `PATCH /portfolio/projects/:id/images`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `id` (integer, required): The ID of the project.
-- **Request Body** (`application/json`): An object with an `images` key, which is an array of `{ fileId, position }` objects.
-- **Success Response (`204 No Content`)**.
-
----
-
-## **Portfolio: Files**
-
-Endpoints for managing files.
-
-### **List Files**
-
-- **Endpoint**: `GET /portfolio/files`
-- **Authentication**: Required.
-- **Success Response (`200 OK`)**: Returns an array of `FileResponseDto` objects.
-
-### **Get File by ID**
-
-- **Endpoint**: `GET /portfolio/files/:id`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `id` (integer, required): The ID of the file.
-- **Success Response (`200 OK`)**: Returns a single `FileResponseDto` object.
-
-### **Upload File**
-
-- **Endpoint**: `POST /portfolio/files`
-- **Authentication**: Required.
-- **Request Body** (`application/json`):
-
-| Campo       | Tipo           | Requerido | Validaciones                         | Descripción                                      |
-| :---------- | :------------- | :-------- | :----------------------------------- | :----------------------------------------------- |
-| `url`       | string         | Sí        | URL válida con protocolo; se recorta | URL pública del archivo.                         |
-| `provider`  | string \| null | No        | Máx. 50 caracteres                   | Proveedor de almacenamiento (p. ej., s3, local). |
-| `mimeType`  | string \| null | No        | Máx. 100 caracteres                  | Tipo MIME del archivo.                           |
-| `sizeBytes` | number \| null | No        | Entero >= 0                          | Tamaño en bytes.                                 |
-| `projectId` | number \| null | No        | Entero >= 1                          | ID del proyecto asociado.                        |
-
-Nota: Enviar `null` en `provider`, `mimeType`, `sizeBytes` o `projectId` para no establecer o limpiar dichos valores.
-
-- **Success Response (`201 Created`)**: Returns the created `FileResponseDto`.
-
-### **Update File**
-
-- **Endpoint**: `PATCH /portfolio/files/:id`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `id` (integer, required): The ID of the file to update.
-- **Request Body** (`application/json`): Todos los campos son opcionales.
-
-| Campo       | Tipo           | Requerido | Validaciones             | Descripción                                       |
-| :---------- | :------------- | :-------- | :----------------------- | :------------------------------------------------ |
-| `url`       | string         | No        | URL válida con protocolo | URL pública del archivo.                          |
-| `provider`  | string \| null | No        | Máx. 50 caracteres       | Proveedor de almacenamiento; `null` para limpiar. |
-| `mimeType`  | string \| null | No        | Máx. 100 caracteres      | Tipo MIME; `null` para limpiar.                   |
-| `sizeBytes` | number \| null | No        | Entero >= 0              | Tamaño en bytes; `null` para limpiar.             |
-| `projectId` | number \| null | No        | Entero >= 1              | ID de proyecto asociado; `null` para limpiar.     |
-
-- **Success Response (`200 OK`)**: Returns the updated `FileResponseDto`.
-
-### **Delete File**
-
-- **Endpoint**: `DELETE /portfolio/files/:id`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `id` (integer, required): The ID of the file to delete.
-- **Success Response (`200 OK`)**: Returns `{ "success": true }`.
-
----
-
-## **Catalog**
-
-Endpoints for managing catalog entities like Technologies and Stacks.
-
-### **Technologies**
-
-#### **List Technologies**
-
-- **Endpoint**: `GET /catalog/technologies`
-- **Authentication**: Required.
-- **Success Response (`200 OK`)**: Returns an array of `TechnologyResponseDto` objects.
-
-#### **Get Technology by Slug**
-
-- **Endpoint**: `GET /catalog/technologies/:slug`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `slug` (string, required): The unique slug of the technology.
-- **Success Response (`200 OK`)**: Returns a single `TechnologyResponseDto` object.
-
-#### **Create Technology**
-
-- **Endpoint**: `POST /catalog/technologies`
-- **Authentication**: Required.
-- **Request Body** (`application/json`):
-
-| Campo     | Tipo           | Requerido | Validaciones                                  | Descripción                |
-| :-------- | :------------- | :-------- | :-------------------------------------------- | :------------------------- |
-| `name`    | string         | Sí        | 2-100 caracteres; se recorta                  | Nombre de la tecnología.   |
-| `slug`    | string         | Sí        | 2-50; kebab-case `^[a-z0-9]+(?:-[a-z0-9]+)*$` | Slug único.                |
-| `website` | string \| null | No        | URL válida con protocolo                      | URL del sitio web oficial. |
-
-- **Success Response (`201 Created`)**: Returns the newly created `TechnologyResponseDto`.
-
-#### **Update Technology**
-
-- **Endpoint**: `PATCH /catalog/technologies/:id`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `id` (integer, required): The ID of the technology to update.
-- **Request Body** (`application/json`): Todos los campos son opcionales.
-
-| Campo     | Tipo           | Requerido | Validaciones                                  | Descripción                             |
-| :-------- | :------------- | :-------- | :-------------------------------------------- | :-------------------------------------- |
-| `name`    | string         | No        | 2-100 caracteres; se recorta                  | Nombre de la tecnología.                |
-| `slug`    | string         | No        | 2-50; kebab-case `^[a-z0-9]+(?:-[a-z0-9]+)*$` | Slug único.                             |
-| `website` | string \| null | No        | URL válida con protocolo                      | URL del sitio web; `null` para limpiar. |
-
-- **Success Response (`200 OK`)**: Returns the updated `TechnologyResponseDto`.
-
-#### **Delete Technology**
-
-- **Endpoint**: `DELETE /catalog/technologies/:id`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `id` (integer, required): The ID of the technology to delete.
-- **Success Response (`200 OK`)**: Returns `{ "success": true }`.
-
-### **Stacks**
-
-#### **List Stacks**
-
-- **Endpoint**: `GET /catalog/stacks`
-- **Authentication**: Required.
-- **Success Response (`200 OK`)**: Returns an array of `StackResponseDto` objects.
-
-#### **Get Stack by Slug**
-
-- **Endpoint**: `GET /catalog/stacks/:slug`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `slug` (string, required): The unique slug of the stack.
-- **Success Response (`200 OK`)**: Returns a single `StackResponseDto` object.
-
-#### **Create Stack**
-
-- **Endpoint**: `POST /catalog/stacks`
-- **Authentication**: Required.
-- **Request Body** (`application/json`):
-
-| Campo         | Tipo           | Requerido | Validaciones                                  | Descripción                       |
-| :------------ | :------------- | :-------- | :-------------------------------------------- | :-------------------------------- |
-| `name`        | string         | Sí        | 2-100 caracteres; se recorta                  | Nombre del stack.                 |
-| `slug`        | string         | Sí        | 2-50; kebab-case `^[a-z0-9]+(?:-[a-z0-9]+)*$` | Slug único.                       |
-| `area`        | string         | Sí        | Valor enumerado (`backend`, `frontend`, etc.) | Área a la que pertenece el stack. |
-| `description` | string \| null | No        | Máx. 1000 caracteres                          | Descripción del stack.            |
-
-- **Success Response (`201 Created`)**: Returns the newly created `StackResponseDto`.
-
-#### **Update Stack**
-
-- **Endpoint**: `PATCH /catalog/stacks/:id`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `id` (integer, required): The ID of the stack to update.
-- **Request Body** (`application/json`): Todos los campos son opcionales.
-
-| Campo         | Tipo           | Requerido | Validaciones                                  | Descripción                       |
-| :------------ | :------------- | :-------- | :-------------------------------------------- | :-------------------------------- |
-| `name`        | string         | No        | 2-100 caracteres; se recorta                  | Nombre del stack.                 |
-| `slug`        | string         | No        | 2-50; kebab-case `^[a-z0-9]+(?:-[a-z0-9]+)*$` | Slug único.                       |
-| `area`        | string         | No        | Valor enumerado (`backend`, `frontend`, etc.) | Área del stack.                   |
-| `description` | string \| null | No        | Máx. 1000 caracteres                          | Descripción; `null` para limpiar. |
-
-- **Success Response (`200 OK`)**: Returns the updated `StackResponseDto`.
-
-#### **Delete Stack**
-
-- **Endpoint**: `DELETE /catalog/stacks/:id`
-- **Authentication**: Required.
-- **URL Parameters**:
-  - `id` (integer, required): The ID of the stack to delete.
-- **Success Response (`200 OK`)**: Returns `{ "success": true }`.
+## **Métricas**
+
+### **Métricas de Prometheus**
+- **Endpoint**: `GET /api/metrics` (Nota: Sin prefijo de versión)
+- **Autenticación**: No requerida.
+- **Respuesta Exitosa (`200 OK`)**: Devuelve texto en formato Prometheus.
