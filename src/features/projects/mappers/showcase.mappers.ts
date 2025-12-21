@@ -17,6 +17,15 @@ export const toShowcaseView = (
   year: entity.year,
   isFeatured: entity.isFeatured,
   technologies: entity.technologies?.map(toTechnologyView) || [],
+  images:
+    entity.files
+      ?.sort((a, b) => a.order - b.order)
+      .map((f) => ({
+        id: f.fileId,
+        url: f.file?.url || '',
+        type: f.fileType?.slug || 'unknown',
+        order: f.order,
+      })) || [],
   createdAt: entity.createdAt.toISOString(),
   updatedAt: entity.updatedAt.toISOString(),
 });

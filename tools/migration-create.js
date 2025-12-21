@@ -24,8 +24,6 @@ const result = spawnSync(
     '--require',
     'tsconfig-paths/register',
     './node_modules/typeorm/cli.js',
-    '-d',
-    './src/shared/database/data-source.ts',
     'migration:create',
     targetPath,
   ],

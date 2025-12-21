@@ -7,10 +7,14 @@ import {
   Param,
   Patch,
   Post,
+  Put,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
 import { CreateShowcaseDto } from '../dto/create-showcase.dto';
+import { AttachFileDto, ReorderFilesDto, UpdateFileContextDto } from '../dto/manage-files.dto';
 import { ShowcaseResponseDto } from '../dto/showcase.response.dto';
 import { UpdateShowcaseDto } from '../dto/update-showcase.dto';
 import { toShowcaseView } from '../mappers/showcase.mappers';
@@ -77,5 +81,59 @@ export class ShowcasesController {
       throw new NotFoundException('Showcase not found');
     }
     return { success: true };
+  }
+
+  // --- FILE MANAGEMENT ENDPOINTS ---
+
+  @Post(':id/files')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async attachFile(
+    @Param('id') id: string,
+    @Body() dto: AttachFileDto,
+  ): Promise<void> {
+    this.logger.info({ id, fileId: dto.fileId }, 'Attaching file to showcase');
+    await this.showcasesService.attachFile(id, dto);
+  }
+
+  @Delete(':id/files/:fileId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async detachFile(
+    @Param('id') id: string,
+    @Param('fileId') fileId: string,
+  ): Promise<void> {
+    this.logger.info({ id, fileId }, 'Detaching file from showcase');
+    await this.showcasesService.detachFile(id, fileId);
+  }
+
+  @Patch(':id/files/order')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async reorderFiles(
+    @Param('id') id: string,
+    @Body() dto: ReorderFilesDto,
+  ): Promise<void> {
+    this.logger.info({ id }, 'Reordering files in showcase');
+    await this.showcasesService.reorderFiles(id, dto);
+  }
+
+  @Put(':id/files/:fileId/context')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async updateFileContext(
+    @Param('id') id: string,
+    @Param('fileId') fileId: string,
+    @Body() dto: UpdateFileContextDto,
+  ): Promise<void> {
+    this.logger.info({ id, fileId, context: dto.contextSlug }, 'Updating file context');
+    await this.showcasesService.updateFileContext(id, fileId, dto.contextSlug);
+  }
+
+  @Put(':id/cover/:fileId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async setCover(
+    @Param('id') id: string,
+    @Param('fileId') fileId: string,
+  ): Promise<void> {
+    this.logger.info({ id, fileId }, 'Setting showcase cover image');
+    // Wrapper: Setting cover is just updating context to 'cover'
+    await this.showcasesService.updateFileContext(id, fileId, 'cover');
   }
 }

@@ -9,9 +9,15 @@ import { ShowcaseFileEntity } from './entities/showcase-file.entity';
 import { ShowcaseEntity } from './entities/showcase.entity';
 import { ShowcasesService } from './services/showcases.service';
 
+import { CatalogItemEntity } from '@features/catalog/entities/catalog-item.entity';
+
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ShowcaseEntity, ShowcaseFileEntity]),
+    TypeOrmModule.forFeature([
+      ShowcaseEntity,
+      ShowcaseFileEntity,
+      CatalogItemEntity,
+    ]),
     FilesModule,
     StackModule,
   ],

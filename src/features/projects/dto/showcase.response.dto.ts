@@ -1,5 +1,6 @@
 import type { TechnologyResponseDto } from '@features/stack/dto/technology.response.dto';
 import type { EditorJsContent } from '@shared/types/editor-js-content.type';
+import { ShowcaseImageDto } from './showcase-image.dto';
 
 export class ShowcaseResponseDto {
   id!: string;
@@ -13,6 +14,7 @@ export class ShowcaseResponseDto {
   year?: number | null;
   isFeatured!: boolean;
   technologies?: TechnologyResponseDto[];
+  images?: ShowcaseImageDto[];
   createdAt!: string;
   updatedAt!: string;
 }
