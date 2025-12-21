@@ -1,0 +1,47 @@
+{
+  "info": {
+    "name": "Zuzki Dev - Catalogs",
+    "description": "Endpoints para la gestión de catálogos genéricos",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "item": [
+    {
+      "name": "List Catalogs",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/catalogs",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "catalogs"]
+        },
+        "description": "Obtener lista de todos los catálogos (tipos)"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Catalog Items by Slug",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/catalogs/:slug/items",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "catalogs", ":slug", "items"],
+          "variable": [
+            {
+              "key": "slug",
+              "value": "project-category",
+              "description": "Slug del catálogo"
+            }
+          ]
+        },
+        "description": "Obtener los items de un catálogo específico por su slug"
+      },
+      "response": []
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+get:
+  tags:
+    - Catalog
+  summary: Obtener todos los catálogos (tipos)
+  responses:
+    '200':
+      description: Lista de catálogos
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '../../components/catalog/generic.yaml#/CatalogType'
