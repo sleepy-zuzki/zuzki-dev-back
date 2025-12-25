@@ -11,7 +11,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-import { CatalogItemEntity } from '@features/catalog/entities/catalog-item.entity';
+import { StackAreaEntity } from '@features/stack/entities/area.entity';
 import { StackTechnologyEntity } from '@features/stack/entities/technology.entity';
 import type { EditorJsContent } from '@shared/types/editor-js-content.type';
 
@@ -40,12 +40,12 @@ export class ShowcaseEntity {
   @Column({ name: 'live_url', type: 'varchar', length: 255, nullable: true })
   liveUrl?: string | null;
 
-  @Column({ name: 'category_id', type: 'uuid', nullable: true })
-  categoryId?: string | null;
+  @Column({ name: 'area_id', type: 'uuid', nullable: true })
+  areaId?: string | null;
 
-  @ManyToOne(() => CatalogItemEntity)
-  @JoinColumn({ name: 'category_id' })
-  category?: CatalogItemEntity | null;
+  @ManyToOne(() => StackAreaEntity)
+  @JoinColumn({ name: 'area_id' })
+  area?: StackAreaEntity | null;
 
   @Column({ type: 'int', nullable: true })
   year?: number | null;

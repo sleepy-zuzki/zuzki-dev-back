@@ -60,7 +60,7 @@ export class CreateShowcaseDto {
 
   @IsOptional()
   @IsUUID()
-  categoryId?: string;
+  areaId?: string;
 
   @IsOptional()
   @Type(() => Number)

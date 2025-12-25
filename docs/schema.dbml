@@ -85,7 +85,7 @@ Table project.showcases {
   content jsonb
   repo_url varchar(255)
   live_url varchar(255)
-  category_id uuid [not null] // FK > catalog.catalogs
+  area_id uuid [not null] // FK > stack.areas
   year int
   is_featured boolean [not null, default: false]
   created_at "timestamp with time zone" [not null, default: `CURRENT_TIMESTAMP`]
@@ -140,7 +140,7 @@ Ref: stack.technologies.area_id > stack.areas.id
 Ref: catalog.items.type_id > catalog.types.id
 
 // Project
-Ref: project.showcases.category_id > catalog.items.id
+Ref: project.showcases.area_id > stack.areas.id
 Ref: project.showcase_technologies.showcase_id > project.showcases.id
 Ref: project.showcase_technologies.technology_id > stack.technologies.id
 

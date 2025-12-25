@@ -206,7 +206,7 @@ Endpoints para gestionar el portafolio de proyectos.
 | `content`       | object   | No        | Objeto de contenido de EditorJS.        |
 | `repoUrl`       | string   | No        | URL válida.                             |
 | `liveUrl`       | string   | No        | URL válida.                             |
-| `categoryId`    | uuid     | No        | ID de la categoría.                     |
+| `areaId`        | uuid     | No        | ID del área (Stack Area).               |
 | `year`          | number   | No        | Año (1900-2100).                        |
 | `isFeatured`    | boolean  | No        | `false` por defecto.                    |
 | `technologyIds` | uuid[]   | No        | Array de IDs de Tecnologías.            |

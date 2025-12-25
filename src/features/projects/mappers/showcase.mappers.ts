@@ -13,7 +13,7 @@ export const toShowcaseView = (
   content: entity.content,
   repoUrl: entity.repoUrl,
   liveUrl: entity.liveUrl,
-  categoryId: entity.categoryId,
+  areaId: entity.areaId,
   year: entity.year,
   isFeatured: entity.isFeatured,
   technologies: entity.technologies?.map(toTechnologyView) || [],
