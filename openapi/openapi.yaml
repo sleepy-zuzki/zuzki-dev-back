@@ -3,9 +3,8 @@ info:
   title: API v1
   version: 1.0.0
   description: >
-    Especificación del API v1 que incluye endpoints de health y CRUD para
-    catálogo (stacks y technologies) y portafolio (projects y files).
-    Autenticación: las operaciones de lectura (GET, HEAD, OPTIONS) son públicas; las de escritura (POST, PATCH, DELETE) requieren JWT Bearer emitido por Supabase y se documentan mediante el esquema BearerAuth.
+    Especificación del API v1 que incluye endpoints de health, auth, usuarios, stack tecnológico, blog y portafolio.
+    Autenticación: las operaciones de lectura (GET) suelen ser públicas (salvo excepciones como Users), mientras que las de escritura requieren JWT Bearer.
 
 servers:
   - url: http://localhost:{port}
@@ -13,50 +12,61 @@ servers:
     variables:
       port:
         default: '3000'
-  - url: https://api.ejemplo.com
+  - url: https://api.zuzki.dev
     description: Servidor de producción
 
 tags:
   - name: Health
     description: Endpoints de verificación de estado
-  - name: Catalog
-    description: Recursos del catálogo
-  - name: Stacks
-    description: Gestión de stacks tecnológicos
-  - name: Technologies
-    description: Gestión de tecnologías
+  - name: Auth
+    description: Autenticación y gestión de sesiones
+  - name: Users
+    description: Gestión de usuarios
+  - name: Stack
+    description: Áreas y Tecnologías
   - name: Portfolio
-    description: Recursos del portafolio
-  - name: Projects
-    description: Gestión de proyectos
+    description: Gestión de proyectos y archivos
+  - name: Blog
+    description: Gestión de entradas del blog
+  - name: Contact
+    description: Formulario de contacto
   - name: Files
-    description: Gestión de archivos
+    description: Gestión general de archivos
 
 paths:
+  # Health
   /v1/health:
     $ref: './paths/health.yaml'
 
-  # Catalog - Stacks
-  /v1/catalog/stacks:
-    $ref: './paths/catalog/stacks/collection.yaml'
-  /v1/catalog/stacks/{slug}:
-    $ref: './paths/catalog/stacks/by-slug.yaml'
-  /v1/catalog/stacks/{id}:
-    $ref: './paths/catalog/stacks/by-id.yaml'
+  # Auth
+  /v1/auth/login:
+    $ref: './paths/auth/login.yaml'
+  /v1/auth/refresh:
+    $ref: './paths/auth/refresh.yaml'
+  /v1/auth/logout:
+    $ref: './paths/auth/logout.yaml'
 
-  # Catalog - Technologies
-  /v1/catalog/technologies:
-    $ref: './paths/catalog/technologies/collection.yaml'
-  /v1/catalog/technologies/{slug}:
-    $ref: './paths/catalog/technologies/by-slug.yaml'
-  /v1/catalog/technologies/{id}:
-    $ref: './paths/catalog/technologies/by-id.yaml'
+  # Users
+  /v1/users:
+    $ref: './paths/users/collection.yaml'
+  /v1/users/{id}:
+    $ref: './paths/users/by-id.yaml'
 
-  # Portfolio - Files
-  /v1/portfolio/files:
-    $ref: './paths/portfolio/files/collection.yaml'
-  /v1/portfolio/files/{id}:
-    $ref: './paths/portfolio/files/by-id.yaml'
+  # Stack - Areas
+  /v1/stack/areas:
+    $ref: './paths/stack/areas/collection.yaml'
+  /v1/stack/areas/{slug}:
+    $ref: './paths/stack/areas/by-slug.yaml'
+  /v1/stack/areas/{id}:
+    $ref: './paths/stack/areas/by-id.yaml'
+
+  # Stack - Technologies
+  /v1/stack/technologies:
+    $ref: './paths/stack/technologies/collection.yaml'
+  /v1/stack/technologies/{slug}:
+    $ref: './paths/stack/technologies/by-slug.yaml'
+  /v1/stack/technologies/{id}:
+    $ref: './paths/stack/technologies/by-id.yaml'
 
   # Portfolio - Projects
   /v1/portfolio/projects:
@@ -65,6 +75,24 @@ paths:
     $ref: './paths/portfolio/projects/by-slug.yaml'
   /v1/portfolio/projects/{id}:
     $ref: './paths/portfolio/projects/by-id.yaml'
+
+  # Portfolio - Files
+  /v1/portfolio/files:
+    $ref: './paths/portfolio/files/collection.yaml'
+  /v1/portfolio/files/{id}:
+    $ref: './paths/portfolio/files/by-id.yaml'
+
+  # Blog
+  /v1/blog/entries:
+    $ref: './paths/blog/entries/collection.yaml'
+  /v1/blog/entries/slug/{slug}:
+    $ref: './paths/blog/entries/by-slug.yaml'
+  /v1/blog/entries/{id}:
+    $ref: './paths/blog/entries/by-id.yaml'
+
+  # Contact
+  /v1/contact:
+    $ref: './paths/contact/send.yaml'
 
 components:
   parameters:
@@ -80,38 +108,61 @@ components:
       $ref: './components/common/basic.yaml#/BasicError'
     PaginationMeta:
       $ref: './components/common/basic.yaml#/PaginationMeta'
+    
     # Health
     HealthResponse:
       $ref: './components/health.yaml#/HealthResponse'
     DatabaseHealth:
       $ref: './components/health.yaml#/DatabaseHealth'
-    # Catalog
-    Stack:
-      $ref: './components/catalog/stack.yaml#/Stack'
-    CreateStackInput:
-      $ref: './components/catalog/stack.yaml#/CreateStackInput'
-    UpdateStackInput:
-      $ref: './components/catalog/stack.yaml#/UpdateStackInput'
+    
+    # Auth
+    LoginRequest:
+      $ref: './components/auth/dto.yaml#/LoginRequest'
+    LoginResponse:
+      $ref: './components/auth/dto.yaml#/LoginResponse'
+    RefreshRequest:
+      $ref: './components/auth/dto.yaml#/RefreshRequest'
+    LogoutRequest:
+      $ref: './components/auth/dto.yaml#/LogoutRequest'
+
+    # Users
+    UserResponse:
+      $ref: './components/users/dto.yaml#/UserResponse'
+    CreateUserInput:
+      $ref: './components/users/dto.yaml#/CreateUserInput'
+
+    # Contact
+    ContactRequest:
+      $ref: './components/contact/dto.yaml#/ContactRequest'
+
+    # Stack
+    StackArea:
+      $ref: './components/stack/area.yaml#/StackArea'
+    CreateAreaInput:
+      $ref: './components/stack/area.yaml#/CreateAreaInput'
+    UpdateAreaInput:
+      $ref: './components/stack/area.yaml#/UpdateAreaInput'
     Technology:
-      $ref: './components/catalog/technology.yaml#/Technology'
+      $ref: './components/stack/technology.yaml#/Technology'
     CreateTechnologyInput:
-      $ref: './components/catalog/technology.yaml#/CreateTechnologyInput'
+      $ref: './components/stack/technology.yaml#/CreateTechnologyInput'
     UpdateTechnologyInput:
-      $ref: './components/catalog/technology.yaml#/UpdateTechnologyInput'
+      $ref: './components/stack/technology.yaml#/UpdateTechnologyInput'
+
     # Portfolio
-    ProjectRef:
-      $ref: './components/portfolio/project.yaml#/ProjectRef'
     File:
       $ref: './components/portfolio/file.yaml#/File'
-    FileWithProject:
-      $ref: './components/portfolio/file.yaml#/FileWithProject'
-    CreateFileInput:
-      $ref: './components/portfolio/file.yaml#/CreateFileInput'
-    UpdateFileInput:
-      $ref: './components/portfolio/file.yaml#/UpdateFileInput'
     Project:
       $ref: './components/portfolio/project.yaml#/Project'
     CreateProjectInput:
       $ref: './components/portfolio/project.yaml#/CreateProjectInput'
     UpdateProjectInput:
       $ref: './components/portfolio/project.yaml#/UpdateProjectInput'
+    
+    # Blog
+    BlogEntry:
+      $ref: './components/blog/entry.yaml#/BlogEntry'
+    CreateBlogEntryInput:
+      $ref: './components/blog/entry.yaml#/CreateBlogEntryInput'
+    UpdateBlogEntryInput:
+      $ref: './components/blog/entry.yaml#/UpdateBlogEntryInput'
