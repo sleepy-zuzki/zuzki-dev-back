@@ -32,7 +32,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       useFactory: (configService: ConfigurationService) => ({
         secret: configService.getString('APP_JWT_SECRET'),
         signOptions: {
-          expiresIn: configService.getString('APP_JWT_TTL', '60'),
+          expiresIn: configService.getNumber('APP_JWT_TTL', 3600),
         },
       }),
       inject: [ConfigurationService],

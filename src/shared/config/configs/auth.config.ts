@@ -30,7 +30,7 @@ export default registerAs(AUTH_CONFIG, (): AuthConfig => {
     jwtIssuer,
     jwtAudience,
     jwtTtl: parseInt(process.env.APP_JWT_TTL || '', 10) || 3600,
-    accessTokenTtl: parseInt(process.env.ACCESS_TOKEN_TTL || '', 10) || 900,
+    accessTokenTtl: parseInt(process.env.ACCESS_TOKEN_TTL || '', 10) || 3600,
     refreshTokenTtl:
       parseInt(process.env.REFRESH_TOKEN_TTL || '', 10) || 2592000,
     hashDriver: (process.env.HASH_DRIVER as HashDriver) || HashDriver.Argon2,

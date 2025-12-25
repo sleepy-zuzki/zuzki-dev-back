@@ -4,6 +4,6 @@ export function getAccessTokenTtl(): number {
   if (Number.isFinite(n) && n > 0) {
     return n;
   }
-  // Valor por defecto seguro: 15 minutos
-  return 900;
+  // Valor por defecto: 1 hora
+  return 3600;
 }
