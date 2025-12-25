@@ -1,0 +1,51 @@
+StackArea:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+    name:
+      type: string
+      maxLength: 100
+    slug:
+      type: string
+      maxLength: 120
+    iconCode:
+      type: string
+      maxLength: 50
+      nullable: true
+    createdAt:
+      type: string
+      format: date-time
+    updatedAt:
+      type: string
+      format: date-time
+
+CreateAreaInput:
+  type: object
+  required: [name, slug]
+  properties:
+    name:
+      type: string
+      maxLength: 100
+    slug:
+      type: string
+      maxLength: 120
+    iconCode:
+      type: string
+      maxLength: 50
+      nullable: true
+
+UpdateAreaInput:
+  type: object
+  properties:
+    name:
+      type: string
+      maxLength: 100
+    slug:
+      type: string
+      maxLength: 120
+    iconCode:
+      type: string
+      maxLength: 50
+      nullable: true

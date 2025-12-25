@@ -1,0 +1,98 @@
+Technology:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+    areaId:
+      type: string
+      format: uuid
+    name:
+      type: string
+      maxLength: 100
+    slug:
+      type: string
+      maxLength: 120
+    websiteUrl:
+      type: string
+      maxLength: 255
+      nullable: true
+    docsUrl:
+      type: string
+      maxLength: 255
+      nullable: true
+    iconClass:
+      type: string
+      maxLength: 50
+      nullable: true
+    primaryColor:
+      type: string
+      maxLength: 7
+      nullable: true
+    createdAt:
+      type: string
+      format: date-time
+    updatedAt:
+      type: string
+      format: date-time
+    area:
+      $ref: './area.yaml#/StackArea'
+
+CreateTechnologyInput:
+  type: object
+  required: [areaId, name, slug]
+  properties:
+    areaId:
+      type: string
+      format: uuid
+    name:
+      type: string
+      maxLength: 100
+    slug:
+      type: string
+      maxLength: 120
+    websiteUrl:
+      type: string
+      maxLength: 255
+      nullable: true
+    docsUrl:
+      type: string
+      maxLength: 255
+      nullable: true
+    iconClass:
+      type: string
+      maxLength: 50
+      nullable: true
+    primaryColor:
+      type: string
+      maxLength: 7
+      nullable: true
+
+UpdateTechnologyInput:
+  type: object
+  properties:
+    areaId:
+      type: string
+      format: uuid
+    name:
+      type: string
+      maxLength: 100
+    slug:
+      type: string
+      maxLength: 120
+    websiteUrl:
+      type: string
+      maxLength: 255
+      nullable: true
+    docsUrl:
+      type: string
+      maxLength: 255
+      nullable: true
+    iconClass:
+      type: string
+      maxLength: 50
+      nullable: true
+    primaryColor:
+      type: string
+      maxLength: 7
+      nullable: true
