@@ -1,0 +1,36 @@
+UserResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+    email:
+      type: string
+      format: email
+    roles:
+      type: array
+      items:
+        type: string
+    isActive:
+      type: boolean
+    createdAt:
+      type: string
+      format: date-time
+
+CreateUserInput:
+  type: object
+  required: [email, password]
+  properties:
+    email:
+      type: string
+      format: email
+    password:
+      type: string
+      minLength: 8
+    roles:
+      type: array
+      items:
+        type: string
+    isActive:
+      type: boolean
+      default: true

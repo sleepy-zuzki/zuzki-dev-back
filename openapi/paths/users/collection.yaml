@@ -1,0 +1,17 @@
+post:
+  tags: [Users]
+  summary: Crear un nuevo usuario
+  operationId: createUser
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/users/dto.yaml#/CreateUserInput'
+  responses:
+    '201':
+      description: Usuario creado
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/users/dto.yaml#/UserResponse'
