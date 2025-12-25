@@ -3,9 +3,8 @@ IdParam:
   in: path
   required: true
   schema:
-    type: integer
-    format: int32
-    minimum: 1
+    type: string
+    format: uuid
 
 SlugParam:
   name: slug
