@@ -96,7 +96,9 @@ export class ShowcasesService {
   private async getCatalogIdBySlug(slug: string): Promise<string> {
     const item = await this.catalogRepo.findOne({ where: { slug } });
     if (!item) {
-      throw new BadRequestException(`Catalog item with slug '${slug}' not found`);
+      throw new BadRequestException(
+        `Catalog item with slug '${slug}' not found`,
+      );
     }
     return item.id;
   }

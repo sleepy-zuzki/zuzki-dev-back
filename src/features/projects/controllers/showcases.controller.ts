@@ -14,7 +14,11 @@ import {
 import { PinoLogger } from 'nestjs-pino';
 
 import { CreateShowcaseDto } from '../dto/create-showcase.dto';
-import { AttachFileDto, ReorderFilesDto, UpdateFileContextDto } from '../dto/manage-files.dto';
+import {
+  AttachFileDto,
+  ReorderFilesDto,
+  UpdateFileContextDto,
+} from '../dto/manage-files.dto';
 import { ShowcaseResponseDto } from '../dto/showcase.response.dto';
 import { UpdateShowcaseDto } from '../dto/update-showcase.dto';
 import { toShowcaseView } from '../mappers/showcase.mappers';
@@ -122,7 +126,10 @@ export class ShowcasesController {
     @Param('fileId') fileId: string,
     @Body() dto: UpdateFileContextDto,
   ): Promise<void> {
-    this.logger.info({ id, fileId, context: dto.contextSlug }, 'Updating file context');
+    this.logger.info(
+      { id, fileId, context: dto.contextSlug },
+      'Updating file context',
+    );
     await this.showcasesService.updateFileContext(id, fileId, dto.contextSlug);
   }
 

@@ -22,7 +22,7 @@ File:
 
 FileWithProject:
   allOf:
-    - $ref: '#/components/schemas/File'
+    - $ref: '#/File'
     - type: object
       properties:
         project:

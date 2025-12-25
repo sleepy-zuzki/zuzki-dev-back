@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import type { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class SeedCatalogData1766315036202 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -21,7 +21,10 @@ export class SeedCatalogData1766315036202 implements MigrationInterface {
     // 2. Insertar Items por Categoría
     // ---------------------------------------------------------
 
-    const insertItems = async (typeSlug: string, items: { name: string; slug: string }[]) => {
+    const insertItems = async (
+      typeSlug: string,
+      items: { name: string; slug: string }[],
+    ) => {
       const values = items
         .map((item) => `('${item.name}', '${item.slug}')`)
         .join(',');
@@ -82,9 +85,9 @@ export class SeedCatalogData1766315036202 implements MigrationInterface {
     // --- F. Contexto de Archivo (Aquí están tus carruseles) ---
     await insertItems('file-context', [
       { name: 'Avatar / Perfil', slug: 'avatar' },
-      { name: 'Imagen de Portada', slug: 'cover' },       
+      { name: 'Imagen de Portada', slug: 'cover' },
       { name: 'Slide Principal (Hero)', slug: 'hero-slide' }, // Para tu carrousel Home
-      { name: 'Imagen de Galería', slug: 'gallery' },         // Para carrousels internos
+      { name: 'Imagen de Galería', slug: 'gallery' }, // Para carrousels internos
       { name: 'Documento / Adjunto', slug: 'document' },
       { name: 'Video', slug: 'video' },
     ]);
@@ -97,8 +100,10 @@ export class SeedCatalogData1766315036202 implements MigrationInterface {
       'project-type',
       'blog-category',
       'contact-subject',
-      'file-context'
-    ].map(s => `'${s}'`).join(',');
+      'file-context',
+    ]
+      .map((s) => `'${s}'`)
+      .join(',');
 
     await queryRunner.query(`
       DELETE FROM "catalog"."items" 
