@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { CacheModule, CacheInterceptor } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { LoggerModule } from 'nestjs-pino';
+import { LoggerModule, LoggerErrorInterceptor } from 'nestjs-pino';
 
 // Legacy Auth import
 import { AuthModule } from '@features/auth/auth.module';
@@ -44,17 +44,46 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
                   : undefined,
           };
         },
-        transport:
-          process.env.NODE_ENV !== 'production'
-            ? {
-                target: 'pino-pretty',
-                options: {
-                  colorize: true,
-                  translateTime: 'SYS:standard',
-                  singleLine: false,
-                },
-              }
-            : undefined,
+        transport: {
+          targets: [
+            // Console Output (Pretty in Dev)
+            ...(process.env.NODE_ENV !== 'production'
+              ? [
+                  {
+                    target: 'pino-pretty',
+                    options: {
+                      colorize: true,
+                      translateTime: 'SYS:standard',
+                      singleLine: false,
+                    },
+                  },
+                ]
+              : []),
+            // File Output: All logs (Daily Rotation)
+            {
+              target: 'pino-roll',
+              options: {
+                file: './logs/app/log',
+                frequency: 'daily',
+                mkdir: true,
+                dateFormat: 'yyyy-MM-dd',
+                extension: '.log',
+              },
+            },
+            // File Output: Errors only (Daily Rotation)
+            {
+              target: 'pino-roll',
+              level: 'error',
+              options: {
+                file: './logs/error/log',
+                frequency: 'daily',
+                mkdir: true,
+                dateFormat: 'yyyy-MM-dd',
+                extension: '.log',
+              },
+            },
+          ],
+        },
       },
     }),
     CacheModule.register({
@@ -77,6 +106,10 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
   ],
   controllers: [],
   providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggerErrorInterceptor,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,
