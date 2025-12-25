@@ -11,7 +11,7 @@ export class ShowcaseResponseDto {
   content?: EditorJsContent | null;
   repoUrl?: string | null;
   liveUrl?: string | null;
-  areaId?: string | null;
+  area?: { id: string; name: string; slug: string } | null;
   year?: number | null;
   isFeatured!: boolean;
   technologies?: TechnologyResponseDto[];

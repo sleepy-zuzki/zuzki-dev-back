@@ -32,7 +32,7 @@ export class ShowcasesService {
   findAll(): Promise<ShowcaseEntity[]> {
     return this.repo.find({
       order: { year: 'DESC', title: 'ASC' },
-      relations: ['technologies', 'files', 'files.file', 'files.fileType'],
+      relations: ['technologies', 'area', 'files', 'files.file', 'files.fileType'],
     });
   }
 
@@ -40,14 +40,14 @@ export class ShowcasesService {
     return this.repo.find({
       where: { isFeatured: true },
       order: { year: 'DESC', title: 'ASC' },
-      relations: ['technologies', 'files', 'files.file', 'files.fileType'],
+      relations: ['technologies', 'area', 'files', 'files.file', 'files.fileType'],
     });
   }
 
   findBySlug(slug: string): Promise<ShowcaseEntity | null> {
     return this.repo.findOne({
       where: { slug },
-      relations: ['technologies', 'files', 'files.file', 'files.fileType'],
+      relations: ['technologies', 'area', 'files', 'files.file', 'files.fileType'],
     });
   }
 
@@ -70,7 +70,7 @@ export class ShowcasesService {
   ): Promise<ShowcaseEntity | null> {
     const found = await this.repo.findOne({
       where: { id },
-      relations: ['technologies'],
+      relations: ['technologies', 'area', 'files', 'files.file', 'files.fileType'],
     });
     if (!found) return null;
 

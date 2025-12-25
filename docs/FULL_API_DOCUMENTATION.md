@@ -186,6 +186,7 @@ Endpoints para gestionar el portafolio de proyectos.
 - **Autenticación**: Requerida.
 - **Respuesta Exitosa (`200 OK`)**: Devuelve un `ShowcaseResponseDto` que incluye:
   - Datos básicos (id, title, slug, description, content, year, isFeatured).
+  - `area`: Objeto con información del área (`id`, `name`, `slug`).
   - `technologies`: Array de tecnologías utilizadas.
   - `images`: Array de objetos con las imágenes asociadas:
     - `id`: ID del archivo.
