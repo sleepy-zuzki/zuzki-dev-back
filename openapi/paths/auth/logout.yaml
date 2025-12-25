@@ -1,0 +1,23 @@
+post:
+  tags: [Auth]
+  summary: Cerrar sesión (revocar refresh token)
+  operationId: authLogout
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/auth/dto.yaml#/LogoutRequest'
+  responses:
+    '200':
+      description: Logout exitoso
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+    '401':
+      description: Token inválido
