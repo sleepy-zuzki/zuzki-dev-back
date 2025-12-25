@@ -78,6 +78,8 @@ components:
     # Common
     BasicError:
       $ref: './components/common/basic.yaml#/BasicError'
+    PaginationMeta:
+      $ref: './components/common/basic.yaml#/PaginationMeta'
     # Health
     HealthResponse:
       $ref: './components/health.yaml#/HealthResponse'

@@ -71,11 +71,23 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/{{version}}/portfolio/files",
+          "raw": "{{baseUrl}}/{{version}}/portfolio/files?page=1&limit=10",
           "host": ["{{baseUrl}}"],
-          "path": ["{{version}}", "portfolio", "files"]
+          "path": ["{{version}}", "portfolio", "files"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1",
+              "description": "Número de página"
+            },
+            {
+              "key": "limit",
+              "value": "10",
+              "description": "Cantidad de elementos por página"
+            }
+          ]
         },
-        "description": "Obtener lista de todos los archivos"
+        "description": "Obtener lista paginada de archivos"
       },
       "response": []
     },

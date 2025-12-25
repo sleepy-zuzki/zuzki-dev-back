@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CloudflareR2StorageAdapter } from '@shared/storage/cloudflare-r2.storage.adapter';
 import { FileToUpload } from '@shared/storage/file-storage.types';
 
+import { FilesPaginationDto } from '../dto/file-pagination.dto';
 import { FileEntity } from '../entities/file.entity';
 
 @Injectable()
@@ -15,8 +16,27 @@ export class FilesService {
     private readonly storage: CloudflareR2StorageAdapter,
   ) {}
 
-  findAll(): Promise<FileEntity[]> {
-    return this.repo.find();
+  async findAll(pagination: FilesPaginationDto) {
+    const { page = 1, limit = 10 } = pagination;
+    const skip = (page - 1) * limit;
+
+    const [items, total] = await this.repo.findAndCount({
+      take: limit,
+      skip,
+      order: { createdAt: 'DESC' },
+    });
+
+    const lastPage = Math.ceil(total / limit);
+
+    return {
+      data: items,
+      meta: {
+        total,
+        page,
+        lastPage,
+        limit,
+      },
+    };
   }
 
   findOne(id: string): Promise<FileEntity | null> {

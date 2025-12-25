@@ -2,15 +2,23 @@ get:
   tags: [Portfolio, Files]
   summary: Lista archivos (incluye proyecto asociado si existe)
   operationId: listFiles
+  parameters:
+    - $ref: '../../../components/parameters.yaml#/PageQuery'
+    - $ref: '../../../components/parameters.yaml#/LimitQuery'
   responses:
     '200':
-      description: Lista de archivos
+      description: Lista paginada de archivos
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/FileWithProject'
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '../../../components/portfolio/file.yaml#/FileWithProject'
+              meta:
+                $ref: '../../../components/common/basic.yaml#/PaginationMeta'
 post:
   tags: [Portfolio, Files]
   summary: Crea un archivo
@@ -20,17 +28,17 @@ post:
     content:
       application/json:
         schema:
-          $ref: '#/components/schemas/CreateFileInput'
+          $ref: '../../../components/portfolio/file.yaml#/CreateFileInput'
   responses:
     '201':
       description: Archivo creado
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/FileWithProject'
+            $ref: '../../../components/portfolio/file.yaml#/FileWithProject'
     '400':
       description: Datos inválidos
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/BasicError'
+            $ref: '../../../components/common/basic.yaml#/BasicError'

@@ -14,3 +14,24 @@ SlugParam:
   schema:
     type: string
     minLength: 1
+
+PageQuery:
+  name: page
+  in: query
+  description: Número de página
+  required: false
+  schema:
+    type: integer
+    default: 1
+    minimum: 1
+
+LimitQuery:
+  name: limit
+  in: query
+  description: Cantidad de elementos por página
+  required: false
+  schema:
+    type: integer
+    default: 10
+    minimum: 1
+    maximum: 100

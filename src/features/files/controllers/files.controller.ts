@@ -9,10 +9,12 @@ import {
   Post,
   UploadedFile,
   UseInterceptors,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PinoLogger } from 'nestjs-pino';
 
+import { FilesPaginationDto } from '../dto/file-pagination.dto';
 import { FileEntity } from '../entities/file.entity';
 import { FilesService } from '../services/files.service';
 
@@ -23,6 +25,12 @@ export class FilesController {
     private readonly logger: PinoLogger,
   ) {
     this.logger.setContext(FilesController.name);
+  }
+
+  @Get()
+  async findAll(@Query() paginationDto: FilesPaginationDto) {
+    this.logger.info({ paginationDto }, 'Fetching all files');
+    return this.filesService.findAll(paginationDto);
   }
 
   @Post('upload')
