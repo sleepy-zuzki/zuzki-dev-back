@@ -1,0 +1,19 @@
+get:
+  tags: [Blog]
+  summary: Obtiene una entrada por Slug
+  operationId: getBlogEntryBySlug
+  parameters:
+    - $ref: '../../../components/parameters.yaml#/SlugParam'
+  responses:
+    '200':
+      description: Entrada encontrada
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/blog/entry.yaml#/BlogEntry'
+    '404':
+      description: Entrada no encontrada
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/common/basic.yaml#/BasicError'

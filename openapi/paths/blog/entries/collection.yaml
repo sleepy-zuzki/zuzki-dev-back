@@ -1,0 +1,36 @@
+get:
+  tags: [Blog]
+  summary: Lista todas las entradas del blog
+  operationId: listBlogEntries
+  responses:
+    '200':
+      description: Lista de entradas
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '../../../components/blog/entry.yaml#/BlogEntry'
+post:
+  tags: [Blog]
+  summary: Crea una nueva entrada de blog
+  operationId: createBlogEntry
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/blog/entry.yaml#/CreateBlogEntryInput'
+  responses:
+    '201':
+      description: Entrada creada
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/blog/entry.yaml#/BlogEntry'
+    '400':
+      description: Datos inválidos
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/common/basic.yaml#/BasicError'
