@@ -4,6 +4,9 @@ BlogEntry:
     id:
       type: string
       format: uuid
+    status:
+      type: string
+      enum: [draft, published, archived]
     title:
       type: string
       maxLength: 255

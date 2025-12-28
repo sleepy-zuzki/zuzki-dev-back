@@ -89,6 +89,8 @@ paths:
     $ref: './paths/blog/entries/by-slug.yaml'
   /v1/blog/entries/{id}:
     $ref: './paths/blog/entries/by-id.yaml'
+  /v1/blog/entries/{id}/publish:
+    $ref: './paths/blog/entries/publish.yaml'
 
   # Contact
   /v1/contact:

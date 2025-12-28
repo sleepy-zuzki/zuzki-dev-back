@@ -95,6 +95,27 @@
       "response": []
     },
     {
+      "name": "Publish Blog Entry",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/blog/entries/:id/publish",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "blog", "entries", ":id", "publish"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "uuid-here",
+              "description": "ID de la entrada"
+            }
+          ]
+        },
+        "description": "Publicar una entrada (cambiar estado a published)"
+      },
+      "response": []
+    },
+    {
       "name": "Update Blog Entry",
       "request": {
         "method": "PATCH",
