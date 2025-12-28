@@ -13,6 +13,12 @@ import {
 } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
+import {
+  AttachFileDto,
+  ReorderFilesDto,
+  UpdateFileContextDto,
+} from '@shared/dto/manage-files.dto';
+
 import { BlogResponseDto } from '../dto/blog-response.dto';
 import { CreateBlogDto } from '../dto/create-blog.dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';

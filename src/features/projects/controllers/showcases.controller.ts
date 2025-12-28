@@ -13,12 +13,13 @@ import {
 } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
-import { CreateShowcaseDto } from '../dto/create-showcase.dto';
 import {
   AttachFileDto,
   ReorderFilesDto,
   UpdateFileContextDto,
-} from '../dto/manage-files.dto';
+} from '@shared/dto/manage-files.dto';
+
+import { CreateShowcaseDto } from '../dto/create-showcase.dto';
 import { ShowcaseResponseDto } from '../dto/showcase.response.dto';
 import { UpdateShowcaseDto } from '../dto/update-showcase.dto';
 import { toShowcaseView } from '../mappers/showcase.mappers';

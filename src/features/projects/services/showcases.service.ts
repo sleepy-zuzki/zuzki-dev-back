@@ -8,9 +8,9 @@ import { Repository, In, DataSource } from 'typeorm';
 
 import { CatalogItemEntity } from '@features/catalog/entities/catalog-item.entity';
 import { StackTechnologyEntity } from '@features/stack/entities/technology.entity';
+import { AttachFileDto, ReorderFilesDto } from '@shared/dto/manage-files.dto';
 
 import { CreateShowcaseDto } from '../dto/create-showcase.dto';
-import { AttachFileDto, ReorderFilesDto } from '../dto/manage-files.dto';
 import { UpdateShowcaseDto } from '../dto/update-showcase.dto';
 import { ShowcaseFileEntity } from '../entities/showcase-file.entity';
 import { ShowcaseEntity } from '../entities/showcase.entity';
@@ -32,7 +32,13 @@ export class ShowcasesService {
   findAll(): Promise<ShowcaseEntity[]> {
     return this.repo.find({
       order: { year: 'DESC', title: 'ASC' },
-      relations: ['technologies', 'area', 'files', 'files.file', 'files.fileType'],
+      relations: [
+        'technologies',
+        'area',
+        'files',
+        'files.file',
+        'files.fileType',
+      ],
     });
   }
 
@@ -40,14 +46,26 @@ export class ShowcasesService {
     return this.repo.find({
       where: { isFeatured: true },
       order: { year: 'DESC', title: 'ASC' },
-      relations: ['technologies', 'area', 'files', 'files.file', 'files.fileType'],
+      relations: [
+        'technologies',
+        'area',
+        'files',
+        'files.file',
+        'files.fileType',
+      ],
     });
   }
 
   findBySlug(slug: string): Promise<ShowcaseEntity | null> {
     return this.repo.findOne({
       where: { slug },
-      relations: ['technologies', 'area', 'files', 'files.file', 'files.fileType'],
+      relations: [
+        'technologies',
+        'area',
+        'files',
+        'files.file',
+        'files.fileType',
+      ],
     });
   }
 
@@ -70,7 +88,13 @@ export class ShowcasesService {
   ): Promise<ShowcaseEntity | null> {
     const found = await this.repo.findOne({
       where: { id },
-      relations: ['technologies', 'area', 'files', 'files.file', 'files.fileType'],
+      relations: [
+        'technologies',
+        'area',
+        'files',
+        'files.file',
+        'files.fileType',
+      ],
     });
     if (!found) return null;
 

@@ -16,14 +16,14 @@ export class AttachFileDto {
 
   @IsString()
   @IsNotEmpty()
-  contextSlug!: string; // 'cover', 'hero-slide', 'gallery'
+  contextSlug!: string; // 'cover', 'gallery', etc.
 
   @IsInt()
   @IsOptional()
   order?: number;
 }
 
-class FileOrderItem {
+export class FileOrderItem {
   @IsUUID()
   @IsNotEmpty()
   fileId!: string;
