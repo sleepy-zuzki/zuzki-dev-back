@@ -35,10 +35,10 @@ export class CloudflareR2StorageAdapter implements FileStoragePort {
   }
 
   async upload(file: FileToUpload): Promise<UploadedFile> {
-    const safePrefix = file.pathPrefix?.replace(/^\/+|\/+$/g, '') || '';
-    const rand = Math.random().toString(36).slice(2, 8);
+    const safePrefix: string = file.pathPrefix?.replace(/^\/+|\/+$/g, '') || '';
+    const rand: string = Math.random().toString(36).slice(2, 8);
     const keyBase = `${Date.now()}-${rand}-${file.fileName}`;
-    const key = safePrefix ? `${safePrefix}/${keyBase}` : keyBase;
+    const key: string = safePrefix ? `${safePrefix}/${keyBase}` : keyBase;
 
     const command = new PutObjectCommand({
       Bucket: this.bucket,

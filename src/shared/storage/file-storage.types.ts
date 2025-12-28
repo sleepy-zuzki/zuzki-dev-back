@@ -15,8 +15,6 @@ export type UploadedFile = {
   key?: string; // storage object key
 };
 
-export const FILE_STORAGE_PORT = 'FILE_STORAGE_PORT';
-
 export interface FileStoragePort {
   upload(file: FileToUpload): Promise<UploadedFile>;
   moveFile(sourceKey: string, destinationKey: string): Promise<void>;

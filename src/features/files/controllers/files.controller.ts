@@ -2,14 +2,14 @@ import {
   Controller,
   Delete,
   Get,
+  MaxFileSizeValidator,
   NotFoundException,
   Param,
   ParseFilePipe,
-  MaxFileSizeValidator,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
-  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PinoLogger } from 'nestjs-pino';
@@ -44,13 +44,14 @@ export class FilesController {
     file: Express.Multer.File,
   ): Promise<FileEntity> {
     this.logger.info({ filename: file.originalname }, 'Uploading file');
-    const result = await this.filesService.create({
+
+    return await this.filesService.create({
       body: file.buffer,
       fileName: file.originalname,
       fileType: file.mimetype,
       sizeBytes: file.size,
+      pathPrefix: '/public/gallery',
     });
-    return result;
   }
 
   @Get(':id')
