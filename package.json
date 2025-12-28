@@ -4,11 +4,11 @@
   "description": "",
   "author": "",
   "engines": {
-    "pnpm": ">=9.0.0",
-    "node": ">=20.0.0 <22.14.0"
+    "pnpm": ">=10.0.0",
+    "node": ">=22.0.0"
   },
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

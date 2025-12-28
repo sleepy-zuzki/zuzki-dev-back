@@ -30,7 +30,7 @@ Para más detalles, consulta:
 
 ### Prerrequisitos
 
-- Node.js (v20+)
+- Node.js (v22+)
 - pnpm (`npm install -g pnpm`)
 - PostgreSQL
 
