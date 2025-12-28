@@ -46,7 +46,10 @@ export class InitProjectSchema1765753509600 implements MigrationInterface {
       `CREATE TABLE "project"."showcases" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "title" character varying(150) NOT NULL, "slug" character varying(160) NOT NULL, "description" text, "content" jsonb, "repo_url" character varying(255), "live_url" character varying(255), "area_id" uuid, "year" integer, "is_featured" boolean NOT NULL DEFAULT false, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), CONSTRAINT "UQ_3e6acccd227816d0ba7b603134c" UNIQUE ("slug"), CONSTRAINT "PK_c43f52b4985c165707c01badb48" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "blog"."entries" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "title" character varying(255) NOT NULL, "slug" character varying NOT NULL, "description" text, "content" jsonb, "publish_date" TIMESTAMP, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, CONSTRAINT "UQ_1264035de794b4915a498ac77c3" UNIQUE ("slug"), CONSTRAINT "PK_23d4e7e9b58d9939f113832915b" PRIMARY KEY ("id"))`,
+      `CREATE TYPE "blog"."entries_status_enum" AS ENUM('draft', 'published', 'archived')`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "blog"."entries" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "status" "blog"."entries_status_enum" NOT NULL DEFAULT 'draft', "title" character varying(255) NOT NULL, "slug" character varying NOT NULL, "description" text, "content" jsonb, "publish_date" TIMESTAMP, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "deleted_at" TIMESTAMP WITH TIME ZONE, CONSTRAINT "UQ_1264035de794b4915a498ac77c3" UNIQUE ("slug"), CONSTRAINT "PK_23d4e7e9b58d9939f113832915b" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "blog"."files" ("blog_id" uuid NOT NULL, "file_id" uuid NOT NULL, "file_type_id" uuid NOT NULL, "order" integer NOT NULL DEFAULT '1', CONSTRAINT "PK_46a2ae0fb5862bc5e8203698880" PRIMARY KEY ("blog_id", "file_id"))`,
@@ -144,6 +147,7 @@ export class InitProjectSchema1765753509600 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "project"."showcase_technologies"`);
     await queryRunner.query(`DROP TABLE "blog"."files"`);
     await queryRunner.query(`DROP TABLE "blog"."entries"`);
+    await queryRunner.query(`DROP TYPE "blog"."entries_status_enum"`);
     await queryRunner.query(`DROP TABLE "project"."showcases"`);
     await queryRunner.query(`DROP TABLE "project"."files"`);
     await queryRunner.query(`DROP TABLE "files"`);

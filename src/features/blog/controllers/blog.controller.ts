@@ -29,6 +29,12 @@ export class BlogController {
     return this.blogService.create(createBlogDto);
   }
 
+  @Post(':id/publish')
+  async publish(@Param('id') id: string): Promise<void> {
+    this.logger.info({ id }, 'Publishing blog entry');
+    return this.blogService.publish(id);
+  }
+
   @Get()
   findAll(): Promise<BlogEntryEntity[]> {
     this.logger.debug('Listing all blog entries');

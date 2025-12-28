@@ -10,12 +10,21 @@ import {
 
 import type { EditorJsContent } from '@shared/types/editor-js-content.type';
 
+import { BlogStatus } from '../enums/blog-status.enum';
+
 import { BlogFileEntity } from './blog-file.entity';
 
 @Entity({ name: 'entries', schema: 'blog' })
 export class BlogEntryEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
+
+  @Column({
+    type: 'enum',
+    enum: BlogStatus,
+    default: BlogStatus.DRAFT,
+  })
+  status!: BlogStatus;
 
   @Column({ type: 'varchar', length: 255 })
   title!: string;

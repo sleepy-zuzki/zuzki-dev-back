@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,6 +10,7 @@ import { Repository } from 'typeorm';
 import { CreateBlogDto } from '../dto/create-blog.dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { BlogEntryEntity } from '../entities/blog-entry.entity';
+import { BlogStatus } from '../enums/blog-status.enum';
 
 @Injectable()
 export class BlogService {
@@ -25,8 +27,26 @@ export class BlogService {
       throw new BadRequestException('Slug already exists');
     }
 
-    const entry = this.blogRepository.create(createBlogDto);
+    const entry = this.blogRepository.create({
+      ...createBlogDto,
+      status: BlogStatus.DRAFT,
+    });
     return this.blogRepository.save(entry);
+  }
+
+  async publish(id: string): Promise<void> {
+    const entry = await this.findOne(id);
+
+    if (entry.status === BlogStatus.PUBLISHED) {
+      return;
+    }
+
+    if (entry.status === BlogStatus.ARCHIVED) {
+      throw new UnauthorizedException('Cannot publish an archived entry');
+    }
+
+    entry.status = BlogStatus.PUBLISHED;
+    await this.blogRepository.save(entry);
   }
 
   findAll(): Promise<BlogEntryEntity[]> {

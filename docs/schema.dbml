@@ -107,8 +107,15 @@ Table project.files {
 // ------------------------------------------
 // SCHEMA: BLOG
 // ------------------------------------------
+Enum blog.entry_status {
+  draft
+  published
+  archived
+}
+
 Table blog.entries {
   id uuid [pk, not null]
+  status blog.entry_status [not null, default: 'draft']
   title varchar(255) [not null]
   slug varchar [not null]
   description text
