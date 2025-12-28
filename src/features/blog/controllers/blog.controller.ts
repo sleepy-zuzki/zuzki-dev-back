@@ -6,6 +6,10 @@ import {
   Param,
   Patch,
   Post,
+  Put,
+  Query,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
@@ -72,5 +76,64 @@ export class BlogController {
     this.logger.info({ id }, 'Deleting blog entry');
     await this.blogService.remove(id);
     return { success: true };
+  }
+
+  // --- FILE MANAGEMENT ENDPOINTS ---
+
+  @Post(':id/files')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async attachFile(
+    @Param('id') id: string,
+    @Body() dto: AttachFileDto,
+  ): Promise<void> {
+    this.logger.info(
+      { id, fileId: dto.fileId },
+      'Attaching file to blog entry',
+    );
+    await this.blogService.attachFile(id, dto);
+  }
+
+  @Delete(':id/files/:fileId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async detachFile(
+    @Param('id') id: string,
+    @Param('fileId') fileId: string,
+  ): Promise<void> {
+    this.logger.info({ id, fileId }, 'Detaching file from blog entry');
+    await this.blogService.detachFile(id, fileId);
+  }
+
+  @Patch(':id/files/order')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async reorderFiles(
+    @Param('id') id: string,
+    @Body() dto: ReorderFilesDto,
+  ): Promise<void> {
+    this.logger.info({ id }, 'Reordering files in blog entry');
+    await this.blogService.reorderFiles(id, dto);
+  }
+
+  @Put(':id/files/:fileId/context')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async updateFileContext(
+    @Param('id') id: string,
+    @Param('fileId') fileId: string,
+    @Body() dto: UpdateFileContextDto,
+  ): Promise<void> {
+    this.logger.info(
+      { id, fileId, context: dto.contextSlug },
+      'Updating blog file context',
+    );
+    await this.blogService.updateFileContext(id, fileId, dto.contextSlug);
+  }
+
+  @Put(':id/cover/:fileId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async setCover(
+    @Param('id') id: string,
+    @Param('fileId') fileId: string,
+  ): Promise<void> {
+    this.logger.info({ id, fileId }, 'Setting blog entry cover image');
+    await this.blogService.updateFileContext(id, fileId, 'cover');
   }
 }

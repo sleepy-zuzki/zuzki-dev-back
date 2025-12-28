@@ -90,3 +90,52 @@ Cambia el estado de `draft` a `published`.
     "success": true
   }
   ```
+  ```
+
+## Gestión de Archivos
+
+### Adjuntar Archivo
+Asocia un archivo existente a una entrada de blog.
+- **Endpoint**: `POST /blog/entries/:id/files`
+- **Autenticación**: Requerida.
+- **Payload**:
+  ```json
+  {
+    "fileId": "uuid-del-archivo",
+    "contextSlug": "cover", // o 'gallery', etc.
+    "order": 1
+  }
+  ```
+- **Respuesta (204)**: No Content.
+
+### Desvincular Archivo
+- **Endpoint**: `DELETE /blog/entries/:id/files/:fileId`
+- **Autenticación**: Requerida.
+- **Respuesta (204)**: No Content.
+
+### Reordenar Archivos
+- **Endpoint**: `PATCH /blog/entries/:id/files/order`
+- **Autenticación**: Requerida.
+- **Payload**:
+  ```json
+  {
+    "items": [
+      { "fileId": "uuid-1", "order": 1 },
+      { "fileId": "uuid-2", "order": 2 }
+    ]
+  }
+  ```
+- **Respuesta (204)**: No Content.
+
+### Actualizar Contexto
+Cambia el tipo de uso de una imagen (ej. de 'gallery' a 'cover').
+- **Endpoint**: `PUT /blog/entries/:id/files/:fileId/context`
+- **Autenticación**: Requerida.
+- **Payload**: `{ "contextSlug": "cover" }`
+- **Respuesta (204)**: No Content.
+
+### Establecer Portada
+Atajo para actualizar el contexto de un archivo a 'cover'.
+- **Endpoint**: `PUT /blog/entries/:id/cover/:fileId`
+- **Autenticación**: Requerida.
+- **Respuesta (204)**: No Content.
