@@ -9,7 +9,9 @@ Endpoints para la gestión de entradas del blog.
 
 ### Listar Entradas
 - **Endpoint**: `GET /blog/entries`
-- **Autenticación**: Requerida.
+- **Autenticación**: No requerida.
+- **Parámetros de Consulta (Query Params)**:
+  - `status` (opcional): Filtra por estado (`draft`, `published`, `archived`). Si no se envía, devuelve todas las entradas sin importar el estado.
 - **Respuesta (200)**:
   ```json
   [
@@ -28,26 +30,13 @@ Endpoints para la gestión de entradas del blog.
 
 ### Obtener por ID
 - **Endpoint**: `GET /blog/entries/:id`
-- **Autenticación**: Requerida.
-- **Respuesta (200)**:
-  ```json
-  {
-    "id": "uuid",
-    "status": "draft",
-    "title": "Borrador",
-    "slug": "borrador",
-    "description": null,
-    "content": { "time": 1234567890, "blocks": [] },
-    "publishDate": null,
-    "createdAt": "2024-01-02T10:00:00Z",
-    "updatedAt": "2024-01-02T10:00:00Z"
-  }
-  ```
+- **Autenticación**: No requerida.
+- **Respuesta (200)**: Objeto de entrada (ver arriba).
 
 ### Obtener por Slug
 - **Endpoint**: `GET /blog/entries/slug/:slug`
-- **Autenticación**: Requerida.
-- **Respuesta (200)**: Mismo objeto que Obtener por ID.
+- **Autenticación**: No requerida.
+- **Respuesta (200)**: Objeto de entrada.
 
 ### Crear Entrada
 - **Endpoint**: `POST /blog/entries`
@@ -89,7 +78,6 @@ Cambia el estado de `draft` a `published`.
   {
     "success": true
   }
-  ```
   ```
 
 ## Gestión de Archivos

@@ -19,12 +19,14 @@ import {
   UpdateFileContextDto,
 } from '@shared/dto/manage-files.dto';
 
+import { BlogFilterDto } from '../dto/blog-filter.dto';
 import { BlogResponseDto } from '../dto/blog-response.dto';
 import { CreateBlogDto } from '../dto/create-blog.dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
+import { BlogStatus } from '../enums/blog-status.enum';
 import { toBlogResponse } from '../mappers/blog.mappers';
 import { BlogService } from '../services/blog.service';
-import { BlogStatus } from '../enums/blog-status.enum';
+import { Public } from '@features/auth/decorators/public.decorator';
 
 @Controller({ path: 'blog/entries', version: '1' })
 export class BlogController {
@@ -48,19 +50,22 @@ export class BlogController {
     return this.blogService.publish(id);
   }
 
+  @Public()
   @Get()
-  async findAll(): Promise<BlogResponseDto[]> {
-    this.logger.debug('Listing published blog entries');
-    const entries = await this.blogService.findAll(BlogStatus.PUBLISHED);
+  async findAll(@Query() filter: BlogFilterDto): Promise<BlogResponseDto[]> {
+    this.logger.debug({ filter }, 'Listing blog entries');
+    const entries = await this.blogService.findAll(filter.status);
     return entries.map(toBlogResponse);
   }
 
+  @Public()
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<BlogResponseDto> {
     const entry = await this.blogService.findOne(id);
     return toBlogResponse(entry);
   }
 
+  @Public()
   @Get('slug/:slug')
   async findBySlug(@Param('slug') slug: string): Promise<BlogResponseDto> {
     const entry = await this.blogService.findBySlug(slug);

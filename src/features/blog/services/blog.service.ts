@@ -61,6 +61,7 @@ export class BlogService {
     return this.blogRepository.find({
       where: status ? { status } : undefined,
       order: { createdAt: 'DESC' },
+      relations: ['files', 'files.file', 'files.fileType'],
     });
   }
 
