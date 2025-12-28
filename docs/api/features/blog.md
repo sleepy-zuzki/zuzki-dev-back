@@ -23,7 +23,15 @@ Endpoints para la gestión de entradas del blog.
       "description": "Una breve descripción...",
       "publishDate": "2024-01-01T12:00:00Z",
       "createdAt": "2024-01-01T10:00:00Z",
-      "updatedAt": "2024-01-01T10:00:00Z"
+      "updatedAt": "2024-01-01T10:00:00Z",
+      "images": [
+        {
+          "id": "uuid-file",
+          "url": "https://...",
+          "type": "cover",
+          "order": 1
+        }
+      ]
     }
   ]
   ```

@@ -1,7 +1,6 @@
 import { Test, type TestingModule } from '@nestjs/testing';
 import { PinoLogger } from 'nestjs-pino';
 
-import { BlogEntryEntity } from '../entities/blog-entry.entity';
 import { BlogService } from '../services/blog.service';
 import { BlogController } from './blog.controller';
 
@@ -16,15 +15,15 @@ describe('BlogController', () => {
     status: 'draft',
     createdAt: new Date(),
     updatedAt: new Date(),
-  };
+  } as any;
 
   const mockBlogResponse = {
     id: 'uuid',
     title: 'Test Blog',
     slug: 'test-blog',
     status: 'draft',
-    createdAt: mockBlogEntry.createdAt,
-    updatedAt: mockBlogEntry.updatedAt,
+    createdAt: (mockBlogEntry as { createdAt: Date }).createdAt,
+    updatedAt: (mockBlogEntry as { updatedAt: Date }).updatedAt,
   };
 
   const mockBlogService = {
@@ -34,6 +33,7 @@ describe('BlogController', () => {
     findBySlug: jest.fn(),
     update: jest.fn(),
     remove: jest.fn(),
+    publish: jest.fn(),
   };
 
   const mockLogger = {
@@ -64,8 +64,9 @@ describe('BlogController', () => {
     it('should call service.create', async () => {
       const dto = { title: 'New', slug: 'new' };
       mockBlogService.create.mockResolvedValue(mockBlogEntry);
-      const result = await controller.create(dto);
+      const result = await controller.create(dto as any);
       expect(result).toEqual(mockBlogResponse);
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(service.create).toHaveBeenCalledWith(dto);
     });
   });
@@ -75,6 +76,7 @@ describe('BlogController', () => {
       mockBlogService.findAll.mockResolvedValue([mockBlogEntry]);
       const result = await controller.findAll();
       expect(result).toEqual([mockBlogResponse]);
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(service.findAll).toHaveBeenCalled();
     });
   });
@@ -84,6 +86,7 @@ describe('BlogController', () => {
       mockBlogService.findOne.mockResolvedValue(mockBlogEntry);
       const result = await controller.findOne('uuid');
       expect(result).toEqual(mockBlogResponse);
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(service.findOne).toHaveBeenCalledWith('uuid');
     });
   });
@@ -93,6 +96,7 @@ describe('BlogController', () => {
       mockBlogService.findBySlug.mockResolvedValue(mockBlogEntry);
       const result = await controller.findBySlug('slug');
       expect(result).toEqual(mockBlogResponse);
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(service.findBySlug).toHaveBeenCalledWith('slug');
     });
   });
@@ -101,8 +105,9 @@ describe('BlogController', () => {
     it('should call service.update', async () => {
       const dto = { title: 'Updated' };
       mockBlogService.update.mockResolvedValue(mockBlogEntry);
-      const result = await controller.update('uuid', dto);
+      const result = await controller.update('uuid', dto as any);
       expect(result).toEqual(mockBlogResponse);
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(service.update).toHaveBeenCalledWith('uuid', dto);
     });
   });
@@ -112,6 +117,7 @@ describe('BlogController', () => {
       mockBlogService.remove.mockResolvedValue(undefined);
       const result = await controller.remove('uuid');
       expect(result).toEqual({ success: true });
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(service.remove).toHaveBeenCalledWith('uuid');
     });
   });

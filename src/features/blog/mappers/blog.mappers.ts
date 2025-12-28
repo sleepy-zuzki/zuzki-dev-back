@@ -12,5 +12,11 @@ export function toBlogResponse(entity: BlogEntryEntity): BlogResponseDto {
     publishDate: entity.publishDate,
     createdAt: entity.createdAt,
     updatedAt: entity.updatedAt,
+    images: entity.files?.map((f) => ({
+      id: f.file.id,
+      url: f.file.url,
+      type: f.fileType?.slug || 'unknown',
+      order: f.order,
+    })),
   };
 }

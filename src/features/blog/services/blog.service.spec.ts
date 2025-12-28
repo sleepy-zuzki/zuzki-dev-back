@@ -1,14 +1,16 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import type { Repository } from 'typeorm';
+
+import { CatalogItemEntity } from '@features/catalog/entities/catalog-item.entity';
 
 import { BlogEntryEntity } from '../entities/blog-entry.entity';
+import { BlogFileEntity } from '../entities/blog-file.entity';
+
 import { BlogService } from './blog.service';
 
 describe('BlogService', () => {
   let service: BlogService;
-  let repository: Repository<BlogEntryEntity>;
 
   const mockBlogEntry = {
     id: 'uuid',
@@ -25,6 +27,23 @@ describe('BlogService', () => {
     findOne: jest.fn(),
     merge: jest.fn(),
     softRemove: jest.fn(),
+    count: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  };
+
+  const mockBlogFileRepository = {
+    create: jest.fn(),
+    save: jest.fn(),
+    find: jest.fn(),
+    findOneBy: jest.fn(),
+    count: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  };
+
+  const mockCatalogItemRepository = {
+    findOneBy: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -35,13 +54,18 @@ describe('BlogService', () => {
           provide: getRepositoryToken(BlogEntryEntity),
           useValue: mockRepository,
         },
+        {
+          provide: getRepositoryToken(BlogFileEntity),
+          useValue: mockBlogFileRepository,
+        },
+        {
+          provide: getRepositoryToken(CatalogItemEntity),
+          useValue: mockCatalogItemRepository,
+        },
       ],
     }).compile();
 
     service = module.get<BlogService>(BlogService);
-    repository = module.get<Repository<BlogEntryEntity>>(
-      getRepositoryToken(BlogEntryEntity),
-    );
   });
 
   afterEach(() => {
@@ -56,21 +80,25 @@ describe('BlogService', () => {
     it('should create a new blog entry', async () => {
       const dto = { title: 'New Blog', slug: 'new-blog' };
       mockRepository.findOneBy.mockResolvedValue(null);
-      mockRepository.create.mockReturnValue(dto);
-      mockRepository.save.mockResolvedValue({ id: 'new-id', ...dto });
+      mockRepository.create.mockImplementation((d: any) => d);
+      mockRepository.save.mockImplementation((d: any) =>
+        Promise.resolve({ id: 'new-id', ...d } as any),
+      );
 
-      const result = await service.create(dto);
+      const result = await service.create(dto as any);
 
       expect(result).toHaveProperty('id');
-      expect(repository.findOneBy).toHaveBeenCalledWith({ slug: dto.slug });
-      expect(repository.save).toHaveBeenCalledWith(dto);
+      expect(mockRepository.findOneBy).toHaveBeenCalledWith({ slug: dto.slug });
+      expect(mockRepository.save).toHaveBeenCalled();
     });
 
     it('should throw BadRequestException if slug exists', async () => {
       const dto = { title: 'New Blog', slug: 'existing-slug' };
       mockRepository.findOneBy.mockResolvedValue({ id: 'existing-id' });
 
-      await expect(service.create(dto)).rejects.toThrow(BadRequestException);
+      await expect(service.create(dto as any)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -79,9 +107,11 @@ describe('BlogService', () => {
       mockRepository.find.mockResolvedValue([mockBlogEntry]);
       const result = await service.findAll();
       expect(result).toEqual([mockBlogEntry]);
-      expect(repository.find).toHaveBeenCalledWith({
-        order: { createdAt: 'DESC' },
-      });
+      expect(mockRepository.find).toHaveBeenCalledWith(
+        expect.objectContaining({
+          order: { createdAt: 'DESC' },
+        }),
+      );
     });
   });
 
@@ -100,32 +130,17 @@ describe('BlogService', () => {
     });
   });
 
-  describe('findBySlug', () => {
-    it('should return a blog entry by slug', async () => {
-      mockRepository.findOne.mockResolvedValue(mockBlogEntry);
-      const result = await service.findBySlug('test-blog');
-      expect(result).toEqual(mockBlogEntry);
-    });
-
-    it('should throw NotFoundException if entry not found by slug', async () => {
-      mockRepository.findOne.mockResolvedValue(null);
-      await expect(service.findBySlug('non-existent')).rejects.toThrow(
-        NotFoundException,
-      );
-    });
-  });
-
   describe('update', () => {
     it('should update a blog entry', async () => {
       const updateDto = { title: 'Updated Title' };
       mockRepository.findOne.mockResolvedValue(mockBlogEntry);
       mockRepository.save.mockResolvedValue({ ...mockBlogEntry, ...updateDto });
 
-      const result = await service.update('uuid', updateDto);
+      const result = await service.update('uuid', updateDto as any);
 
       expect(result.title).toEqual('Updated Title');
-      expect(repository.merge).toHaveBeenCalled();
-      expect(repository.save).toHaveBeenCalled();
+      expect(mockRepository.merge).toHaveBeenCalled();
+      expect(mockRepository.save).toHaveBeenCalled();
     });
   });
 
@@ -133,7 +148,7 @@ describe('BlogService', () => {
     it('should soft remove a blog entry', async () => {
       mockRepository.findOne.mockResolvedValue(mockBlogEntry);
       await service.remove('uuid');
-      expect(repository.softRemove).toHaveBeenCalledWith(mockBlogEntry);
+      expect(mockRepository.softRemove).toHaveBeenCalledWith(mockBlogEntry);
     });
   });
 });

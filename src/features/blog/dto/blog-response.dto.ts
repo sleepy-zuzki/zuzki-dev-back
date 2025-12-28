@@ -2,6 +2,13 @@ import type { EditorJsContent } from '@shared/types/editor-js-content.type';
 
 import type { BlogStatus } from '../enums/blog-status.enum';
 
+export class BlogFileResponseDto {
+  id!: string;
+  url!: string;
+  type!: string; // 'cover', 'gallery', etc.
+  order!: number;
+}
+
 export class BlogResponseDto {
   id!: string;
   status!: BlogStatus;
@@ -12,6 +19,5 @@ export class BlogResponseDto {
   publishDate?: Date | null;
   createdAt!: Date;
   updatedAt!: Date;
-  // Podemos añadir files más adelante si es necesario, 
-  // por ahora mantenemos lo básico para los badges
+  images?: BlogFileResponseDto[];
 }
