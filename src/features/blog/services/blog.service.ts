@@ -49,8 +49,9 @@ export class BlogService {
     await this.blogRepository.save(entry);
   }
 
-  findAll(): Promise<BlogEntryEntity[]> {
+  findAll(status?: BlogStatus): Promise<BlogEntryEntity[]> {
     return this.blogRepository.find({
+      where: status ? { status } : undefined,
       order: { createdAt: 'DESC' },
     });
   }

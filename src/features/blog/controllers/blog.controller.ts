@@ -14,6 +14,7 @@ import { CreateBlogDto } from '../dto/create-blog.dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { toBlogResponse } from '../mappers/blog.mappers';
 import { BlogService } from '../services/blog.service';
+import { BlogStatus } from '../enums/blog-status.enum';
 
 @Controller({ path: 'blog/entries', version: '1' })
 export class BlogController {
@@ -39,8 +40,8 @@ export class BlogController {
 
   @Get()
   async findAll(): Promise<BlogResponseDto[]> {
-    this.logger.debug('Listing all blog entries');
-    const entries = await this.blogService.findAll();
+    this.logger.debug('Listing published blog entries');
+    const entries = await this.blogService.findAll(BlogStatus.PUBLISHED);
     return entries.map(toBlogResponse);
   }
 
