@@ -10,18 +10,28 @@ Endpoints para gestionar Áreas y Tecnologías.
 ### Listar Áreas
 - **Endpoint**: `GET /stack/areas`
 - **Autenticación**: Requerida.
-- **Respuesta (200)**: `AreaResponseDto[]`.
+- **Respuesta (200)**:
+  ```json
+  [
+    {
+      "id": "uuid",
+      "name": "Frontend",
+      "slug": "frontend",
+      "iconCode": "code"
+    }
+  ]
+  ```
 
 ### Obtener Área
 - **Endpoint**: `GET /stack/areas/:slug`
 - **Autenticación**: Requerida.
-- **Respuesta (200)**: `AreaResponseDto`.
+- **Respuesta (200)**: Objeto de Área.
 
 ### Crear Área
 - **Endpoint**: `POST /stack/areas`
 - **Autenticación**: Requerida.
 - **Payload**: `{ "name": "Frontend", "slug": "frontend", "iconCode": "code" }`
-- **Respuesta (201)**: `AreaResponseDto`.
+- **Respuesta (201)**: Objeto de Área creada.
 
 ### Actualizar Área
 - **Endpoint**: `PATCH /stack/areas/:id`
@@ -36,7 +46,18 @@ Endpoints para gestionar Áreas y Tecnologías.
 ### Listar Tecnologías
 - **Endpoint**: `GET /stack/technologies`
 - **Autenticación**: Requerida.
-- **Respuesta (200)**: `TechnologyResponseDto[]`.
+- **Respuesta (200)**:
+  ```json
+  [
+    {
+      "id": "uuid",
+      "name": "Angular",
+      "slug": "angular",
+      "websiteUrl": "https://angular.io",
+      "areaId": "uuid-area"
+    }
+  ]
+  ```
 
 ### Obtener Tecnología
 - **Endpoint**: `GET /stack/technologies/:slug`
@@ -54,7 +75,7 @@ Endpoints para gestionar Áreas y Tecnologías.
     "websiteUrl": "..."
   }
   ```
-- **Respuesta (201)**: `TechnologyResponseDto`.
+- **Respuesta (201)**: Objeto de Tecnología creada.
 
 ### Actualizar Tecnología
 - **Endpoint**: `PATCH /stack/technologies/:id`

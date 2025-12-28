@@ -7,17 +7,31 @@
 - **Autenticación**: Requerida.
 - **Tipo**: `multipart/form-data`.
 - **Campo**: `file` (Binary, Max 5MB).
-- **Respuesta (201)**: `FileEntity` (id, url, mimeType, etc.).
+- **Respuesta (201)**:
+  ```json
+  {
+    "id": "uuid",
+    "url": "https://bucket.provider.com/key.jpg",
+    "mimeType": "image/jpeg",
+    "sizeBytes": 102400,
+    "createdAt": "2024-01-01T10:00:00Z"
+  }
+  ```
 
 ### Obtener Archivo
 - **Endpoint**: `GET /files/:id`
 - **Autenticación**: Requerida.
-- **Respuesta (200)**: `FileEntity`.
+- **Respuesta (200)**: Mismo objeto que Subir Archivo.
 
 ### Eliminar Archivo
 - **Endpoint**: `DELETE /files/:id`
 - **Autenticación**: Requerida.
-- **Respuesta (200)**: `{ "success": true }`.
+- **Respuesta (200)**:
+  ```json
+  {
+    "success": true
+  }
+  ```
 
 ---
 
@@ -31,7 +45,7 @@
   {
     "name": "John Doe",
     "email": "john@doe.com",
-    "message": "Hola..."
+    "message": "Hola, me gustaría contactar..."
   }
   ```
 - **Respuesta (204)**: No Content.
@@ -43,7 +57,18 @@
 ### Health Check
 - **Endpoint**: `GET /health`
 - **Autenticación**: Pública.
-- **Respuesta (200)**: Estado del servicio y base de datos.
+- **Respuesta (200)**:
+  ```json
+  {
+    "status": "ok",
+    "uptime": 123.45,
+    "timestamp": "2024-01-01T12:00:00Z",
+    "database": {
+      "status": "up",
+      "initialized": true
+    }
+  }
+  ```
 
 ### Métricas (Prometheus)
 - **Endpoint**: `/api/metrics`

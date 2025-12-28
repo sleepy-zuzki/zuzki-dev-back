@@ -10,7 +10,16 @@ Endpoints para la gestión de usuarios del sistema.
 ### Obtener Usuario por ID
 - **Endpoint**: `GET /users/:id`
 - **Autenticación**: Requerida.
-- **Respuesta (200)**: `UserResponseDto`.
+- **Respuesta (200)**:
+  ```json
+  {
+    "id": "uuid",
+    "email": "user@example.com",
+    "roles": ["user", "admin"],
+    "isActive": true,
+    "createdAt": "2024-01-01T10:00:00Z"
+  }
+  ```
 
 ### Crear Usuario
 - **Endpoint**: `POST /users`
@@ -24,4 +33,4 @@ Endpoints para la gestión de usuarios del sistema.
     "isActive": true
   }
   ```
-- **Respuesta (201)**: `UserResponseDto`.
+- **Respuesta (201)**: Mismo objeto que Obtener Usuario.

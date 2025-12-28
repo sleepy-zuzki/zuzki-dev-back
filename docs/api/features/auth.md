@@ -17,7 +17,18 @@ Endpoints para gestión de sesiones y tokens.
     "password": "securepassword"
   }
   ```
-- **Respuesta (200)**: `LoginResponse` (accessToken, refreshToken, user).
+- **Respuesta (200)**:
+  ```json
+  {
+    "accessToken": "eyJhbG...",
+    "refreshToken": "eyJhbG...",
+    "user": {
+      "id": "uuid",
+      "email": "user@example.com",
+      "roles": ["admin"]
+    }
+  }
+  ```
 
 ### Refrescar Token
 - **Endpoint**: `POST /auth/refresh`
@@ -29,7 +40,18 @@ Endpoints para gestión de sesiones y tokens.
     "refreshToken": "token-string"
   }
   ```
-- **Respuesta (200)**: `LoginResponse`.
+- **Respuesta (200)**:
+  ```json
+  {
+    "accessToken": "eyJhbG...",
+    "refreshToken": "eyJhbG...",
+    "user": {
+      "id": "uuid",
+      "email": "user@example.com",
+      "roles": ["admin"]
+    }
+  }
+  ```
 
 ### Cierre de Sesión
 - **Endpoint**: `POST /auth/logout`
@@ -41,4 +63,9 @@ Endpoints para gestión de sesiones y tokens.
     "refreshToken": "token-string"
   }
   ```
-- **Respuesta (200)**: `{ "success": true }`.
+- **Respuesta (200)**:
+  ```json
+  {
+    "success": true
+  }
+  ```
