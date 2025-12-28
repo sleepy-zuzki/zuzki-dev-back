@@ -13,7 +13,19 @@ describe('BlogController', () => {
     id: 'uuid',
     title: 'Test Blog',
     slug: 'test-blog',
-  } as BlogEntryEntity;
+    status: 'draft',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  const mockBlogResponse = {
+    id: 'uuid',
+    title: 'Test Blog',
+    slug: 'test-blog',
+    status: 'draft',
+    createdAt: mockBlogEntry.createdAt,
+    updatedAt: mockBlogEntry.updatedAt,
+  };
 
   const mockBlogService = {
     create: jest.fn(),
@@ -53,7 +65,7 @@ describe('BlogController', () => {
       const dto = { title: 'New', slug: 'new' };
       mockBlogService.create.mockResolvedValue(mockBlogEntry);
       const result = await controller.create(dto);
-      expect(result).toEqual(mockBlogEntry);
+      expect(result).toEqual(mockBlogResponse);
       expect(service.create).toHaveBeenCalledWith(dto);
     });
   });
@@ -62,7 +74,7 @@ describe('BlogController', () => {
     it('should call service.findAll', async () => {
       mockBlogService.findAll.mockResolvedValue([mockBlogEntry]);
       const result = await controller.findAll();
-      expect(result).toEqual([mockBlogEntry]);
+      expect(result).toEqual([mockBlogResponse]);
       expect(service.findAll).toHaveBeenCalled();
     });
   });
@@ -71,7 +83,7 @@ describe('BlogController', () => {
     it('should call service.findOne', async () => {
       mockBlogService.findOne.mockResolvedValue(mockBlogEntry);
       const result = await controller.findOne('uuid');
-      expect(result).toEqual(mockBlogEntry);
+      expect(result).toEqual(mockBlogResponse);
       expect(service.findOne).toHaveBeenCalledWith('uuid');
     });
   });
@@ -80,7 +92,7 @@ describe('BlogController', () => {
     it('should call service.findBySlug', async () => {
       mockBlogService.findBySlug.mockResolvedValue(mockBlogEntry);
       const result = await controller.findBySlug('slug');
-      expect(result).toEqual(mockBlogEntry);
+      expect(result).toEqual(mockBlogResponse);
       expect(service.findBySlug).toHaveBeenCalledWith('slug');
     });
   });
@@ -90,7 +102,7 @@ describe('BlogController', () => {
       const dto = { title: 'Updated' };
       mockBlogService.update.mockResolvedValue(mockBlogEntry);
       const result = await controller.update('uuid', dto);
-      expect(result).toEqual(mockBlogEntry);
+      expect(result).toEqual(mockBlogResponse);
       expect(service.update).toHaveBeenCalledWith('uuid', dto);
     });
   });

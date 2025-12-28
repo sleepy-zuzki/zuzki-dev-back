@@ -9,9 +9,10 @@ import {
 } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
+import { BlogResponseDto } from '../dto/blog-response.dto';
 import { CreateBlogDto } from '../dto/create-blog.dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
-import { BlogEntryEntity } from '../entities/blog-entry.entity';
+import { toBlogResponse } from '../mappers/blog.mappers';
 import { BlogService } from '../services/blog.service';
 
 @Controller({ path: 'blog/entries', version: '1' })
@@ -24,9 +25,10 @@ export class BlogController {
   }
 
   @Post()
-  create(@Body() createBlogDto: CreateBlogDto): Promise<BlogEntryEntity> {
+  async create(@Body() createBlogDto: CreateBlogDto): Promise<BlogResponseDto> {
     this.logger.info({ slug: createBlogDto.slug }, 'Creating blog entry');
-    return this.blogService.create(createBlogDto);
+    const entry = await this.blogService.create(createBlogDto);
+    return toBlogResponse(entry);
   }
 
   @Post(':id/publish')
@@ -36,28 +38,32 @@ export class BlogController {
   }
 
   @Get()
-  findAll(): Promise<BlogEntryEntity[]> {
+  async findAll(): Promise<BlogResponseDto[]> {
     this.logger.debug('Listing all blog entries');
-    return this.blogService.findAll();
+    const entries = await this.blogService.findAll();
+    return entries.map(toBlogResponse);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<BlogEntryEntity> {
-    return this.blogService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<BlogResponseDto> {
+    const entry = await this.blogService.findOne(id);
+    return toBlogResponse(entry);
   }
 
   @Get('slug/:slug')
-  findBySlug(@Param('slug') slug: string): Promise<BlogEntryEntity> {
-    return this.blogService.findBySlug(slug);
+  async findBySlug(@Param('slug') slug: string): Promise<BlogResponseDto> {
+    const entry = await this.blogService.findBySlug(slug);
+    return toBlogResponse(entry);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateBlogDto: UpdateBlogDto,
-  ): Promise<BlogEntryEntity> {
+  ): Promise<BlogResponseDto> {
     this.logger.info({ id }, 'Updating blog entry');
-    return this.blogService.update(id, updateBlogDto);
+    const entry = await this.blogService.update(id, updateBlogDto);
+    return toBlogResponse(entry);
   }
 
   @Delete(':id')

@@ -10,17 +10,17 @@ Endpoints para la gestión de entradas del blog.
 ### Listar Entradas
 - **Endpoint**: `GET /blog/entries`
 - **Autenticación**: Requerida.
-- **Respuesta (200)**: `BlogEntryEntity[]`.
+- **Respuesta (200)**: `BlogResponseDto[]`.
 
 ### Obtener por ID
 - **Endpoint**: `GET /blog/entries/:id`
 - **Autenticación**: Requerida.
-- **Respuesta (200)**: `BlogEntryEntity` (incluye `status`).
+- **Respuesta (200)**: `BlogResponseDto` (incluye `status`).
 
 ### Obtener por Slug
 - **Endpoint**: `GET /blog/entries/slug/:slug`
 - **Autenticación**: Requerida.
-- **Respuesta (200)**: `BlogEntryEntity`.
+- **Respuesta (200)**: `BlogResponseDto`.
 
 ### Crear Entrada
 - **Endpoint**: `POST /blog/entries`
@@ -36,7 +36,7 @@ Endpoints para la gestión de entradas del blog.
   }
   ```
 - **Nota**: Estado inicial por defecto: `draft`.
-- **Respuesta (201)**: `BlogEntryEntity`.
+- **Respuesta (201)**: `BlogResponseDto`.
 
 ### Publicar Entrada
 Cambia el estado de `draft` a `published`.
@@ -52,7 +52,7 @@ Cambia el estado de `draft` a `published`.
 - **Endpoint**: `PATCH /blog/entries/:id`
 - **Autenticación**: Requerida.
 - **Payload**: Parcial de creación.
-- **Respuesta (200)**: `BlogEntryEntity`.
+- **Respuesta (200)**: `BlogResponseDto`.
 
 ### Eliminar Entrada
 - **Endpoint**: `DELETE /blog/entries/:id`
