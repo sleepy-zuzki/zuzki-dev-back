@@ -3,6 +3,7 @@ import { Test, type TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { CatalogItemEntity } from '@features/catalog/entities/catalog-item.entity';
+import { N8nService } from '@shared/n8n/n8n.service';
 
 import { BlogEntryEntity } from '../entities/blog-entry.entity';
 import { BlogFileEntity } from '../entities/blog-file.entity';
@@ -46,6 +47,10 @@ describe('BlogService', () => {
     findOneBy: jest.fn(),
   };
 
+  const mockN8nService = {
+    sendWebhook: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -61,6 +66,10 @@ describe('BlogService', () => {
         {
           provide: getRepositoryToken(CatalogItemEntity),
           useValue: mockCatalogItemRepository,
+        },
+        {
+          provide: N8nService,
+          useValue: mockN8nService,
         },
       ],
     }).compile();

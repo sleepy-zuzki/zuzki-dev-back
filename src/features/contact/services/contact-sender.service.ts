@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { N8nService } from '@shared/n8n/n8n.service';
 
 import { ContactMessage } from '../dto/contact-message.types';
 
@@ -6,33 +7,13 @@ import { ContactMessage } from '../dto/contact-message.types';
 export class ContactSenderService {
   private readonly logger = new Logger(ContactSenderService.name);
 
-  private getWebhookUrl(): string {
-    const url = process.env.CONTACT_WEBHOOK_URL;
-    if (!url) {
-      throw new Error('CONTACT_WEBHOOK_URL is not configured');
-    }
-    return url;
-  }
+  constructor(private readonly n8nService: N8nService) {}
 
   async send(message: ContactMessage): Promise<void> {
-    const url = this.getWebhookUrl();
-
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: message.name,
-        email: message.email,
-        message: message.message,
-      }),
+    await this.n8nService.sendWebhook('CONTACT_WEBHOOK_URL', {
+      name: message.name,
+      email: message.email,
+      message: message.message,
     });
-
-    if (!res.ok) {
-      const text = await res.text().catch(() => '');
-      this.logger.error(`Webhook responded with ${res.status}: ${text}`);
-      throw new Error(`Webhook call failed with status ${res.status}`);
-    }
   }
 }

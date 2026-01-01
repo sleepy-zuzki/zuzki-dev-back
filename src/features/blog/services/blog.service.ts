@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -9,6 +10,7 @@ import { Repository, In } from 'typeorm';
 
 import { CatalogItemEntity } from '@features/catalog/entities/catalog-item.entity';
 import { AttachFileDto, ReorderFilesDto } from '@shared/dto/manage-files.dto';
+import { N8nService } from '@shared/n8n/n8n.service';
 
 import { CreateBlogDto } from '../dto/create-blog.dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
@@ -25,6 +27,7 @@ export class BlogService {
     private readonly blogFileRepository: Repository<BlogFileEntity>,
     @InjectRepository(CatalogItemEntity)
     private readonly catalogItemRepository: Repository<CatalogItemEntity>,
+    private readonly n8nService: N8nService,
   ) {}
 
   async create(createBlogDto: CreateBlogDto): Promise<BlogEntryEntity> {
@@ -55,6 +58,20 @@ export class BlogService {
 
     entry.status = BlogStatus.PUBLISHED;
     await this.blogRepository.save(entry);
+
+    try {
+      const postData = {
+        postUrl: `https://zuzki.dev/blog/${entry.slug}`,
+        tweetBody: 'Some Body', // TODO: Customize this body
+      };
+      
+      await this.n8nService.sendWebhook('TWITTER_WEBHOOK_POST_BLOG', postData);
+    } catch (error) {
+      new Logger(BlogService.name).error(
+        `Failed to send N8N webhook for blog ${entry.slug}`,
+        error.stack,
+      );
+    }
   }
 
   findAll(status?: BlogStatus): Promise<BlogEntryEntity[]> {
@@ -202,19 +219,11 @@ export class BlogService {
     blogId: string,
     coverTypeId: string,
   ): Promise<void> {
-    // Downgrade existing cover to 'gallery' or just remove the type if strict
-    // Assuming we have a 'gallery' type. If not, we just unset or handle logic.
-    // For now, let's find the 'gallery' type id to downgrade.
     const galleryType = await this.catalogItemRepository.findOneBy({
       slug: 'gallery',
     });
 
     if (!galleryType) {
-      // If no gallery type, we can't downgrade.
-      // Option: Just delete the previous cover association? No, that deletes the file from blog.
-      // Option: Do nothing, multiple covers allowed? No.
-      // Option: Throw error if not found?
-      // Let's assume 'gallery' exists as fallback.
       return;
     }
 
