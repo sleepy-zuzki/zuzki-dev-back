@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+
 import { ConfigurationService } from '@config/configuration.service';
 
 @Injectable()
@@ -39,7 +40,9 @@ export class N8nService {
 
     const fullUrl = `${this.baseUrl}${webhookPath}`;
 
-    this.logger.log(`Sending webhook to N8N: ${webhookPathOrEnvVar} (${fullUrl})`);
+    this.logger.log(
+      `Sending webhook to N8N: ${webhookPathOrEnvVar} (${fullUrl})`,
+    );
 
     try {
       const response = await fetch(fullUrl, {
@@ -62,7 +65,10 @@ export class N8nService {
 
       this.logger.log('N8N Webhook sent successfully');
     } catch (error) {
-      this.logger.error(`Error sending N8N webhook: ${error.message}`, error.stack);
+      this.logger.error(
+        `Error sending N8N webhook: ${error.message}`,
+        error.stack,
+      );
       throw error; // Re-lanzamos para que el caller decida si es crítico o no
     }
   }

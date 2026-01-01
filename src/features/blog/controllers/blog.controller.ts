@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 
+import { Public } from '@features/auth/decorators/public.decorator';
 import {
   AttachFileDto,
   ReorderFilesDto,
@@ -26,7 +27,6 @@ import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { BlogStatus } from '../enums/blog-status.enum';
 import { toBlogResponse } from '../mappers/blog.mappers';
 import { BlogService } from '../services/blog.service';
-import { Public } from '@features/auth/decorators/public.decorator';
 
 @Controller({ path: 'blog/entries', version: '1' })
 export class BlogController {

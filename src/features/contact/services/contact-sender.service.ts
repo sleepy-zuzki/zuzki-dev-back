@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+
 import { N8nService } from '@shared/n8n/n8n.service';
 
 import { ContactMessage } from '../dto/contact-message.types';

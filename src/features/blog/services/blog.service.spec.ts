@@ -91,7 +91,7 @@ describe('BlogService', () => {
       mockRepository.findOneBy.mockResolvedValue(null);
       mockRepository.create.mockImplementation((d: any) => d);
       mockRepository.save.mockImplementation((d: any) =>
-        Promise.resolve({ id: 'new-id', ...d } as any),
+        Promise.resolve({ id: 'new-id', ...d }),
       );
 
       const result = await service.create(dto as any);

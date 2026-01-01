@@ -46,7 +46,7 @@ export class BlogService {
   }
 
   async publish(id: string): Promise<void> {
-    const entry = await this.findOne(id);
+    const entry: BlogEntryEntity = await this.findOne(id);
 
     if (entry.status === BlogStatus.PUBLISHED) {
       return;
@@ -57,6 +57,7 @@ export class BlogService {
     }
 
     entry.status = BlogStatus.PUBLISHED;
+    entry.publishDate = new Date();
     await this.blogRepository.save(entry);
 
     try {
@@ -64,7 +65,7 @@ export class BlogService {
         postUrl: `https://zuzki.dev/blog/${entry.slug}`,
         tweetBody: 'Some Body', // TODO: Customize this body
       };
-      
+
       await this.n8nService.sendWebhook('TWITTER_WEBHOOK_POST_BLOG', postData);
     } catch (error) {
       new Logger(BlogService.name).error(
