@@ -2,17 +2,6 @@
 
 Este directorio contiene las colecciones de Postman para probar todos los endpoints de la API de Zuzki Dev Back.
 
-## ⚠️ **IMPORTANTE - REGLA DE SINCRONIZACIÓN AUTOMÁTICA**
-
-### 📋 **REGLA OBLIGATORIA**
-
-**Estos archivos se actualizan automáticamente cada vez que se crea o elimina un endpoint en cualquier controlador.**
-
-- ✅ **NO modifiques manualmente** los archivos JSON de este directorio
-- ✅ **Los cambios se generan automáticamente** mediante hooks de Git
-- ✅ **Cualquier modificación manual será sobrescrita** en el próximo commit
-- ✅ **Si necesitas personalizar**, edita la configuración en `tools/postman-sync/config/`
-
 ### 🔄 Proceso Automático
 
 1. **Desarrollador modifica controlador** → Agrega/elimina endpoint
@@ -92,7 +81,7 @@ La mayoría de endpoints requieren autenticación JWT. Los endpoints de autentic
 - PATCH `/:id` - Actualizar archivo
 - DELETE `/:id` - Eliminar archivo
 
-### Tecnologías (`/api/v1/catalog/technologies`)
+### Tecnologías (`/api/v1/stack/technologies`)
 
 - GET `/` - Listar tecnologías
 - GET `/:slug` - Obtener tecnología por slug
@@ -100,13 +89,22 @@ La mayoría de endpoints requieren autenticación JWT. Los endpoints de autentic
 - PATCH `/:id` - Actualizar tecnología
 - DELETE `/:id` - Eliminar tecnología
 
-### Stacks (`/api/v1/catalog/stacks`)
+### Áreas (`/api/v1/stack/areas`)
 
-- GET `/` - Listar stacks
-- GET `/:slug` - Obtener stack por slug
-- POST `/` - Crear stack
-- PATCH `/:id` - Actualizar stack
-- DELETE `/:id` - Eliminar stack
+- GET `/` - Listar áreas
+- GET `/:slug` - Obtener área por slug
+- POST `/` - Crear área
+- PATCH `/:id` - Actualizar área
+- DELETE `/:id` - Eliminar área
+
+### Blog (`/api/v1/blog/entries`)
+
+- GET `/` - Listar entradas
+- GET `/:id` - Obtener entrada por ID
+- GET `/slug/:slug` - Obtener entrada por slug
+- POST `/` - Crear entrada
+- PATCH `/:id` - Actualizar entrada
+- DELETE `/:id` - Eliminar entrada
 
 ### Métricas (`/metrics`)
 

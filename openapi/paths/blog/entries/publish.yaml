@@ -1,0 +1,22 @@
+post:
+  tags: [Blog]
+  summary: Publicar una entrada (cambia estado a published)
+  operationId: publishBlogEntry
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Entrada publicada correctamente
+    '401':
+      description: No autorizado (si la entrada está archivada)
+    '404':
+      description: Entrada no encontrada
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/common/basic.yaml#/BasicError'

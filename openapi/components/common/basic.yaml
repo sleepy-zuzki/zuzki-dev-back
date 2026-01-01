@@ -6,3 +6,19 @@ BasicError:
     timestamp:
       type: string
       format: date-time
+
+PaginationMeta:
+  type: object
+  properties:
+    total:
+      type: integer
+      description: Total de registros
+    page:
+      type: integer
+      description: Página actual
+    lastPage:
+      type: integer
+      description: Última página disponible
+    limit:
+      type: integer
+      description: Registros por página

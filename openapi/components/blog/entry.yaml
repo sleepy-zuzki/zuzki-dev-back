@@ -1,0 +1,86 @@
+BlogEntry:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+    status:
+      type: string
+      enum: [draft, published, archived]
+    title:
+      type: string
+      maxLength: 255
+    slug:
+      type: string
+      pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+    description:
+      type: string
+      nullable: true
+      maxLength: 1000
+    content:
+      type: object
+      nullable: true
+      description: Estructura JSON de EditorJS
+    publishDate:
+      type: string
+      format: date-time
+      nullable: true
+    createdAt:
+      type: string
+      format: date-time
+    updatedAt:
+      type: string
+      format: date-time
+    files:
+      type: array
+      items:
+        $ref: '../portfolio/file.yaml#/File' 
+
+CreateBlogEntryInput:
+  type: object
+  required: [title, slug]
+  properties:
+    title:
+      type: string
+      minLength: 5
+      maxLength: 255
+    slug:
+      type: string
+      minLength: 5
+      maxLength: 255
+      pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+    description:
+      type: string
+      maxLength: 1000
+      nullable: true
+    content:
+      type: object
+      nullable: true
+    publishDate:
+      type: string
+      format: date-time
+      nullable: true
+
+UpdateBlogEntryInput:
+  type: object
+  properties:
+    title:
+      type: string
+      minLength: 5
+      maxLength: 255
+    slug:
+      type: string
+      minLength: 5
+      maxLength: 255
+      pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+    description:
+      type: string
+      maxLength: 1000
+      nullable: true
+    content:
+      type: object
+      nullable: true
+    publishDate:
+      type: string
+      format: date-time
+      nullable: true

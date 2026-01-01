@@ -1,0 +1,56 @@
+LoginRequest:
+  type: object
+  required: [email, password]
+  properties:
+    email:
+      type: string
+      format: email
+    password:
+      type: string
+      minLength: 8
+
+LoginResponse:
+  type: object
+  properties:
+    accessToken:
+      type: string
+    expiresIn:
+      type: number
+    refreshToken:
+      type: string
+    refreshExpiresAt:
+      type: string
+      format: date-time
+    user:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        roles:
+          type: array
+          items:
+            type: string
+
+RefreshRequest:
+  type: object
+  required: [userId, refreshToken]
+  properties:
+    userId:
+      type: string
+      format: uuid
+    refreshToken:
+      type: string
+
+LogoutRequest:
+  type: object
+  required: [userId, refreshToken]
+  properties:
+    userId:
+      type: string
+      format: uuid
+    refreshToken:
+      type: string

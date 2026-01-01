@@ -1,0 +1,16 @@
+post:
+  tags: [Contact]
+  summary: Enviar mensaje de contacto
+  operationId: sendContactMessage
+  security: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/contact/dto.yaml#/ContactRequest'
+  responses:
+    '204':
+      description: Mensaje recibido correctamente
+    '400':
+      description: Validación fallida

@@ -1,0 +1,811 @@
+{
+	"info": {
+		"name": "Zuzki Dev API",
+		"description": "Colección generada automáticamente basada en la documentación del proyecto Zuzki Dev Back. Incluye scripts de auto-refresh de token.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refreshToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"event": [
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Script global para refrescar token si obtenemos 403 Forbidden (o 401)",
+					"if (pm.response.code === 403 || pm.response.code === 401) {",
+					"    const userId = pm.collectionVariables.get('userId');",
+					"    const refreshToken = pm.collectionVariables.get('refreshToken');",
+					"    const baseUrl = pm.collectionVariables.get('baseUrl');",
+					"",
+					"    if (userId && refreshToken) {",
+					"        console.log('Detectado error de autorización (403/401). Intentando renovar token...');",
+					"        ",
+					"        pm.sendRequest({",
+					"            url: baseUrl + '/auth/refresh',",
+					"            method: 'POST',",
+					"            header: {",
+					"                'Content-Type': 'application/json'",
+					"            },",
+					"            body: {",
+					"                mode: 'raw',",
+					"                raw: JSON.stringify({ userId: userId, refreshToken: refreshToken })",
+					"            }",
+					"        }, function (err, res) {",
+					"            if (err) {",
+					"                console.error('Error al intentar renovar token:', err);",
+					"            } else if (res.code === 200 || res.code === 201) {",
+					"                var data = res.json();",
+					"                ",
+					"                if (data.accessToken) {",
+					"                    pm.collectionVariables.set('accessToken', data.accessToken);",
+					"                    console.log('✅ Token renovado exitosamente en variable accessToken.');",
+					"                    ",
+					"                    if (data.refreshToken) {",
+					"                        pm.collectionVariables.set('refreshToken', data.refreshToken);",
+					"                    }",
+					"                    ",
+					"                    console.log('⚠️ Por favor, vuelve a ejecutar la petición (Click Send).');",
+					"                    ",
+					"                    // En Collection Runner, esto reintentaría la petición actual:",
+					"                    // postman.setNextRequest(pm.info.requestName);",
+					"                } else {",
+					"                     console.log('La respuesta de refresh no contenía accessToken:', data);",
+					"                }",
+					"            } else {",
+					"                console.log('❌ Falló la renovación del token. Status:', res.code);",
+					"                // Si falla el refresh, limpiamos para evitar bucles infinitos en Runner",
+					"                pm.collectionVariables.set('accessToken', '');",
+					"            }",
+					"        });",
+					"    }",
+					"}"
+				]
+			}
+		}
+	],
+	"item": [
+		{
+			"name": "Autenticación",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    // Guardar tokens y userId automáticamente",
+									"    if (jsonData.accessToken) pm.collectionVariables.set(\"accessToken\", jsonData.accessToken);",
+									"    if (jsonData.refreshToken) pm.collectionVariables.set(\"refreshToken\", jsonData.refreshToken);",
+									"    ",
+									"    // Intentamos encontrar el ID del usuario en la respuesta",
+									"    if (jsonData.user && jsonData.user.id) {",
+									"        pm.collectionVariables.set(\"userId\", jsonData.user.id);",
+									"    } else if (jsonData.userId) {",
+									"        pm.collectionVariables.set(\"userId\", jsonData.userId);",
+									"    }",
+									"    console.log(\"Login exitoso: Credenciales guardadas en variables de colección.\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@zuzki.dev\",\n  \"password\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"{{userId}}\",\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/refresh",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "refresh"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"{{userId}}\",\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "logout"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Usuarios",
+			"item": [
+				{
+					"name": "Obtener Usuario por ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Crear Usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"securePass123\",\n  \"roles\": [\"user\"],\n  \"isActive\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": ["{{baseUrl}}"],
+							"path": ["users"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Stack",
+			"item": [
+				{
+					"name": "Áreas",
+					"item": [
+						{
+							"name": "Listar Áreas",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+								},
+								"method": "GET",
+								"header": [],
+								"url": { "raw": "{{baseUrl}}/stack/areas", "host": ["{{baseUrl}}"], "path": ["stack", "areas"] }
+							}
+						},
+						{
+							"name": "Obtener Área por Slug",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/stack/areas/:slug",
+									"host": ["{{baseUrl}}"],
+									"path": ["stack", "areas", ":slug"],
+									"variable": [{ "key": "slug", "value": "backend" }]
+								}
+							}
+						},
+						{
+							"name": "Crear Área",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Backend\",\n  \"slug\": \"backend\",\n  \"iconCode\": \"server\"\n}",
+								"options": { "raw": { "language": "json" } }
+							},
+							"url": { "raw": "{{baseUrl}}/stack/areas", "host": ["{{baseUrl}}"], "path": ["stack", "areas"] }
+						}
+						},
+						{
+							"name": "Actualizar Área",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Backend Updated\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": {
+									"raw": "{{baseUrl}}/stack/areas/:id",
+									"host": ["{{baseUrl}}"],
+									"path": ["stack", "areas", ":id"],
+									"variable": [{ "key": "id", "value": "uuid-here" }]
+								}
+							}
+						},
+						{
+							"name": "Eliminar Área",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/stack/areas/:id",
+									"host": ["{{baseUrl}}"],
+									"path": ["stack", "areas", ":id"],
+									"variable": [{ "key": "id", "value": "uuid-here" }]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Tecnologías",
+					"item": [
+						{
+							"name": "Listar Tecnologías",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+								},
+								"method": "GET",
+								"header": [],
+								"url": { "raw": "{{baseUrl}}/stack/technologies", "host": ["{{baseUrl}}"], "path": ["stack", "technologies"] }
+							}
+						},
+						{
+							"name": "Obtener Tecnología por Slug",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/stack/technologies/:slug",
+									"host": ["{{baseUrl}}"],
+									"path": ["stack", "technologies", ":slug"],
+									"variable": [{ "key": "slug", "value": "nestjs" }]
+								}
+							}
+						},
+						{
+							"name": "Crear Tecnología",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"areaId\": \"uuid-here\",\n  \"name\": \"NestJS\",\n  \"slug\": \"nestjs\",\n  \"websiteUrl\": \"https://nestjs.com\",\n  \"docsUrl\": \"https://docs.nestjs.com\",\n  \"iconClass\": \"nestjs-icon\",\n  \"primaryColor\": \"#E0234E\"\n}",
+								"options": { "raw": { "language": "json" } }
+							},
+							"url": { "raw": "{{baseUrl}}/stack/technologies", "host": ["{{baseUrl}}"], "path": ["stack", "technologies"] }
+						}
+						},
+						{
+							"name": "Actualizar Tecnología",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"NestJS Updated\"\n}",
+									"options": { "raw": { "language": "json" } }
+								},
+								"url": {
+									"raw": "{{baseUrl}}/stack/technologies/:id",
+									"host": ["{{baseUrl}}"],
+									"path": ["stack", "technologies", ":id"],
+									"variable": [{ "key": "id", "value": "uuid-here" }]
+								}
+							}
+						},
+						{
+							"name": "Eliminar Tecnología",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/stack/technologies/:id",
+									"host": ["{{baseUrl}}"],
+									"path": ["stack", "technologies", ":id"],
+									"variable": [{ "key": "id", "value": "uuid-here" }]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Proyectos (Showcases)",
+			"description": "Endpoints para gestionar el portafolio de proyectos, incluyendo sus tecnologías e imágenes (Hero, Gallery, etc.).",
+			"item": [
+				{
+					"name": "Listar Proyectos",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/projects/showcases", "host": ["{{baseUrl}}"], "path": ["projects", "showcases"] }
+					}
+				},
+				{
+					"name": "Listar Destacados",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/projects/showcases/featured", "host": ["{{baseUrl}}"], "path": ["projects", "showcases", "featured"] }
+					}
+				},
+				{
+					"name": "Obtener Proyecto por Slug",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/projects/showcases/:slug",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "showcases", ":slug"],
+							"variable": [{ "key": "slug", "value": "my-project" }]
+						}
+					}
+				},
+				{
+					"name": "Crear Proyecto",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"My Portfolio\",\n  \"slug\": \"my-portfolio\",\n  \"description\": \"A great project\",\n  \"content\": {}, \n  \"repoUrl\": \"https://github.com/...\",\n  \"liveUrl\": \"https://mysite.com\",\n  \"categoryId\": \"uuid-here\",\n  \"year\": 2024,\n  \"isFeatured\": true,\n  \"technologyIds\": [\"uuid-tech-1\", \"uuid-tech-2\"]\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{baseUrl}}/projects/showcases", "host": ["{{baseUrl}}"], "path": ["projects", "showcases"] }
+					}
+				},
+				{
+					"name": "Actualizar Proyecto",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Title\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/projects/showcases/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "showcases", ":id"],
+							"variable": [{ "key": "id", "value": "uuid-here" }]
+						}
+					}
+				},
+				{
+					"name": "Eliminar Proyecto",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/projects/showcases/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "showcases", ":id"],
+							"variable": [{ "key": "id", "value": "uuid-here" }]
+						}
+					}
+				},
+				{
+					"name": "Adjuntar Archivo",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fileId\": \"uuid-archivo\",\n  \"contextSlug\": \"gallery\",\n  \"order\": 1\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/projects/showcases/:id/files",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "showcases", ":id", "files"],
+							"variable": [{ "key": "id", "value": "uuid-proyecto" }]
+						}
+					}
+				},
+				{
+					"name": "Reordenar Archivos",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"items\": [\n    { \"fileId\": \"uuid-1\", \"order\": 1 },\n    { \"fileId\": \"uuid-2\", \"order\": 2 }\n  ]\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/projects/showcases/:id/files/order",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "showcases", ":id", "files", "order"],
+							"variable": [{ "key": "id", "value": "uuid-proyecto" }]
+						}
+					}
+				},
+				{
+					"name": "Establecer Portada (Cover)",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/projects/showcases/:id/cover/:fileId",
+							"host": ["{{baseUrl}}"],
+							"path": ["projects", "showcases", ":id", "cover", ":fileId"],
+							"variable": [
+								{ "key": "id", "value": "uuid-proyecto" },
+								{ "key": "fileId", "value": "uuid-archivo" }
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Blog",
+			"item": [
+				{
+					"name": "Listar Entradas",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/blog/entries", "host": ["{{baseUrl}}"], "path": ["blog", "entries"] }
+				}
+				},
+				{
+					"name": "Obtener Entrada por ID",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/blog/entries/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["blog", "entries", ":id"],
+							"variable": [{ "key": "id", "value": "uuid-here" }]
+						}
+					}
+				},
+				{
+					"name": "Obtener Entrada por Slug",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/blog/entries/slug/:slug",
+							"host": ["{{baseUrl}}"],
+							"path": ["blog", "entries", "slug", ":slug"],
+							"variable": [{ "key": "slug", "value": "my-first-post" }]
+						}
+					}
+				},
+				{
+					"name": "Crear Entrada",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"My First Post\",\n  \"slug\": \"my-first-post\",\n  \"description\": \"Intro to blog\",\n  \"content\": {}, \n  \"publishDate\": \"2024-01-01T10:00:00Z\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{baseUrl}}/blog/entries", "host": ["{{baseUrl}}"], "path": ["blog", "entries"] }
+				}
+				},
+				{
+					"name": "Actualizar Entrada",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Title\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": {
+							"raw": "{{baseUrl}}/blog/entries/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["blog", "entries", ":id"],
+							"variable": [{ "key": "id", "value": "uuid-here" }]
+						}
+					}
+				},
+				{
+					"name": "Eliminar Entrada",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/blog/entries/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["blog", "entries", ":id"],
+							"variable": [{ "key": "id", "value": "uuid-here" }]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Archivos",
+			"item": [
+				{
+					"name": "Listar Archivos",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/files?page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"files"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Número de página"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Cantidad de elementos por página"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Subir Archivo",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"description": "Max 5MB"
+								}
+							]
+						},
+						"url": { "raw": "{{baseUrl}}/files/upload", "host": ["{{baseUrl}}"], "path": ["files", "upload"] }
+				}
+				},
+				{
+					"name": "Obtener Información del Archivo",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/files/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["files", ":id"],
+							"variable": [{ "key": "id", "value": "uuid-here" }]
+						}
+					}
+				},
+				{
+					"name": "Eliminar Archivo",
+					"request": {
+						"auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }] },
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/files/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["files", ":id"],
+							"variable": [{ "key": "id", "value": "uuid-here" }]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Contacto",
+			"item": [
+				{
+					"name": "Enviar Solicitud",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"message\": \"Hello!\"\n}",
+							"options": { "raw": { "language": "json" } }
+						},
+						"url": { "raw": "{{baseUrl}}/contact", "host": ["{{baseUrl}}"], "path": ["contact"] }
+				}
+			}
+		]
+		},
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Check Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] }
+				}
+			}
+		]
+		},
+		{
+			"name": "Métricas",
+			"item": [
+				{
+					"name": "Prometheus Metrics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/metrics",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "3000",
+							"path": ["api", "metrics"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

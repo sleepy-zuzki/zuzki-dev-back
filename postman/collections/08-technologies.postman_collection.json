@@ -1,0 +1,54 @@
+{
+  "info": {
+    "name": "Zuzki Dev - Stack Technologies",
+    "description": "Endpoints para la gestión de tecnologías",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "List Technologies",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/stack/technologies",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "stack", "technologies"]
+        },
+        "description": "Obtener lista de todas las tecnologías"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Technology by Slug",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/stack/technologies/:slug",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "stack", "technologies", ":slug"],
+          "variable": [
+            {
+              "key": "slug",
+              "value": "typescript",
+              "description": "Slug de la tecnología"
+            }
+          ]
+        },
+        "description": "Obtener una tecnología específica por su slug"
+      },
+      "response": []
+    }
+  ]
+}

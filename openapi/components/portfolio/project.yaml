@@ -1,21 +1,10 @@
-ProjectRef:
-  type: object
-  properties:
-    id:
-      type: integer
-      format: int32
-    slug:
-      type: string
-    name:
-      type: string
-
 Project:
   type: object
   properties:
     id:
-      type: integer
-      format: int32
-    name:
+      type: string
+      format: uuid
+    title:
       type: string
       maxLength: 150
     slug:
@@ -24,48 +13,67 @@ Project:
     description:
       type: string
       nullable: true
+    content:
+      type: object
+      nullable: true
+      description: Estructura JSON de EditorJS
     repoUrl:
       type: string
       nullable: true
+      maxLength: 255
     liveUrl:
       type: string
       nullable: true
-    category:
+      maxLength: 255
+    areaId:
       type: string
+      format: uuid
       nullable: true
-      enum: [front, back, mobile, devops, design]
     year:
       type: integer
-      format: int32
       nullable: true
     isFeatured:
       type: boolean
-      default: false
-    technologies:
-      type: array
-      items:
-        $ref: '../catalog/technology.yaml#/Technology'
-    previewImage:
-      allOf:
-        - $ref: './file.yaml#/File'
-      nullable: true
     createdAt:
       type: string
       format: date-time
     updatedAt:
       type: string
       format: date-time
+    area:
+      $ref: '../stack/area.yaml#/StackArea'
+    technologies:
+      type: array
+      items:
+        $ref: '../stack/technology.yaml#/Technology'
+    files:
+      type: array
+      items:
+        type: object
+        properties:
+          fileId:
+            type: string
+            format: uuid
+          order:
+            type: integer
+          file:
+            $ref: './file.yaml#/File'
 
 CreateProjectInput:
   type: object
-  required: [name, slug]
+  required: [title, slug]
   properties:
-    name:
+    title:
       type: string
+      maxLength: 150
     slug:
       type: string
+      maxLength: 160
     description:
       type: string
+      nullable: true
+    content:
+      type: object
       nullable: true
     repoUrl:
       type: string
@@ -73,13 +81,12 @@ CreateProjectInput:
     liveUrl:
       type: string
       nullable: true
-    category:
+    areaId:
       type: string
+      format: uuid
       nullable: true
-      enum: [front, back, mobile, devops, design]
     year:
       type: integer
-      format: int32
       nullable: true
     isFeatured:
       type: boolean
@@ -87,46 +94,33 @@ CreateProjectInput:
     technologyIds:
       type: array
       items:
-        type: integer
-        format: int32
-    previewImageId:
-      type: integer
-      format: int32
-      nullable: true
+        type: string
+        format: uuid
 
 UpdateProjectInput:
   type: object
   properties:
-    name:
+    title:
       type: string
     slug:
       type: string
     description:
       type: string
-      nullable: true
+    content:
+      type: object
     repoUrl:
       type: string
-      nullable: true
     liveUrl:
       type: string
-      nullable: true
-    category:
+    areaId:
       type: string
-      nullable: true
-      enum: [front, back, mobile, devops, design]
+      format: uuid
     year:
       type: integer
-      format: int32
-      nullable: true
     isFeatured:
       type: boolean
     technologyIds:
       type: array
       items:
-        type: integer
-        format: int32
-      nullable: true
-    previewImageId:
-      type: integer
-      format: int32
-      nullable: true
+        type: string
+        format: uuid

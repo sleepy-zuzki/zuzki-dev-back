@@ -1,0 +1,54 @@
+{
+  "info": {
+    "name": "Zuzki Dev - Stack Areas",
+    "description": "Endpoints para la gestión de áreas tecnológicas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "List Areas",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/stack/areas",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "stack", "areas"]
+        },
+        "description": "Obtener lista de todas las áreas"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Area by Slug",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/stack/areas/:slug",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "stack", "areas", ":slug"],
+          "variable": [
+            {
+              "key": "slug",
+              "value": "frontend",
+              "description": "Slug del área"
+            }
+          ]
+        },
+        "description": "Obtener un área específica por su slug"
+      },
+      "response": []
+    }
+  ]
+}

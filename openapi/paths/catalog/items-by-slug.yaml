@@ -1,0 +1,21 @@
+get:
+  tags:
+    - Catalog
+  summary: Obtener items de un catálogo por el slug del catálogo
+  parameters:
+    - name: slug
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Lista de items del catálogo
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '../../components/catalog/generic.yaml#/CatalogItem'
+    '404':
+      description: Catálogo no encontrado

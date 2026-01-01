@@ -1,0 +1,84 @@
+get:
+  tags: [Blog]
+  summary: Obtiene una entrada por ID
+  operationId: getBlogEntryById
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Entrada encontrada
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/blog/entry.yaml#/BlogEntry'
+    '404':
+      description: Entrada no encontrada
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/common/basic.yaml#/BasicError'
+
+patch:
+  tags: [Blog]
+  summary: Actualiza una entrada por ID
+  operationId: updateBlogEntry
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/blog/entry.yaml#/UpdateBlogEntryInput'
+  responses:
+    '200':
+      description: Entrada actualizada
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/blog/entry.yaml#/BlogEntry'
+    '404':
+      description: Entrada no encontrada
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/common/basic.yaml#/BasicError'
+
+delete:
+  tags: [Blog]
+  summary: Elimina una entrada por ID
+  operationId: deleteBlogEntry
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    '200':
+      description: Eliminación exitosa
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+    '404':
+      description: Entrada no encontrada
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/common/basic.yaml#/BasicError'

@@ -1,0 +1,24 @@
+post:
+  tags: [Auth]
+  summary: Iniciar sesión
+  operationId: authLogin
+  security: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/auth/dto.yaml#/LoginRequest'
+  responses:
+    '200':
+      description: Login exitoso
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/auth/dto.yaml#/LoginResponse'
+    '401':
+      description: Credenciales inválidas
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/common/basic.yaml#/BasicError'

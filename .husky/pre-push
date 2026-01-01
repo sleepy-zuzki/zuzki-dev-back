@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
-script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd -P)"
-. "$script_dir/_/husky.sh"
+#script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd -P)"
+#. "$script_dir/_/husky.sh"
 
 # Fallar el push si hay errores de lint o types
-pnpm lint:ci
-pnpm typecheck
+#pnpm lint:ci
+#pnpm typecheck

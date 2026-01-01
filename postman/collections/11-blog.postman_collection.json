@@ -1,0 +1,170 @@
+{
+  "info": {
+    "name": "Zuzki Dev - Blog",
+    "description": "Endpoints para la gestión de entradas del blog",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "List Blog Entries",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/blog/entries",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "blog", "entries"]
+        },
+        "description": "Listar todas las entradas del blog"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Blog Entry by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/blog/entries/:id",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "blog", "entries", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "uuid-here",
+              "description": "ID de la entrada"
+            }
+          ]
+        },
+        "description": "Obtener una entrada por su ID"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Blog Entry by Slug",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/blog/entries/slug/:slug",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "blog", "entries", "slug", ":slug"],
+          "variable": [
+            {
+              "key": "slug",
+              "value": "mi-primera-entrada",
+              "description": "Slug de la entrada"
+            }
+          ]
+        },
+        "description": "Obtener una entrada por su Slug"
+      },
+      "response": []
+    },
+    {
+      "name": "Create Blog Entry",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Mi Primera Entrada\",\n  \"slug\": \"mi-primera-entrada\",\n  \"description\": \"Una breve descripción\",\n  \"content\": {}, \n  \"publishDate\": \"2024-01-01T10:00:00Z\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/blog/entries",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "blog", "entries"]
+        },
+        "description": "Crear una nueva entrada de blog"
+      },
+      "response": []
+    },
+    {
+      "name": "Publish Blog Entry",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/blog/entries/:id/publish",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "blog", "entries", ":id", "publish"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "uuid-here",
+              "description": "ID de la entrada"
+            }
+          ]
+        },
+        "description": "Publicar una entrada (cambiar estado a published)"
+      },
+      "response": []
+    },
+    {
+      "name": "Update Blog Entry",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Título Actualizado\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/blog/entries/:id",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "blog", "entries", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "uuid-here",
+              "description": "ID de la entrada"
+            }
+          ]
+        },
+        "description": "Actualizar una entrada existente"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Blog Entry",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/{{version}}/blog/entries/:id",
+          "host": ["{{baseUrl}}"],
+          "path": ["{{version}}", "blog", "entries", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "uuid-here",
+              "description": "ID de la entrada"
+            }
+          ]
+        },
+        "description": "Eliminar una entrada"
+      },
+      "response": []
+    }
+  ]
+}

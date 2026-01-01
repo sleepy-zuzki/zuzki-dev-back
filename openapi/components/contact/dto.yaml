@@ -1,0 +1,14 @@
+ContactRequest:
+  type: object
+  required: [name, email, message]
+  properties:
+    name:
+      type: string
+      maxLength: 120
+    email:
+      type: string
+      format: email
+      maxLength: 254
+    message:
+      type: string
+      maxLength: 4000

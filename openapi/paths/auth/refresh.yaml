@@ -1,0 +1,22 @@
+post:
+  tags: [Auth]
+  summary: Refrescar token de acceso
+  operationId: authRefresh
+  security: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/auth/dto.yaml#/RefreshRequest'
+  responses:
+    '200':
+      description: Token refrescado
+      content:
+        application/json:
+          schema:
+            $ref: '../../../components/auth/dto.yaml#/LoginResponse'
+    '400':
+      description: Faltan parámetros
+    '401':
+      description: Token inválido o expirado

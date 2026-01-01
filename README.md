@@ -1,115 +1,130 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Zuzki Dev Back
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Backend de la plataforma **Zuzki Dev**, construido con **NestJS** y siguiendo una arquitectura de **Vertical Slicing**.
 
-## Description
+Este proyecto prioriza la modularidad por funcionalidad (features) sobre las capas técnicas, facilitando la escalabilidad y el mantenimiento en un entorno de desarrollo ágil.
 
-Backend basado en NestJS con arquitectura hexagonal (ports & adapters) y módulos de composición por feature.
+## 🚀 Stack Tecnológico
 
-- Arquitectura: ver docs/ARCHITECTURE.md
-- Guía del desarrollador (cómo implementar cambios sin romper la convención): ver docs/DEVELOPER_GUIDE.md
-- Checklist de PR: ver docs/PR_CHECKLIST.md
+- **Framework:** [NestJS](https://nestjs.com/) v11
+- **Lenguaje:** TypeScript
+- **Base de Datos:** PostgreSQL
+- **ORM:** [TypeORM](https://typeorm.io/)
+- **Package Manager:** pnpm
+- **Documentación API:** OpenAPI (Swagger)
+- **Logging:** Pino
 
-## Project setup
+## 🏗 Arquitectura
 
-```bash
-$ pnpm install
-```
+El proyecto sigue estrictamente el patrón de **Vertical Slicing**.
 
-## Compile and run the project
+- **Features (`src/features/`)**: Cada funcionalidad (Auth, Blog, Projects, etc.) es autocontenida y posee sus propios controladores, servicios, entidades y DTOs.
+- **Shared (`src/shared/`)**: Código transversal reutilizable (Database, Config, Utils). **Nunca** depende de una feature.
+- **V1Module**: Agrupador de módulos para la versión 1 de la API.
 
-```bash
-# development
-$ pnpm run start
+Para más detalles, consulta:
+- 📐 [Arquitectura y Principios](./docs/ARCHITECTURE.md)
+- 👩‍💻 [Guía del Desarrollador](./docs/DEVELOPER_GUIDE.md)
 
-# watch mode
-$ pnpm run start:dev
+## 🛠️ Configuración y Ejecución
 
-# production mode
-$ pnpm run start:prod
-```
+### Prerrequisitos
 
-## Run tests
+- Node.js (v22+)
+- pnpm (`npm install -g pnpm`)
+- PostgreSQL
+
+### Instalación
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+# Instalar dependencias
+pnpm install
 ```
 
-## Deployment
+### Variables de Entorno
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Copia el archivo de ejemplo y configura tus variables:
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+cp .env.example .env
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Ejecución
 
-## Resources
+```bash
+# Desarrollo (Watch mode)
+pnpm run start:dev
 
-Check out a few resources that may come in handy when working with NestJS:
+# Producción
+pnpm run start:prod
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## 🧪 Calidad y Testing
 
-## Support
+Mantenemos altos estándares de calidad mediante linting estricto y pruebas automatizadas.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+# Unit Tests
+pnpm run test
 
-## Stay in touch
+# E2E Tests
+pnpm run test:e2e
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Coverage
+pnpm run test:cov
 
-## License
+# Linting & Formatting
+pnpm run lint
+pnpm run format
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## 🗄️ Base de Datos y Migraciones
 
-# zuzki-dev-back
+Utilizamos TypeORM para la gestión de esquemas.
 
-## Calidad y contribución
+```bash
+# Ejecutar migraciones pendientes
+pnpm run migration:run
 
-- Arquitectura: ver `docs/ARCHITECTURE.md`
-- Guía del desarrollador: ver `docs/DEVELOPER_GUIDE.md`
-- Guía de contribución: ver `CONTRIBUTING.md`
-- Checklist de PR: ver `docs/PR_CHECKLIST.md`
+# Generar una nueva migración (basada en cambios de entidades)
+pnpm run migration:generate --name=NombreDelCambio
 
-Comandos de calidad:
+# Crear una migración vacía
+pnpm run migration:create --name=NombreDelScript
 
-- Lint: `pnpm lint` (autofix: `pnpm lint:fix`)
-- Typecheck: `pnpm typecheck`
-- Tests: `pnpm test` / Cobertura: `pnpm test:cov`
+# Revertir última migración
+pnpm run migration:revert
+```
 
-Límites de imports y arquitectura se validan con ESLint (incluye orden de imports, duplicados y restricciones por capa). La orquestación entre capas solo se permite en el composition root.
+## 📚 Documentación
+
+Toda la documentación detallada se encuentra en el directorio `docs/`:
+
+- [API Reference (Endpoints)](./docs/FULL_API_DOCUMENTATION.md)
+- [Esquema de Base de Datos](./docs/schema.dbml)
+- [Checklist de Pull Requests](./docs/PR_CHECKLIST.md)
+- [Colección de Postman](./docs/postman_collection.json)
+
+## 📂 Estructura del Proyecto
+
+```
+src/
+├── config/                 # Configuración centralizada
+├── features/               # Vertical Slices (Lógica de negocio)
+│   ├── auth/
+│   ├── blog/
+│   ├── projects/
+│   └── ...
+├── metrics/                # Monitorización
+├── shared/                 # Código transversal (DB, Utils, Security)
+├── app.module.ts           # Módulo raíz
+├── v1.module.ts            # Módulo de versión 1
+└── main.ts                 # Entry point
+```
+
+## 🤝 Contribución
+
+Por favor, revisa [CONTRIBUTING.md](./CONTRIBUTING.md) antes de enviar un Pull Request.
+
+---
+**Zuzki Dev Team**

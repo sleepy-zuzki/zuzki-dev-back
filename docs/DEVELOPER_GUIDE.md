@@ -1,126 +1,100 @@
 # Guía del Desarrollador
 
-Este documento te guía para implementar cambios sin romper la convención de arquitectura hexagonal del proyecto.
+Esta guía describe cómo trabajar en el proyecto bajo la arquitectura de **Vertical Slicing**.
 
-## Estructura de carpetas (resumen operativo)
+## Mentalidad de Desarrollo
 
-- interfaces/http/v{n}/<feature>/
-  - Controladores + DTOs + validación (class-validator).
-  - No importar infraestructura aquí.
-- application/<feature>/
-  - services/: casos de uso (pura lógica de aplicación).
-  - ports/: contratos (ports) + tokens (constantes para DI).
-  - mappers/: conversión domain ↔ view/dto.
-- domain/<feature>/
-  - types/: tipos/contratos de dominio (sin framework).
-  - rules/: reglas de dominio puras (si aplica).
-- infrastructure/...
-  - Implementaciones concretas (ORM, hashing, jwt, etc.).
-  - Modules por feature que proveen tokens.
-- infrastructure/composition/
-  - Módulos por feature que conectan infrastructure ↔ application y exportan services.
-- shared/...
-  - Utilidades y tipos transversales.
+Olvida las capas horizontales estrictas (Controller > Service > Domain > Infra). Piensa en **Features**. Cuando tengas que añadir una funcionalidad:
 
-## Flujo de trabajo por capas (mental model)
+1.  ¿A qué feature pertenece? (¿Auth? ¿Users? ¿Projects?)
+2.  ¿Necesito crear una nueva feature?
+3.  Implementa todo lo necesario (BD, Lógica, API) dentro de esa carpeta de feature.
 
-1. Application define QUÉ necesita (Ports) y CÓMO orquesta (Services).
-2. Infrastructure implementa los Ports.
-3. Composition “enchufa” infraestructura a los services, creando providers listos.
-4. Interfaces usa los services expuestos por composition y mapea errores a HTTP.
+## Recetas Comunes
 
-## Recetas de cambios comunes
+### 1. Crear una Nueva Feature
 
-### 1) Añadir un nuevo endpoint HTTP en v1
+1.  Crea la carpeta en `src/features/<nombre>`.
+2.  Crea el módulo: `nest g module features/<nombre>`.
+3.  Añádelo a `app.module.ts` (si no lo hizo el CLI).
 
-- Crear DTOs en interfaces/http/v1/<feature>/dto con class-validator.
-- Crear/actualizar el controlador en interfaces/http/v1/<feature>/<feature>.controller.ts.
-- Inyectar el Service de application (que llega vía Composition).
-- Manejar errores con excepciones de @nestjs/common (BadRequestException, NotFoundException, etc.).
-- No importar módulos de infraestructura en interfaces.
+### 2. Añadir un Endpoint (Controller)
 
-Checklist:
+1.  Dentro de `src/features/<feature>/controllers/`.
+2.  Crea el DTO en `../dto/` usando `class-validator`.
+3.  Inyecta el Service necesario en el constructor.
+4.  Implementa el método con los decoradores `@Get`, `@Post`, etc.
+5.  Retorna DTOs o interfaces simples, evita retornar entidades de TypeORM directamente si tienen datos sensibles.
 
-- [ ] DTOs validados
-- [ ] Controlador inyecta Service (no adapters)
-- [ ] Mapeo de errores de dominio a HTTP
+### 3. Implementar Lógica de Negocio (Service)
 
-### 2) Añadir un nuevo caso de uso (Service)
+1.  Dentro de `src/features/<feature>/services/`.
+2.  Inyecta los Repositorios de TypeORM (`@InjectRepository(Entity)`) o adaptadores de `@shared`.
+3.  Escribe la lógica. Si es muy compleja, puedes extraer partes a clases auxiliares o estrategias dentro de la misma carpeta de la feature.
 
-- Definir/actualizar métodos en application/<feature>/services/<service>.ts.
-- Si necesita capacidades externas: definir o ampliar un Port en application/<feature>/ports y su Token.
-- Asegurar que los métodos no dependan de framework ni modelos de ORM.
+### 4. Modelo de Datos (Entities)
 
-Checklist:
+1.  Dentro de `src/features/<feature>/entities/`.
+2.  Usa decoradores de TypeORM (`@Entity`, `@Column`, etc.).
+3.  Recuerda registrar la entidad en `TypeOrmModule.forFeature([Entity])` dentro del módulo de la feature.
 
-- [ ] Lógica pura en Service
-- [ ] Ports/Tokens definidos si necesitas infraestructura
-- [ ] Tests unitarios del Service con mocks de Ports
+### 5. Usar Infraestructura Compartida (Storage, Email, etc.)
 
-### 3) Añadir un nuevo adaptador de infraestructura (DB/HTTP/JWT/Cache)
+1.  No reimplementes lógica genérica en la feature.
+2.  Busca en `src/shared/`. Ejemplo: `SharedStorageModule`.
+3.  Importa el módulo compartido en tu `FeatureModule`.
+4.  Inyecta el servicio compartido (ej. `StorageService`) en tu Service de feature.
 
-- Implementar el Port en infrastructure/…/adapters/<feature>/…adapter.ts.
-- Exponer un módulo de infraestructura que provea el TOKEN del Port.
-- No exportar clases específicas del ORM a application/domain.
+## Convenciones de Código
 
-Checklist:
+- **Imports**: Usa los alias definidos en `tsconfig.json`:
+  - `@features/*` -> Otras features (usar con precaución).
+  - `@shared/*` -> Utilidades compartidas.
+  - `@config/*` -> Configuración.
+- **Naming**:
+  - Clases: `PascalCase` (ej. `UsersService`, `CreateUserDto`).
+  - Archivos: `kebab-case` (ej. `users.service.ts`, `create-user.dto.ts`).
+  - Interfaces: `PascalCase` (puedes prefijar con `I` si prefieres, pero no es obligatorio en TS moderno).
 
-- [ ] Adapter implementa el Port sin filtrar tipos del ORM
-- [ ] Módulo de infraestructura hace provide: TOKEN y lo exporta
+## Manejo de Errores
 
-### 4) Cablear (wiring) en Composition
+- Usa las excepciones estándar de NestJS (`NotFoundException`, `BadRequestException`, `UnauthorizedException`) directamente en los Services o Controllers.
+- El filtro global de excepciones se encargará de formatear la respuesta HTTP.
 
-- Crear/actualizar infrastructure/composition/<feature>.composition.module.ts.
-- Importar los módulos de infraestructura necesarios.
-- Proveer el Service de application vía useFactory inyectando los Tokens.
-- Exportar el Service para que interfaces lo use.
+## Testing
 
-Checklist:
+### Unit Testing (Jest)
 
-- [ ] Imports solo de infraestructura + application
-- [ ] useFactory inyecta los Tokens correctos
-- [ ] Exporta el Service
+- Archivos `.spec.ts` junto al archivo que prueban.
+- Mockea las dependencias externas (Repositorios, otros Servicios).
 
-### 5) Tests
+Ejemplo básico de test de servicio:
 
-- Application: pruebas unitarias de Services con mocks de Ports.
-- Interfaces: pruebas unitarias de controladores con Service mockeado y validación de DTOs.
-- Integración: focalizadas para adaptadores críticos (repositorios, JWT, etc.).
+```typescript
+const module: TestingModule = await Test.createTestingModule({
+  providers: [
+    UsersService,
+    { provide: getRepositoryToken(User), useValue: mockRepo },
+  ],
+}).compile();
+```
 
-Comandos:
+### E2E Testing
 
-- Unit: pnpm test
-- Cobertura: pnpm test:cov
+- En la carpeta `test/`.
+- Pruebas de caja negra golpeando la API.
 
-## Buenas prácticas clave
+## Despliegue y Migraciones
 
-- No importar infraestructura desde interfaces (HTTP).
-- Application sin dependencias de Nest/ORM; usa solo Ports y Tipos.
-- Tokens de DI (constantes string/symbol) van junto a los Ports.
-- Usar Logger de NestJS/nestjs-pino, no console.log en producción.
-- Versionado de API habilitado y ValidationPipe global en main.
+- **Migraciones**: Usamos TypeORM.
+  - Generar: `pnpm migration:generate src/shared/database/migrations/<nombre>`.
+  - Correr: `pnpm migration:run`.
+- **Configuración**: Todo a través de variables de entorno (.env). Nunca hardcodees credenciales.
 
-## Pitfalls (y cómo evitarlos)
+## Checklist para Pull Requests
 
-- Fuga de modelos de ORM a application/domain → conviértelos en adapters/mappers en infraestructura.
-- Providers duplicados de un mismo Service → centraliza la factory en Composition.
-- Tokens no resueltos (Unknown provider) → verifica que el módulo de composición importe el módulo de infraestructura que exporta ese TOKEN y que AppModule lo registre si es raíz.
-- Dependencias cíclicas → mantené application → ports → infrastructure → composition → interfaces como flujo y evita imports cruzados.
-
-## Cómo cambiar de ORM (estrategia)
-
-- Mantén estable el Port (p. ej., UsersRepositoryPort).
-- Crea un nuevo adapter que implemente ese Port usando el nuevo ORM.
-- Crea un módulo de infra que provea el TOKEN con ese adapter.
-- Ajusta el módulo de composición (o crea una variante) para usar el nuevo módulo.
-- No toques Services de application ni controladores.
-
-## Checklist rápido antes de abrir PR
-
-- [ ] Lint y formato OK (pnpm lint)
-- [ ] Compila y arranca (pnpm build / pnpm start:dev)
-- [ ] Tests relevantes añadidos/actualizados y en verde
-- [ ] Interfaces no importan infraestructura
-- [ ] Documentación actualizada si cambió el wiring o los Ports
-
-Para más detalles de arquitectura, consulta docs/ARCHITECTURE.md y la checklist docs/PR_CHECKLIST.md.
+- [ ] El código compila (`pnpm build`).
+- [ ] El linter pasa (`pnpm lint`).
+- [ ] No hay dependencias circulares entre features o hacia shared.
+- [ ] Las nuevas entidades están registradas en el Módulo y en el DataSource.
+- [ ] Si cambiaste la BD, incluiste la migración.

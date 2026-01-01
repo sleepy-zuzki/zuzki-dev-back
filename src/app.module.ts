@@ -3,16 +3,13 @@ import { randomUUID } from 'node:crypto';
 import { CacheModule, CacheInterceptor } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { LoggerModule } from 'nestjs-pino';
+import { LoggerModule, LoggerErrorInterceptor } from 'nestjs-pino';
 
-import { CatalogApplicationModule } from '@application/catalog/catalog.application.module';
-import { HealthApplicationModule } from '@application/health/health.application.module';
-import { PortfolioApplicationModule } from '@application/portfolio/portfolio.application.module';
-import { UsersApplicationModule } from '@application/users/users.application.module';
-import { DatabaseModule } from '@infra/database/database.module';
-import { AuthModule } from '@interfaces/http/v1/auth/auth.module';
-import { V1Module } from '@interfaces/http/v1/v1.module';
+// Legacy Auth import
 import { MetricsModule } from '@metrics/metrics.module';
+import { DatabaseModule } from '@shared/database/database.module';
+
+import { V1Module } from './v1.module';
 
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
@@ -40,17 +37,46 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
                   : undefined,
           };
         },
-        transport:
-          process.env.NODE_ENV !== 'production'
-            ? {
-                target: 'pino-pretty',
-                options: {
-                  colorize: true,
-                  translateTime: 'SYS:standard',
-                  singleLine: false,
-                },
-              }
-            : undefined,
+        transport: {
+          targets: [
+            // Console Output (Pretty in Dev)
+            ...(process.env.NODE_ENV !== 'production'
+              ? [
+                  {
+                    target: 'pino-pretty',
+                    options: {
+                      colorize: true,
+                      translateTime: 'SYS:standard',
+                      singleLine: false,
+                    },
+                  },
+                ]
+              : []),
+            // File Output: All logs (Daily Rotation)
+            {
+              target: 'pino-roll',
+              options: {
+                file: './logs/app/log',
+                frequency: 'daily',
+                mkdir: true,
+                dateFormat: 'yyyy-MM-dd',
+                extension: '.log',
+              },
+            },
+            // File Output: Errors only (Daily Rotation)
+            {
+              target: 'pino-roll',
+              level: 'error',
+              options: {
+                file: './logs/error/log',
+                frequency: 'daily',
+                mkdir: true,
+                dateFormat: 'yyyy-MM-dd',
+                extension: '.log',
+              },
+            },
+          ],
+        },
       },
     }),
     CacheModule.register({
@@ -59,17 +85,16 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
       max: Number(process.env.CACHE_MAX ?? 100),
     }),
     DatabaseModule,
-    // Application root: usa Application Modules que encapsulan la composición
-    UsersApplicationModule,
-    CatalogApplicationModule,
-    PortfolioApplicationModule,
-    HealthApplicationModule,
-    AuthModule,
     MetricsModule,
+    // V1 Features (grouped)
     V1Module,
   ],
   controllers: [],
   providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggerErrorInterceptor,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,
