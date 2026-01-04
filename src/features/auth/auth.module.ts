@@ -33,6 +33,8 @@ import { JwtStrategy } from './strategies/jwt.strategy';
         secret: configService.getString('APP_JWT_SECRET'),
         signOptions: {
           expiresIn: configService.getNumber('APP_JWT_TTL', 3600),
+          issuer: configService.getString('APP_JWT_ISSUER', 'localhost'),
+          audience: configService.getString('APP_JWT_AUDIENCE', 'localhost'),
         },
       }),
       inject: [ConfigurationService],
